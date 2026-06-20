@@ -60,10 +60,16 @@ export function validate(schema, source = "body") {
         message: joinJoiMessages(error),
       });
     }
-    // Mutating req.query / req.params is supported by Express and matches
-    // the pre-existing req.body pattern; downstream handlers see the
-    // sanitized value transparently.
-    req[source] = value;
+    try {
+      req[source] = value;
+    } catch (e) {
+      Object.defineProperty(req, source, {
+        value: value,
+        writable: true,
+        configurable: true,
+        enumerable: true
+      });
+    }
     return next();
   };
 }
