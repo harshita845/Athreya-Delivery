@@ -13,10 +13,6 @@ import SplashScreen from './components/shared/SplashScreen';
 function App() {
     const [showSplash, setShowSplash] = useState(true);
 
-    if (showSplash) {
-        return <SplashScreen onFinished={() => setShowSplash(false)} />;
-    }
-
     return (
         <ErrorBoundary>
             <AuthProvider>
@@ -27,6 +23,9 @@ function App() {
                             <SupportUnreadProvider>
                                 <LenisScroll />
                                 <AppRouter />
+                                {showSplash && (
+                                    <SplashScreen onFinished={() => setShowSplash(false)} />
+                                )}
                             </SupportUnreadProvider>
                         </Suspense>
                     </ToastProvider>

@@ -673,7 +673,7 @@ const Home = () => {
   };
 
   return (
-    <div className={`min-h-screen pt-[255px] md:pt-[315px] ${products.length === 0 && !isLoading ? "bg-white" : "bg-[#F5F7F8]"}`}>
+    <div className={`min-h-screen pt-[215px] md:pt-[275px] ${products.length === 0 && !isLoading ? "bg-white" : "bg-[#F5F7F8]"}`}>
       <div className={cn("contents", isProductDetailOpen && "hidden md:contents")}>
         <MainLocationHeader categories={categories} activeCategory={activeCategory} onCategorySelect={setActiveCategory} />
       </div>
@@ -691,6 +691,13 @@ const Home = () => {
             <div className="relative w-full overflow-hidden">
               {heroConfig.banners?.items?.length ? (
                 <ExperienceBannerCarousel section={{ title: "" }} items={heroConfig.banners.items} fullWidth edgeToEdge />
+              ) : isLoading ? (
+                <div className="w-full h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] bg-slate-100 animate-pulse relative overflow-hidden flex items-center justify-center border-y border-slate-200/50">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="h-6 w-48 bg-slate-200 rounded-lg animate-pulse" />
+                    <div className="h-4 w-32 bg-slate-200/80 rounded-lg animate-pulse" />
+                  </div>
+                </div>
               ) : (
                 <div className="w-full h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] bg-[#ecfeff] p-6 relative overflow-hidden flex items-center border-y border-primary/10 shadow-sm">
                   <div className="relative z-10 w-3/5 flex flex-col items-start gap-2">
