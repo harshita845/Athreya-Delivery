@@ -453,8 +453,9 @@ export const getPublicHeroConfig = async (req, res) => {
       ? {
           banners: config.banners || { items: [] },
           categoryIds: config.categoryIds || [],
+          mobileFooterUrl: config.mobileFooterUrl || "",
         }
-      : { banners: { items: [] }, categoryIds: [] };
+      : { banners: { items: [] }, categoryIds: [], mobileFooterUrl: "" };
 
     return handleResponse(res, 200, "Hero config fetched", payload);
   } catch (error) {
@@ -483,7 +484,7 @@ export const getAdminHeroConfig = async (req, res) => {
       res,
       200,
       "Hero config fetched",
-      config || { banners: { items: [] }, categoryIds: [] }
+      config || { banners: { items: [] }, categoryIds: [], mobileFooterUrl: "" }
     );
   } catch (error) {
     return handleResponse(res, 500, error.message);
@@ -492,7 +493,7 @@ export const getAdminHeroConfig = async (req, res) => {
 
 export const upsertHeroConfig = async (req, res) => {
   try {
-    const { pageType, headerId, banners, categoryIds } = req.body;
+    const { pageType, headerId, banners, categoryIds, mobileFooterUrl } = req.body;
 
     if (!["home", "header"].includes(pageType)) {
       return handleResponse(res, 400, "Invalid pageType");
@@ -532,6 +533,7 @@ export const upsertHeroConfig = async (req, res) => {
     const update = {
       banners: { items: bannerItems },
       categoryIds: ids,
+      mobileFooterUrl: mobileFooterUrl || "",
     };
 
     const config = await HeroConfig.findOneAndUpdate(

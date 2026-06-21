@@ -39,6 +39,10 @@ const heroConfigSchema = new mongoose.Schema(
     categoryIds: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
     ],
+    mobileFooterUrl: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

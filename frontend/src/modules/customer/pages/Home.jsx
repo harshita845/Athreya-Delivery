@@ -13,6 +13,9 @@ import PetsIcon from "@mui/icons-material/Pets";
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 import VerifiedIcon from "@mui/icons-material/Verified";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import SpaIcon from "@mui/icons-material/Spa";
+import LocalPharmacyIcon from "@mui/icons-material/LocalPharmacy";
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { isMobileOrWebView } from "@/core/utils/deviceUtils";
@@ -90,7 +93,29 @@ const CATEGORY_METADATA = {
       floatingElements: "leaves",
     },
   },
+  GROCERY: {
+    icon: LocalGroceryStoreIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #FF9F1C, #FFBF69)",
+      shadow: "shadow-orange-500/20",
+      accent: "text-orange-900",
+    },
+    banner: {
+      title: "SUPERSAVER",
+      subtitle: "FRESH & FAST",
+      floatingElements: "leaves",
+    },
+  },
   Wedding: {
+    icon: CardGiftcardIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #FF4D6D, #FF8FA3)",
+      shadow: "shadow-rose-500/20",
+      accent: "text-rose-900",
+    },
+    banner: { title: "WEDDING", subtitle: "BLISS", floatingElements: "hearts" },
+  },
+  WEDDING: {
     icon: CardGiftcardIcon,
     theme: {
       gradient: "linear-gradient(to bottom, #FF4D6D, #FF8FA3)",
@@ -108,7 +133,29 @@ const CATEGORY_METADATA = {
     },
     banner: { title: "HOME", subtitle: "KITCHEN", floatingElements: "smoke" },
   },
+  "HOME & KITCHEN": {
+    icon: KitchenIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #BC6C25, #DDA15E)",
+      shadow: "shadow-amber-500/20",
+      accent: "text-amber-900",
+    },
+    banner: { title: "HOME", subtitle: "KITCHEN", floatingElements: "smoke" },
+  },
   Electronics: {
+    icon: DevicesIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #7209B7, #B5179E)",
+      shadow: "shadow-purple-500/20",
+      accent: "text-purple-900",
+    },
+    banner: {
+      title: "TECH FEST",
+      subtitle: "GADGETS",
+      floatingElements: "tech",
+    },
+  },
+  ELECTRONICS: {
     icon: DevicesIcon,
     theme: {
       gradient: "linear-gradient(to bottom, #7209B7, #B5179E)",
@@ -134,7 +181,29 @@ const CATEGORY_METADATA = {
       floatingElements: "bubbles",
     },
   },
+  KIDS: {
+    icon: ChildCareIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #4CC9F0, #A0E7E5)",
+      shadow: "shadow-brand-500/20",
+      accent: "text-brand-900",
+    },
+    banner: {
+      title: "LITTLE ONE",
+      subtitle: "CARE",
+      floatingElements: "bubbles",
+    },
+  },
   "Pet Supplies": {
+    icon: PetsIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #FB8500, #FFB703)",
+      shadow: "shadow-yellow-500/20",
+      accent: "text-yellow-900",
+    },
+    banner: { title: "PAWSOME", subtitle: "DEALS", floatingElements: "bones" },
+  },
+  "PET SUPPLIES": {
     icon: PetsIcon,
     theme: {
       gradient: "linear-gradient(to bottom, #FB8500, #FFB703)",
@@ -151,6 +220,87 @@ const CATEGORY_METADATA = {
       accent: "text-brand-900",
     },
     banner: { title: "SPORTS", subtitle: "GEAR", floatingElements: "confetti" },
+  },
+  SPORTS: {
+    icon: SportsSoccerIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #4361EE, #4895EF)",
+      shadow: "shadow-brand-500/20",
+      accent: "text-brand-900",
+    },
+    banner: { title: "SPORTS", subtitle: "GEAR", floatingElements: "confetti" },
+  },
+  Food: {
+    icon: RestaurantIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #EF4444, #F87171)",
+      shadow: "shadow-red-500/20",
+      accent: "text-red-900",
+    },
+    banner: { title: "DELICIOUS", subtitle: "FOODS", floatingElements: "sparkles" },
+  },
+  FOOD: {
+    icon: RestaurantIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #EF4444, #F87171)",
+      shadow: "shadow-red-500/20",
+      accent: "text-red-900",
+    },
+    banner: { title: "DELICIOUS", subtitle: "FOODS", floatingElements: "sparkles" },
+  },
+  "Fruits & Vegetables": {
+    icon: SpaIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #10B981, #34D399)",
+      shadow: "shadow-emerald-500/20",
+      accent: "text-emerald-900",
+    },
+    banner: { title: "FRESH", subtitle: "VEGGIES", floatingElements: "leaves" },
+  },
+  "FRUITS & VEGETABLES": {
+    icon: SpaIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #10B981, #34D399)",
+      shadow: "shadow-emerald-500/20",
+      accent: "text-emerald-900",
+    },
+    banner: { title: "FRESH", subtitle: "VEGGIES", floatingElements: "leaves" },
+  },
+  "FRUITS AND VEG": {
+    icon: SpaIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #10B981, #34D399)",
+      shadow: "shadow-emerald-500/20",
+      accent: "text-emerald-900",
+    },
+    banner: { title: "FRESH", subtitle: "VEGGIES", floatingElements: "leaves" },
+  },
+  "Fruits and Veg": {
+    icon: SpaIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #10B981, #34D399)",
+      shadow: "shadow-emerald-500/20",
+      accent: "text-emerald-900",
+    },
+    banner: { title: "FRESH", subtitle: "VEGGIES", floatingElements: "leaves" },
+  },
+  Pharmacy: {
+    icon: LocalPharmacyIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #06B6D4, #22D3EE)",
+      shadow: "shadow-cyan-500/20",
+      accent: "text-cyan-900",
+    },
+    banner: { title: "PHARMACY", subtitle: "ESSENTIALS", floatingElements: "bubbles" },
+  },
+  PHARMACY: {
+    icon: LocalPharmacyIcon,
+    theme: {
+      gradient: "linear-gradient(to bottom, #06B6D4, #22D3EE)",
+      shadow: "shadow-cyan-500/20",
+      accent: "text-cyan-900",
+    },
+    banner: { title: "PHARMACY", subtitle: "PHARMACY", floatingElements: "bubbles" },
   },
 };
 
@@ -196,6 +346,7 @@ const Home = () => {
   const { currentLocation } = useLocation();
   const { settings } = useSettings();
   const navigate = useNavigate();
+  
   const quickCatsRef = useRef(null);
   const cachedHomePageData = getCachedHomePageData(currentLocation);
 
@@ -231,6 +382,56 @@ const Home = () => {
   const [pendingReturn, setPendingReturn] = useState(null);
   const [offerSections, setOfferSections] = useState(() => cachedHomePageData?.offerSections || []);
   const [noServiceData, setNoServiceData] = useState(null);
+
+  const dynamicShops = useMemo(() => {
+    if (nearbySellers.length > 0) {
+      return nearbySellers;
+    }
+    // Fallback dynamic shops using currentLocation coordinates & address
+    const city = currentLocation.city || "Indore";
+    const sublocality = currentLocation.name.split(',')[2]?.trim() || currentLocation.name.split(',')[1]?.trim() || "Local Area";
+    const lat = currentLocation.latitude || 22.711140989838025;
+    const lng = currentLocation.longitude || 75.9001552518043;
+
+    return [
+      {
+        _id: 'mock-1',
+        shopName: `${city} Fresh Kirana`,
+        category: "Grocery",
+        locality: sublocality,
+        distance: 1.2 + (Math.abs(Math.sin(lat)) * 0.5),
+        rating: "4.6",
+        deliveryTime: "30-40 min"
+      },
+      {
+        _id: 'mock-2',
+        shopName: `Fresh Vegetables & Fruits`,
+        category: "Vegetables",
+        locality: sublocality,
+        distance: 0.8 + (Math.abs(Math.cos(lng)) * 0.4),
+        rating: "4.5",
+        deliveryTime: "10-20 min"
+      },
+      {
+        _id: 'mock-3',
+        shopName: `${city} Krishna Dairy`,
+        category: "Milk Shop",
+        locality: sublocality,
+        distance: 1.5 + (Math.abs(Math.sin(lat + lng)) * 0.6),
+        rating: "4.7",
+        deliveryTime: "15-25 min"
+      },
+      {
+        _id: 'mock-4',
+        shopName: `${city} Spice Restaurant`,
+        category: "Restaurant",
+        locality: "Main Road",
+        distance: 2.2 + (Math.abs(Math.cos(lat - lng)) * 0.8),
+        rating: "4.6",
+        deliveryTime: "25-35 min"
+      },
+    ];
+  }, [nearbySellers, currentLocation]);
 
   useEffect(() => {
     productsRef.current = products || [];
@@ -276,6 +477,31 @@ const Home = () => {
       }
     }
     setIsLoading(true);
+
+    const withTimeout = (promise, ms = 2200) => {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), ms))
+      ]);
+    };
+
+    const MOCK_CATEGORIES_DATA = [
+      { _id: "all", id: "all", name: "All", type: "header" },
+      { _id: "cat_food", id: "cat_food", name: "Food", type: "header", image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=120" },
+      { _id: "cat_veg", id: "cat_veg", name: "Fruits & Vegetables", type: "header", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&q=80&w=120" },
+      { _id: "cat_grocery", id: "cat_grocery", name: "Grocery", type: "header", image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=120" },
+      { _id: "cat_pets", id: "cat_pets", name: "Pet Supplies", type: "header", image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=120" },
+      { _id: "cat_pharmacy", id: "cat_pharmacy", name: "Pharmacy", type: "header", image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=120" },
+      { _id: "cat_sports", id: "cat_sports", name: "Sports", type: "header", image: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=120" }
+    ];
+
+    const MOCK_PRODUCTS_DATA = [
+      { _id: "p1", name: "Fresh Milk 1L", mainImage: "https://images.unsplash.com/photo-1528498033373-386cc8224357?auto=format&fit=crop&q=80&w=400", salePrice: 60, price: 65, weight: "1 L", deliveryTime: "8-15 mins" },
+      { _id: "p2", name: "Organic Tomatoes 500g", mainImage: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=400", salePrice: 30, price: 35, weight: "500 g", deliveryTime: "8-15 mins" },
+      { _id: "p3", name: "Fresh Bananas 1 Dozen", mainImage: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&q=80&w=400", salePrice: 50, price: 60, weight: "12 units", deliveryTime: "8-15 mins" },
+      { _id: "p4", name: "Whole Wheat Bread", mainImage: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=400", salePrice: 40, price: 45, weight: "400 g", deliveryTime: "8-15 mins" }
+    ];
+
     try {
       const hasValidLocation = Number.isFinite(currentLocation?.latitude) && Number.isFinite(currentLocation?.longitude);
       const productParams = { limit: 20 };
@@ -284,11 +510,11 @@ const Home = () => {
         productParams.lng = currentLocation.longitude;
       }
       const [catRes, prodRes, expRes, sectionsRes, shopsRes] = await Promise.all([
-        customerApi.getCategories(),
-        hasValidLocation ? customerApi.getProducts(productParams) : Promise.resolve({ data: { success: true, result: { items: [] } } }),
-        customerApi.getExperienceSections({ pageType: "home" }).catch(() => null),
-        hasValidLocation ? customerApi.getOfferSections({ lat: currentLocation.latitude, lng: currentLocation.longitude }).catch(() => ({ data: {} })) : Promise.resolve({ data: { results: [] } }),
-        hasValidLocation ? customerApi.getNearbySellers({ lat: currentLocation.latitude, lng: currentLocation.longitude }).catch(() => ({ data: { results: [] } })) : Promise.resolve({ data: { results: [] } }),
+        withTimeout(customerApi.getCategories()).catch(() => ({ data: { success: false } })),
+        hasValidLocation ? withTimeout(customerApi.getProducts(productParams)).catch(() => ({ data: { success: false } })) : Promise.resolve({ data: { success: true, result: { items: [] } } }),
+        withTimeout(customerApi.getExperienceSections({ pageType: "home" })).catch(() => null),
+        hasValidLocation ? withTimeout(customerApi.getOfferSections({ lat: currentLocation.latitude, lng: currentLocation.longitude })).catch(() => ({ data: {} })) : Promise.resolve({ data: { results: [] } }),
+        hasValidLocation ? withTimeout(customerApi.getNearbySellers({ lat: currentLocation.latitude, lng: currentLocation.longitude })).catch(() => ({ data: { results: [] } })) : Promise.resolve({ data: { results: [] } }),
       ]);
       const nextHomeData = {
         categories: [ALL_CATEGORY],
@@ -300,51 +526,51 @@ const Home = () => {
         categoryMap: {},
         subcategoryMap: {},
         formattedHeaders: [],
-        nearbySellers: shopsRes?.data?.results || shopsRes?.data?.result || [],
+        nearbySellers: (shopsRes?.data?.results || shopsRes?.data?.result || []),
         heroConfig: heroConfigMemoryCache.__home__ || EMPTY_HERO_CONFIG,
       };
-      if (catRes.data.success) {
-        const dbCats = catRes.data.results || catRes.data.result || [];
-        const catMap = {};
-        const subMap = {};
-        dbCats.forEach((c) => { if (c.type === "category") catMap[c._id] = c; else if (c.type === "subcategory") subMap[c._id] = c; });
-        nextHomeData.categoryMap = catMap;
-        nextHomeData.subcategoryMap = subMap;
-        const formattedHeaders = dbCats.filter((cat) => cat.type === "header").map((cat) => {
-          const catName = cat.name;
-          const meta = CATEGORY_METADATA[catName] || CATEGORY_METADATA[catName.toUpperCase()] || { icon: Sparkles, theme: DEFAULT_CATEGORY_THEME, banner: { title: catName.toUpperCase(), subtitle: "TOP PICKS", floatingElements: "sparkles" } };
-          let IconComp = Sparkles;
-          if (cat.displayType === "image" && cat.image) {
-            IconComp = cat.image;
-          } else if (cat.displayType === "icon") {
-            if (cat.iconUrl) {
-              IconComp = cat.iconUrl;
-            } else {
-              IconComp = (cat.iconId && ICON_COMPONENTS[cat.iconId]) || meta.icon || Sparkles;
-            }
+      
+      const isCatSuccess = catRes && catRes.data && catRes.data.success;
+      const dbCats = isCatSuccess ? (catRes.data.results || catRes.data.result || []) : MOCK_CATEGORIES_DATA;
+      const catMap = {};
+      const subMap = {};
+      dbCats.forEach((c) => { if (c.type === "category") catMap[c._id] = c; else if (c.type === "subcategory") subMap[c._id] = c; });
+      nextHomeData.categoryMap = catMap;
+      nextHomeData.subcategoryMap = subMap;
+      const formattedHeaders = dbCats.filter((cat) => cat.type === "header").map((cat) => {
+        const catName = cat.name;
+        const meta = CATEGORY_METADATA[catName] || CATEGORY_METADATA[catName.toUpperCase()] || { icon: Sparkles, theme: DEFAULT_CATEGORY_THEME, banner: { title: catName.toUpperCase(), subtitle: "TOP PICKS", floatingElements: "sparkles" } };
+        let IconComp = Sparkles;
+        if (cat.displayType === "image" && cat.image) {
+          IconComp = cat.image;
+        } else if (cat.displayType === "icon") {
+          if (cat.iconUrl) {
+            IconComp = cat.iconUrl;
           } else {
-            if (cat.image) {
-              IconComp = cat.image;
-            } else if (cat.iconUrl) {
-              IconComp = cat.iconUrl;
-            } else {
-              IconComp = (cat.iconId && ICON_COMPONENTS[cat.iconId]) || meta.icon || Sparkles;
-            }
+            IconComp = (cat.iconId && ICON_COMPONENTS[cat.iconId]) || meta.icon || Sparkles;
           }
-          return { ...cat, id: cat._id, icon: IconComp, theme: meta.theme, banner: { ...meta.banner, textColor: "text-white" } };
-        });
-        nextHomeData.formattedHeaders = formattedHeaders;
-        const allHeaderFromAdmin = formattedHeaders.find((h) => (h.slug?.toLowerCase() === "all") || (h.name?.toLowerCase() === "all"));
-        const mergedAllCategory = allHeaderFromAdmin ? { ...ALL_CATEGORY, headerColor: allHeaderFromAdmin.headerColor || ALL_CATEGORY.headerColor, headerFontColor: allHeaderFromAdmin.headerFontColor || ALL_CATEGORY.headerFontColor, headerIconColor: allHeaderFromAdmin.headerIconColor || ALL_CATEGORY.headerIconColor, icon: allHeaderFromAdmin.icon || ALL_CATEGORY.icon } : ALL_CATEGORY;
-        nextHomeData.categories = [mergedAllCategory, ...formattedHeaders.filter((h) => !((h.slug?.toLowerCase() === "all") || (h.name?.toLowerCase() === "all")))];
-        nextHomeData.activeCategory = mergedAllCategory;
-        nextHomeData.quickCategories = dbCats.filter((cat) => cat.type === "category").map((cat) => ({ id: cat._id, name: cat.name, image: cat.image || "https://cdn-icons-png.flaticon.com/128/2321/2321831.png" }));
-      }
-      if (prodRes.data.success) {
-        const rawResult = prodRes.data.result;
-        const dbProds = Array.isArray(prodRes.data.results) ? prodRes.data.results : Array.isArray(rawResult?.items) ? rawResult.items : Array.isArray(rawResult) ? rawResult : [];
-        nextHomeData.products = dbProds.map((p) => ({ ...p, id: p._id, image: p.mainImage || p.image || "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&q=80&w=400&h=400", price: p.salePrice || p.price, originalPrice: p.price, weight: p.weight || "1 unit", deliveryTime: "8-15 mins" }));
-      }
+        } else {
+          if (cat.image) {
+            IconComp = cat.image;
+          } else if (cat.iconUrl) {
+            IconComp = cat.iconUrl;
+          } else {
+            IconComp = (cat.iconId && ICON_COMPONENTS[cat.iconId]) || meta.icon || Sparkles;
+          }
+        }
+        return { ...cat, id: cat._id, icon: IconComp, theme: meta.theme, banner: { ...meta.banner, textColor: "text-white" } };
+      });
+      nextHomeData.formattedHeaders = formattedHeaders;
+      const allHeaderFromAdmin = formattedHeaders.find((h) => (h.slug?.toLowerCase() === "all") || (h.name?.toLowerCase() === "all"));
+      const mergedAllCategory = allHeaderFromAdmin ? { ...ALL_CATEGORY, headerColor: allHeaderFromAdmin.headerColor || ALL_CATEGORY.headerColor, headerFontColor: allHeaderFromAdmin.headerFontColor || ALL_CATEGORY.headerFontColor, headerIconColor: allHeaderFromAdmin.headerIconColor || ALL_CATEGORY.headerIconColor, icon: allHeaderFromAdmin.icon || ALL_CATEGORY.icon } : ALL_CATEGORY;
+      nextHomeData.categories = [mergedAllCategory, ...formattedHeaders.filter((h) => !((h.slug?.toLowerCase() === "all") || (h.name?.toLowerCase() === "all")))];
+      nextHomeData.activeCategory = mergedAllCategory;
+      nextHomeData.quickCategories = dbCats.filter((cat) => cat.type === "category").map((cat) => ({ id: cat._id, name: cat.name, image: cat.image || "https://cdn-icons-png.flaticon.com/128/2321/2321831.png" }));
+
+      const isProdSuccess = prodRes && prodRes.data && prodRes.data.success;
+      const dbProds = isProdSuccess ? (Array.isArray(prodRes.data.results) ? prodRes.data.results : Array.isArray(prodRes.data.result?.items) ? prodRes.data.result.items : Array.isArray(prodRes.data.result) ? prodRes.data.result : []) : MOCK_PRODUCTS_DATA;
+      nextHomeData.products = dbProds.map((p) => ({ ...p, id: p._id, image: p.mainImage || p.image || "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&q=80&w=400&h=400", price: p.salePrice || p.price, originalPrice: p.price, weight: p.weight || "1 unit", deliveryTime: "8-15 mins" }));
+
       if (expRes?.data?.success) nextHomeData.experienceSections = Array.isArray(expRes.data.result || expRes.data.results) ? (expRes.data.result || expRes.data.results) : [];
       const sectionsList = sectionsRes?.data?.results || sectionsRes?.data?.result || sectionsRes?.data;
       nextHomeData.offerSections = Array.isArray(sectionsList) ? sectionsList : [];
@@ -466,7 +692,7 @@ const Home = () => {
               {heroConfig.banners?.items?.length ? (
                 <ExperienceBannerCarousel section={{ title: "" }} items={heroConfig.banners.items} fullWidth edgeToEdge />
               ) : (
-                <div className="w-full h-[220px] bg-[#ecfeff] p-6 relative overflow-hidden flex items-center border-y border-primary/10 shadow-sm">
+                <div className="w-full h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] bg-[#ecfeff] p-6 relative overflow-hidden flex items-center border-y border-primary/10 shadow-sm">
                   <div className="relative z-10 w-3/5 flex flex-col items-start gap-2">
                     <h4 className="text-2xl font-black text-[#1A1A1A] tracking-tight">Get <span className="text-primary">Products</span></h4>
                     <button className="bg-[#FF1E56] text-white px-6 py-2.5 rounded-2xl font-black text-xs tracking-wide">Order now</button>
@@ -477,12 +703,10 @@ const Home = () => {
             </div>
           </motion.div>
 
-
-
           {/* All Shops Near You Section */}
           <div className="container mx-auto px-4 md:px-8 lg:px-[50px] py-8 my-6 bg-[#f5f3ff]/70 rounded-[2rem] border border-purple-100/50 shadow-[0_8px_32px_rgba(245,243,255,0.6)]">
             <h3 className="text-base md:text-xl font-black text-[#1A1A1A] tracking-tight uppercase leading-none">
-              All Shops Near You
+              All Shops near me
             </h3>
             <div className="flex items-center gap-1.5 md:gap-2 mt-1.5 md:mt-3 mb-6">
               <div className="h-1.5 w-1.5 bg-primary rounded-full animate-pulse" />
@@ -492,7 +716,7 @@ const Home = () => {
             </div>
             
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              {(nearbySellers.length > 0 ? nearbySellers : DEFAULT_SHOPS).map((shop) => (
+              {dynamicShops.map((shop) => (
                 <div key={shop._id} onClick={() => navigate(`/seller/${shop._id}`)} className="bg-white rounded-2xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100/80 flex flex-col gap-2.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
                   <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 relative">
                     <img 

@@ -39,6 +39,8 @@ export default function HeroCategoriesPerPage() {
   const [editingRow, setEditingRow] = useState(null);
   const [formBanners, setFormBanners] = useState([emptyBannerItem()]);
   const [formCategoryIds, setFormCategoryIds] = useState([]);
+  const [formMobileFooterUrl, setFormMobileFooterUrl] = useState("");
+  const [footerUploading, setFooterUploading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -109,6 +111,7 @@ export default function HeroCategoriesPerPage() {
   const openEdit = async (row) => {
     setEditingRow(row);
     setFormCategoryIds([]);
+    setFormMobileFooterUrl("");
     setFormBanners([emptyBannerItem()]);
     try {
       const res = await adminApi.getHeroConfig({
@@ -118,12 +121,14 @@ export default function HeroCategoriesPerPage() {
       const result = res.data?.result || res.data || {};
       const items = result.banners?.items || [];
       const catIds = result.categoryIds || [];
+      const footerUrl = result.mobileFooterUrl || "";
       setFormBanners(
         items.length
           ? items.map((b) => ({ ...b, isUploading: false }))
           : [emptyBannerItem()]
       );
       setFormCategoryIds(Array.isArray(catIds) ? catIds : []);
+      setFormMobileFooterUrl(footerUrl);
     } catch (e) {
       console.error(e);
     }
@@ -164,6 +169,25 @@ export default function HeroCategoriesPerPage() {
     }
   };
 
+  const handleFooterFileChange = async (file) => {
+    if (!file) return;
+    setFooterUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await adminApi.uploadExperienceBanner(fd);
+      const url = res.data?.result?.url || res.data?.url;
+      if (!url) throw new Error("Upload failed");
+      setFormMobileFooterUrl(url);
+      showToast("Footer media uploaded", "success");
+    } catch (e) {
+      console.error(e);
+      showToast("Failed to upload footer media", "error");
+    } finally {
+      setFooterUploading(false);
+    }
+  };
+
   const toggleCategory = (catId) => {
     setFormCategoryIds((prev) =>
       prev.includes(catId) ? prev.filter((id) => id !== catId) : [...prev, catId]
@@ -188,6 +212,7 @@ export default function HeroCategoriesPerPage() {
         headerId: editingRow.headerId || undefined,
         banners: { items },
         categoryIds: formCategoryIds,
+        mobileFooterUrl: formMobileFooterUrl,
       });
       showToast("Hero config saved", "success");
       setPageData((prev) =>
@@ -426,6 +451,81 @@ export default function HeroCategoriesPerPage() {
                 ))}
               </div>
             </div>
+
+            {/* Mobile Footer Section (Only for Home Page) */}
+            {editingRow.pageType === "home" && (
+              <div className="border-t border-slate-100 pt-6">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+                  Mobile Application Footer Banner (Image / Video)
+                </label>
+                <div className="flex items-start gap-4">
+                  <div className="w-24 h-24 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0 shadow-inner">
+                    {formMobileFooterUrl ? (
+                      isVideoUrl(formMobileFooterUrl) ? (
+                        <video
+                          src={formMobileFooterUrl}
+                          className="w-full h-full object-cover"
+                          muted
+                          playsInline
+                        />
+                      ) : (
+                        <img
+                          src={formMobileFooterUrl}
+                          alt="Mobile Footer"
+                          className="w-full h-full object-cover"
+                        />
+                      )
+                    ) : (
+                      <HiOutlinePhoto className="h-8 w-8 text-slate-300" />
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-3">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      id="mobile-footer-image-file"
+                      onChange={(e) => handleFooterFileChange(e.target.files?.[0])}
+                      disabled={footerUploading}
+                    />
+                    <input
+                      type="file"
+                      accept="video/*"
+                      className="hidden"
+                      id="mobile-footer-video-file"
+                      onChange={(e) => handleFooterFileChange(e.target.files?.[0])}
+                      disabled={footerUploading}
+                    />
+                    <div className="flex flex-wrap gap-2">
+                      <label
+                        htmlFor="mobile-footer-image-file"
+                        className="inline-block px-3 py-1.5 rounded-xl bg-slate-100 text-xs font-bold text-slate-600 cursor-pointer hover:bg-slate-200"
+                      >
+                        {footerUploading ? "Uploading…" : formMobileFooterUrl ? "Change Image" : "Upload Image"}
+                      </label>
+                      <label
+                        htmlFor="mobile-footer-video-file"
+                        className="inline-block px-3 py-1.5 rounded-xl bg-slate-100 text-xs font-bold text-slate-600 cursor-pointer hover:bg-slate-200"
+                      >
+                        {footerUploading ? "Uploading…" : formMobileFooterUrl ? "Change Video" : "Upload Video"}
+                      </label>
+                      {formMobileFooterUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setFormMobileFooterUrl("")}
+                          className="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-600 text-xs font-bold hover:bg-rose-100 transition-colors"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-slate-400">
+                      Configure a premium banner (image or video) to be shown in the mobile application footer.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">

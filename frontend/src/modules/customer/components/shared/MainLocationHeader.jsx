@@ -8,6 +8,7 @@ import { useProductDetail } from "../../context/ProductDetailContext";
 import { useSettings } from "@core/context/SettingsContext";
 import { cn } from "@/lib/utils";
 import { applyCloudinaryTransform } from "@/core/utils/imageUtils";
+import { isMobileOrWebView } from "@/core/utils/deviceUtils";
 import {
   buildHeaderGradient,
   buildMiniCartColor,
@@ -84,16 +85,16 @@ function CategoryNavColumn({
       style={{
         borderBottomColor: isActive ? "transparent" : activeColor,
       }}
-      className="category-column relative z-[2] flex min-w-[76px] shrink-0 cursor-pointer flex-col items-center gap-1.5 border-b-2 px-1 pb-1 pt-1 snap-start md:min-w-[96px]">
+      className="category-column relative z-[2] flex min-w-[64px] shrink-0 cursor-pointer flex-col items-center gap-1 border-b-2 px-0.5 pb-1 pt-1 snap-start md:min-w-[84px]">
       <div
         style={{ borderColor: isActive ? activeColor : "#e2e8f0" }}
-        className="category-icon-circle relative z-10 flex h-16 w-16 items-center justify-center md:h-20 md:w-20 rounded-full bg-slate-50 border-2 shadow-sm transition-all overflow-hidden"
+        className="category-icon-circle relative z-10 flex h-12 w-12 items-center justify-center md:h-16 md:w-16 rounded-full bg-slate-50 border-2 shadow-sm transition-all overflow-hidden"
       >
         {typeof cat.icon === "function" ||
           (typeof cat.icon === "object" && cat.icon.$$typeof) ? (
           <cat.icon
             sx={{
-              fontSize: { xs: 44, md: 54 },
+              fontSize: { xs: 24, md: 32 },
               color: isActive ? activeColor : inactiveColor,
               opacity: 1,
               transition: "color 0.2s, transform 0.2s",
@@ -113,8 +114,8 @@ function CategoryNavColumn({
         <span
           ref={labelRef}
           className={cn(
-            "relative z-10 mx-auto block max-w-none px-1 pb-0.5 text-center text-[10px] font-sans tracking-widest uppercase md:text-[12px]",
-            isActive ? "font-black" : "font-extrabold",
+            "relative z-10 mx-auto block max-w-none px-1 pb-0.5 text-center text-[10px] font-sans tracking-tight md:text-[12px]",
+            isActive ? "font-bold" : "font-medium",
           )}
           style={{
             color: isActive ? activeColor : inactiveColor,
@@ -267,7 +268,7 @@ const MainLocationHeader = ({
   // Content animations
   const contentHeight = useTransform(scrollY, [0, 160], ["64px", "0px"]);
   const contentOpacity = useTransform(scrollY, [0, 160], [1, 0]);
-  const navHeight = useTransform(scrollY, [0, 200], ["130px", "0px"]);
+  const navHeight = useTransform(scrollY, [0, 200], ["100px", "0px"]);
   const navOpacity = useTransform(scrollY, [0, 200], [1, 0]);
   const navMargin = useTransform(scrollY, [0, 200], [4, 0]);
   const categorySpacing = useTransform(scrollY, [0, 200], [3, 0]);
@@ -278,9 +279,9 @@ const MainLocationHeader = ({
   const displayContent = useTransform(scrollY, (value) =>
     value > 160 ? "none" : "block",
   );
-  const displayNav = useTransform(scrollY, (value) =>
-    value > 200 ? "none" : "flex",
-  );
+  const displayNav = useTransform(scrollY, (value) => {
+    return value > 200 ? "none" : "flex";
+  });
   const displayCart = useTransform(scrollY, (value) =>
     value > 150 ? "none" : "block",
   );
@@ -545,7 +546,7 @@ const MainLocationHeader = ({
                 display: displayNav,
                 overflowY: "hidden",
               }}
-              className="relative flex items-end md:justify-center gap-0 overflow-x-auto no-scrollbar -mx-2 px-2 md:mx-0 md:px-0 z-10 snap-x pt-1 min-h-[130px] md:min-h-[140px] pb-1 bg-[#f5f3ff] border-t border-purple-100/40 shadow-inner">
+              className="relative flex items-end md:justify-center gap-0 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 z-10 snap-x pt-1 min-h-[100px] md:min-h-[120px] pb-1 bg-[#f5f3ff] border-t border-purple-100/40 shadow-inner">
               {categories.slice(0, 10).map((cat) => {
                 const isActive = activeCategory?.id === cat.id;
                 return (

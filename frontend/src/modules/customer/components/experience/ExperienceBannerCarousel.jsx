@@ -94,7 +94,7 @@ const ExperienceBannerCarousel = ({ section, items, fullWidth = false, slideGap 
             key={idx}
             className={cn(
               "relative shrink-0 overflow-hidden bg-slate-100 flex items-center justify-center box-border",
-              fullWidth ? "h-[220px] rounded-none px-0" : "h-[220px] px-4 md:px-8"
+              fullWidth ? "h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] rounded-none px-0" : "h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] px-4 md:px-8"
             )}
             style={{ width: `${100 / totalItems}%` }}
           >
@@ -103,7 +103,7 @@ const ExperienceBannerCarousel = ({ section, items, fullWidth = false, slideGap 
                 <>
                   <video
                     src={banner.imageUrl}
-                    className="w-full h-[116%] object-cover object-top pointer-events-none"
+                    className="w-full h-full object-cover object-center pointer-events-none"
                     autoPlay
                     loop
                     muted
@@ -151,7 +151,7 @@ const ExperienceBannerCarousel = ({ section, items, fullWidth = false, slideGap 
                   <>
                     <video
                       src={banner.imageUrl}
-                      className="w-full h-[116%] object-cover object-top pointer-events-none"
+                      className="w-full h-full object-cover object-center pointer-events-none"
                       autoPlay
                       loop
                       muted

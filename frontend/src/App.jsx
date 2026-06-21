@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import AppRouter from '@core/routes/AppRouter';
 import { AuthProvider } from '@core/context/AuthContext';
 import { SettingsProvider } from '@core/context/SettingsContext';
@@ -8,8 +8,15 @@ import { ToastProvider } from './shared/components/ui/Toast';
 import Loader from './shared/components/ui/Loader';
 import ErrorBoundary from './shared/components/ErrorBoundary';
 import LenisScroll from './shared/components/LenisScroll';
+import SplashScreen from './components/shared/SplashScreen';
 
 function App() {
+    const [showSplash, setShowSplash] = useState(true);
+
+    if (showSplash) {
+        return <SplashScreen onFinished={() => setShowSplash(false)} />;
+    }
+
     return (
         <ErrorBoundary>
             <AuthProvider>
