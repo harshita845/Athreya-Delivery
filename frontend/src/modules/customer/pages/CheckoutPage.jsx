@@ -706,8 +706,13 @@ const CheckoutPage = () => {
     if (!categoryId) return;
 
     const cartIds = new Set(cart.map((i) => i.id || i._id));
+    const params = { categoryId, limit: 10 };
+    if (currentLocation?.latitude && currentLocation?.longitude) {
+      params.lat = currentLocation.latitude;
+      params.lng = currentLocation.longitude;
+    }
     customerApi
-      .getProducts({ categoryId, limit: 10 })
+      .getProducts(params)
       .then((res) => {
         if (res.data?.success) {
           const items = (res.data.result?.items || [])
@@ -717,7 +722,7 @@ const CheckoutPage = () => {
         }
       })
       .catch(() => { });
-  }, [cartProductIdKey]);
+  }, [cartProductIdKey, currentLocation?.latitude, currentLocation?.longitude]);
 
   const handlePlaceOrder = async () => {
     setIsPlacingOrder(true);
