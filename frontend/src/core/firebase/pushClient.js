@@ -1,7 +1,7 @@
 import { isSupported, getMessaging, getToken, onMessage } from "firebase/messaging";
 import { getFirebaseApp } from "./client";
 import axiosInstance from "@core/api/axios";
-import AppZetoBridge from "../../lib/appZetoBridge";
+import appZetoBridge from "../../lib/appZetoBridge";
 import { rawGet, rawSet, rawRemove, KEY_PREFIXES } from "@core/utils/storage";
 
 let foregroundListenerStarted = false;
@@ -164,7 +164,7 @@ export async function ensureFcmTokenRegistered({
 
   if (window.Flutter) {
     // Get token from Flutter native layer
-    token = await AppZetoBridge.getFcmToken();
+    token = await appZetoBridge.getFcmToken();
     if (!token) {
       throw new Error("Failed to obtain native FCM token from Flutter");
     }
@@ -211,7 +211,7 @@ export function scheduleFcmRegistrationOnUserGesture({
   onSuccess,
   onError,
 } = {}) {
-  if (typeof window === "undefined") return () => {};
+  if (typeof window === "undefined") return () => { };
   const key = String(role || "customer").toLowerCase();
 
   // Avoid duplicate listener stacks for the same role.
@@ -275,16 +275,16 @@ export async function startForegroundPushListener() {
 
   if (!window.Flutter) {
     const supported = await isSupported().catch(() => false);
-    if (!supported) return () => {};
+    if (!supported) return () => { };
   }
 
   const app = getFirebaseApp();
-  if (!app && !window.Flutter) return () => {};
+  if (!app && !window.Flutter) return () => { };
 
   // If in Flutter, the native app handles foreground notifications, 
   // but we can still return a dummy unsubscribe.
   if (window.Flutter) {
-    return () => {};
+    return () => { };
   }
 
   // Ensure SW exists (helps with consistent notification center behavior).

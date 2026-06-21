@@ -1,4 +1,4 @@
-# Production Dockerfile for Quick Commerce Backend
+# Production Dockerfile for Athreya Delivery Backend
 # Supports multi-process architecture (API, Worker, Scheduler)
 
 FROM node:18-alpine

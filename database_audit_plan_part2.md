@@ -1,4 +1,4 @@
-# Appzeto Quick-Commerce — Production-Grade Database Audit & Implementation Plan
+# Athreya Delivery Quick-Commerce — Production-Grade Database Audit & Implementation Plan
 ## Part 2 of 4: API ↔ DB Mapping · Association Graph · Orphan Fields · Request Lifecycles
 
 > Continuation of Part 1. This part contains the **evidence base** for the phased plan in Part 3. Every claim is file:line-cited.

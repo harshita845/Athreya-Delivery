@@ -1,4 +1,4 @@
-# Appzeto Quick-Commerce — Professional Refactor & Modernization Plan
+# Athreya Delivery Quick-Commerce — Professional Refactor & Modernization Plan
 ## Part 3 of 3: Priority Order + Safe Decoupling + Final Target Architecture
 
 ---

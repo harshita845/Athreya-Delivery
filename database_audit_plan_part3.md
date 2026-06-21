@@ -1,4 +1,4 @@
-# Appzeto Quick-Commerce — Production-Grade Database Audit & Implementation Plan
+# Athreya Delivery Quick-Commerce — Production-Grade Database Audit & Implementation Plan
 ## Part 3 of 4: Phased Implementation Roadmap (Phase 0 → Phase 7)
 
 > Each phase is **independently mergeable**, **independently deployable**, and **independently rollback-able**. Every phase preserves backward compatibility for existing API consumers (frontend included). No phase removes a public field, route, or contract; deprecations are documented for Phase 7 removal only.

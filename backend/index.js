@@ -134,7 +134,7 @@ function parseTrustProxy(value) {
 function createApp() {
   const app = express();
   const allowedOrigins = parseAllowedOrigins();
-  
+
   app.set("trust proxy", parseTrustProxy(process.env.TRUST_PROXY));
 
   const corsOptions = {
@@ -183,7 +183,7 @@ function createApp() {
     res.status(200).json({
       success: true,
       error: false,
-      message: "Quick Commerce API",
+      message: "Athreya Delivery API",
       result: {
         version: "1.0.0",
         status: "running",
@@ -214,7 +214,7 @@ function createApp() {
 
   // Setup all routes (includes /health, /metrics, /api/*)
   setupRoutes(app);
-  
+
   // Error handlers
   app.use(notFoundHandler);
   app.use(errorHandler);
@@ -228,7 +228,7 @@ function createApp() {
 async function startHttpServer() {
   const app = createApp();
   const server = http.createServer(app);
-  
+
   // Initialize Socket.IO
   const allowedOrigins = parseAllowedOrigins();
   const io = new Server(server, {
@@ -238,22 +238,22 @@ async function startHttpServer() {
       credentials: true,
     },
   });
-  
+
   initSocket(io);
   registerOrderSocketGetter(getIO);
   registerTicketSocketGetter(getIO);
-  
+
   // Register for graceful shutdown
   registerHttpServer(server);
   registerSocketIO(io);
-  
+
   // Optionally enable inline queue workers (not recommended for production)
   if (process.env.ENABLE_INLINE_QUEUE_WORKER === "true") {
     logger.warn('Inline queue worker enabled - not recommended for production');
     const { registerOrderQueueProcessors } = await import("./app/queues/orderQueueProcessors.js");
     registerOrderQueueProcessors();
   }
-  
+
   return new Promise((resolve) => {
     server.listen(PORT, "0.0.0.0", () => {
       logger.info('HTTP server started', {
@@ -318,7 +318,7 @@ async function startScheduler() {
     getReturnWindowReleaseJobInterval(),
     getReturnWindowReleaseJobHandler()
   );
-  
+
   // Register payout batch job (if enabled)
   if (isPayoutBatchJobEnabled()) {
     registerScheduledJob(
@@ -370,7 +370,7 @@ async function startScheduler() {
 async function startHealthCheckServer() {
   const app = express();
   const { getHealthStatus, getReadinessStatus } = await import('./app/services/healthCheck.js');
-  
+
   app.get('/health', async (req, res) => {
     try {
       const status = await getHealthStatus();
@@ -379,7 +379,7 @@ async function startHealthCheckServer() {
       res.status(500).json({ success: false, error: error.message });
     }
   });
-  
+
   app.get('/health/ready', async (req, res) => {
     try {
       const status = await getReadinessStatus();
@@ -405,7 +405,7 @@ async function startHealthCheckServer() {
       res.status(503).json({ success: false, error: error.message });
     }
   });
-  
+
   return new Promise((resolve) => {
     const server = app.listen(HEALTH_CHECK_PORT, "0.0.0.0", () => {
       logger.info('Health check server started', {
@@ -414,7 +414,7 @@ async function startHealthCheckServer() {
       });
       resolve(server);
     });
-    
+
     registerHttpServer(server);
   });
 }
@@ -426,35 +426,35 @@ async function main() {
   try {
     // Register shutdown handlers first
     registerShutdownHandlers();
-    
+
     // Run startup sequence (validates dependencies, connects to DB/Redis)
     await startup();
-    
+
     const role = getProcessRole();
-    
+
     // Start components based on process role
     if (isComponentEnabled('http')) {
       await startHttpServer();
     }
-    
+
     if (isComponentEnabled('worker')) {
       await startQueueWorkers();
-      
+
       // Start health check server for worker role
       if (!isComponentEnabled('http')) {
         await startHealthCheckServer();
       }
     }
-    
+
     if (isComponentEnabled('scheduler')) {
       await startScheduler();
-      
+
       // Start health check server for scheduler role
       if (!isComponentEnabled('http')) {
         await startHealthCheckServer();
       }
     }
-    
+
     logger.info('Application started successfully', {
       role,
       environment: NODE_ENV,
@@ -464,7 +464,7 @@ async function main() {
         scheduler: isComponentEnabled('scheduler')
       }
     });
-    
+
   } catch (error) {
     logger.error('Application startup failed', {
       error: error.message,

@@ -115,7 +115,7 @@ const ProfilePage = () => {
                     <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
                         <img
                             src={logoUrl}
-                            alt="ATHREYA DELIVERY Logo"
+                            alt="Athreya Delivery Logo"
                             className="h-10 md:h-12 w-auto object-contain"
                         />
                         <span className="text-sm md:text-base font-black tracking-tight flex gap-1">

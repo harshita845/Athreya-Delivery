@@ -1,4 +1,4 @@
-# Appzeto Quick-Commerce — Professional Refactor & Modernization Plan
+# Athreya Delivery Quick-Commerce — Professional Refactor & Modernization Plan
 ## Part 1 of 3: Architecture Assessment + Coupling & Cohesion Analysis
 
 > **Target:** 3–10 lakh users | **Strategy:** Modular Monolith | **Approach:** Wrap & Improve

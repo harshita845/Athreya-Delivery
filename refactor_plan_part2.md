@@ -1,4 +1,4 @@
-# Appzeto Quick-Commerce — Professional Refactor & Modernization Plan
+# Athreya Delivery Quick-Commerce — Professional Refactor & Modernization Plan
 ## Part 2 of 3: Safe Refactor Strategy + Phase-Wise Implementation Roadmap
 
 ---

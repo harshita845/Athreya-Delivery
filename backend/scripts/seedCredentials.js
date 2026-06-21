@@ -6,12 +6,12 @@ import Seller from '../app/models/seller.js';
 dotenv.config();
 
 const admins = [
-    { name: 'Ankit Ahirwar', email: 'ankit@appzeto.com', password: 'Admin!@#123' },
+    { name: 'Ankit Ahirwar', email: 'ankit@Athreya Delivery.com', password: 'Admin!@#123' },
     { name: 'Harshvardhan Panchal', email: 'harshvardhanpanc145@gmail.com', password: 'Admin!@#123' }
 ];
 
 const sellers = [
-    { name: 'Harsh', email: 'harsh@appzeto.com', password: 'Admin!@#123', shopName: 'Appzeto Store' }
+    { name: 'Harsh', email: 'harsh@Athreya Delivery.com', password: 'Admin!@#123', shopName: 'Athreya Delivery Store' }
 ];
 
 async function seed() {
@@ -42,13 +42,13 @@ async function seed() {
                 await seller.save();
                 console.log(`Updated Seller: ${sellerData.email}`);
             } else {
-                await Seller.create({ 
-                    ...sellerData, 
-                    role: 'seller', 
-                    isVerified: true, 
-                    isActive: true, 
+                await Seller.create({
+                    ...sellerData,
+                    role: 'seller',
+                    isVerified: true,
+                    isActive: true,
                     applicationStatus: 'approved',
-                    phone: '9999999999' 
+                    phone: '9999999999'
                 });
                 console.log(`Created Seller: ${sellerData.email}`);
             }

@@ -1,4 +1,4 @@
-# Quick Commerce Backend
+# Athreya Delivery Backend
 
 Production-grade MERN quick-commerce API with multi-process architecture, structured observability, and horizontal scalability.
 

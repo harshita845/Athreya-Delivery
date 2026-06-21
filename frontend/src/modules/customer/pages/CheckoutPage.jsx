@@ -938,7 +938,7 @@ const CheckoutPage = () => {
               <div className="flex items-center gap-2 mb-1 cursor-pointer" onClick={() => navigate("/")}>
                 <img
                   src={settings?.logoUrl || LogoImage}
-                  alt="ATHREYA DELIVERY Logo"
+                  alt="Athreya Delivery Logo"
                   className="h-10 md:h-12 w-auto object-contain"
                 />
                 <span className="text-sm md:text-lg font-black tracking-tight text-white flex gap-1">

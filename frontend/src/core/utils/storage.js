@@ -19,7 +19,7 @@
 
 import { STORAGE_KEYS, KEY_PREFIXES, ALL_KNOWN_KEYS } from './storageKeys';
 
-const STORAGE_NAMESPACE = 'appzeto';
+const STORAGE_NAMESPACE = 'Athreya Delivery';
 /**
  * Bump this whenever a known persisted shape changes incompatibly so the
  * next page load wipes legacy blobs from every known key.

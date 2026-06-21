@@ -8,7 +8,7 @@ dotenv.config()
 
 const run = async () => {
   await connectDB()
-  const seller = await Seller.findOne({ email: 'harsh@appzeto.com' })
+  const seller = await Seller.findOne({ email: 'harsh@Athreya Delivery.com' })
   if (seller) {
     await Product.deleteMany({ sellerId: seller._id })
   }

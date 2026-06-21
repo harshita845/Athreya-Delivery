@@ -108,7 +108,7 @@ const Header = () => {
                         <Link to="/" className="flex items-center gap-2 group">
                             <img
                                 src={logoUrl}
-                                alt="ATHREYA DELIVERY Logo"
+                                alt="Athreya Delivery Logo"
                                 loading="lazy"
                                 className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105"
                             />

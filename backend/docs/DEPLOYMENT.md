@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers deploying the Quick Commerce backend across different platforms using the multi-process architecture introduced in Phase 1.
+This guide covers deploying the Athreya Delivery backend across different platforms using the multi-process architecture introduced in Phase 1.
 
 ## Process Roles
 

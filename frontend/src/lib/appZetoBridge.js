@@ -1,11 +1,11 @@
 /**
- * AppZeto JS Bridge Helper
+ * Appzeto JS Bridge Helper
  * This script should be included in your React application (MERN frontend).
  * It enables bidirectional communication between the React web app and the
  * Flutter native wrapper via the WebView JavaScript channel.
  */
 
-const AppZetoBridge = {
+const appZetoBridge = {
   /**
    * Check if the app is running inside the Flutter WebView
    * @returns {boolean}
@@ -62,7 +62,7 @@ const AppZetoBridge = {
       };
 
       window.Flutter.postMessage("get_fcm_token");
-      
+
       // Timeout after 10 seconds
       setTimeout(() => {
         if (window.onFlutterResponse !== originalOnResponse) {
@@ -95,7 +95,7 @@ const AppZetoBridge = {
       };
 
       window.Flutter.postMessage("get_location");
-      
+
       setTimeout(() => {
         if (window.onFlutterResponse !== originalOnResponse) {
           window.onFlutterResponse = originalOnResponse;
@@ -115,7 +115,7 @@ const MyComponent = () => {
   const [image, setImage] = useState(null);
 
   useEffect(() => {
-    AppZetoBridge.onResponse((res) => {
+    appZetoBridge.onResponse((res) => {
       if (res.type === 'camera_response' && res.data) {
         setImage(`data:image/jpeg;base64,${res.data}`);
       }
@@ -130,11 +130,11 @@ const MyComponent = () => {
   }, []);
 
   const handleCapture = () => {
-    AppZetoBridge.send("open_camera");
+    appZetoBridge.send("open_camera");
   };
 
   const handleGetLocation = () => {
-    AppZetoBridge.send("get_location");
+    appZetoBridge.send("get_location");
   };
 
   return (
@@ -147,4 +147,4 @@ const MyComponent = () => {
 };
 */
 
-export default AppZetoBridge;
+export default appZetoBridge;

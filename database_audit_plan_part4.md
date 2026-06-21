@@ -1,4 +1,4 @@
-# Appzeto Quick-Commerce — Production-Grade Database Audit & Implementation Plan
+# Athreya Delivery Quick-Commerce — Production-Grade Database Audit & Implementation Plan
 ## Part 4 of 4: Migrations · Testing · Rollback · Risk Matrix · Backward-Compat Protocol
 
 > All migration scripts are designed to be **idempotent**, **observable** (structured logs + counters), and **safe to interrupt** (no half-applied state). Scripts live under `backend/scripts/migrations/<phase>/<order>-<name>.js` and are run via `node --experimental-vm-modules ...` against a snapshot or replica.

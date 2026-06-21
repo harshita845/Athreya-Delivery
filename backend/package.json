@@ -1,7 +1,7 @@
 {
   "name": "quick-commerce-backend",
   "version": "1.0.0",
-  "description": "Quick Commerce Platform - Backend API",
+  "description": "Athreya Delivery Platform - Backend API",
   "main": "index.js",
   "type": "module",
   "scripts": {

@@ -85,12 +85,12 @@ function CategoryNavColumn({
         borderBottomColor: isActive ? "transparent" : activeColor,
       }}
       className="category-column relative z-[2] flex min-w-[76px] shrink-0 cursor-pointer flex-col items-center gap-1.5 border-b-2 px-1 pb-1 pt-1 snap-start md:min-w-[96px]">
-      <div 
+      <div
         style={{ borderColor: isActive ? activeColor : "#e2e8f0" }}
         className="category-icon-circle relative z-10 flex h-16 w-16 items-center justify-center md:h-20 md:w-20 rounded-full bg-slate-50 border-2 shadow-sm transition-all overflow-hidden"
       >
         {typeof cat.icon === "function" ||
-        (typeof cat.icon === "object" && cat.icon.$$typeof) ? (
+          (typeof cat.icon === "object" && cat.icon.$$typeof) ? (
           <cat.icon
             sx={{
               fontSize: { xs: 44, md: 54 },
@@ -162,7 +162,7 @@ const MainLocationHeader = ({
   useEffect(() => {
     import("../../../../assets/lottie/shopping-cart.json")
       .then((m) => setCartAnimData(m.default))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
   const { currentLocation, refreshLocation, isFetchingLocation } =
     useLocation();
@@ -288,7 +288,7 @@ const MainLocationHeader = ({
   const baseHeaderColor = activeCategory?.headerColor || "var(--primary)";
   const headerFontColor = "#1f2937";
   const headerIconColor = "#4b5563";
-  
+
   const searchBarBg = "#f3f4f6";
   const categoryAccent = activeCategory?.headerColor || "#3a2a83";
 
@@ -358,7 +358,7 @@ const MainLocationHeader = ({
                 <div className="flex items-center gap-2 group-hover:scale-105 transition-all duration-300">
                   <img
                     src={logoUrl}
-                    alt="ATHREYA DELIVERY Logo"
+                    alt="Athreya Delivery Logo"
                     loading="lazy"
                     className="h-12 w-auto object-contain"
                   />
@@ -381,7 +381,7 @@ const MainLocationHeader = ({
                   }}
                   className="flex items-center gap-1 text-slate-900 hover:text-slate-700 cursor-pointer group active:scale-95 transition-all border-0 bg-transparent p-0 text-left">
                   <LocationOnIcon sx={{ fontSize: 14, color: "inherit" }} />
-                  <div 
+                  <div
                     className="text-[13px] font-bold leading-tight max-w-[250px] lg:max-w-[320px] truncate"
                     style={{ color: headerFontColor }}
                   >
@@ -468,7 +468,7 @@ const MainLocationHeader = ({
               <div className="mb-2 flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
                 <img
                   src={logoUrl}
-                  alt="ATHREYA DELIVERY Logo"
+                  alt="Athreya Delivery Logo"
                   loading="lazy"
                   className="h-10 w-auto object-contain"
                 />
@@ -489,7 +489,7 @@ const MainLocationHeader = ({
                     }}
                     className="flex items-center gap-1 text-slate-800 cursor-pointer group active:scale-95 transition-transform border-0 bg-transparent p-0 text-left">
                     <LocationOnIcon sx={{ fontSize: 14, color: headerFontColor }} />
-                    <div 
+                    <div
                       className="text-[10px] font-medium leading-tight max-w-[280px] truncate"
                       style={{ color: headerFontColor }}
                     >

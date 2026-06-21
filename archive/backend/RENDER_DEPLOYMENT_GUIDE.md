@@ -1,7 +1,7 @@
 # Backend Deployment Guide for Render
 
 ## Overview
-This guide provides step-by-step instructions to deploy the Quick Commerce backend on Render.com with production-ready configurations.
+This guide provides step-by-step instructions to deploy the Athreya Delivery backend on Render.com with production-ready configurations.
 
 ## Prerequisites
 - Render.com account (free tier available)

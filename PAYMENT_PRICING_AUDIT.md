@@ -1,5 +1,5 @@
 # Full-System Audit — Order Pricing & Payment Lifecycle
-**Project**: Appzeto Quick Commerce  
+**Project**: Athreya Delivery Athreya Delivery  
 **Scope**: Cart → Checkout → Payment → Delivery → Settlement → Refund → Payout  
 **Method**: Static code trace. Every claim below cites an exact file + line.  
 **Status**: 4 CRITICAL, 9 HIGH, 11 MEDIUM, 8 LOW findings.

@@ -133,7 +133,7 @@ GET /health
 ### Welcome
 ```bash
 GET /
-# Response: {"message":"Quick Commerce API","version":"1.0.0","status":"running"}
+# Response: {"message":"Athreya Delivery API","version":"1.0.0","status":"running"}
 ```
 
 ### Customer Auth

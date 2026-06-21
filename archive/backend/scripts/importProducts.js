@@ -14,7 +14,7 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PRODUCT_ROOT = path.resolve("d:\\Appzeto Quick Commerce\\product");
+const PRODUCT_ROOT = path.resolve("d:\\Athreya Delivery Athreya Delivery\\product");
 const IMPORT_HEADERS = (process.env.IMPORT_HEADERS || "")
   .split(",")
   .map((s) => s.trim())
@@ -56,7 +56,7 @@ const readTextFileIfExists = async (pats) => {
     try {
       const buf = await fs.promises.readFile(p);
       return buf.toString();
-    } catch {}
+    } catch { }
   }
   return "";
 };
@@ -103,7 +103,7 @@ const uploadImages = async (imagePaths, folderSlug) => {
 };
 
 const ensureSeller = async () => {
-  const email = "harsh@appzeto.com";
+  const email = "harsh@Athreya Delivery.com";
   let seller = await Seller.findOne({ email });
   if (!seller) {
     const phone = `9${Math.floor(100000000 + Math.random() * 899999999)}`;

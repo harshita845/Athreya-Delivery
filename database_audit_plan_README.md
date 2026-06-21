@@ -1,4 +1,4 @@
-# Appzeto Quick-Commerce — Production-Grade Database Audit & Implementation Plan
+# Athreya Delivery Quick-Commerce — Production-Grade Database Audit & Implementation Plan
 
 Four-part execution-ready plan to verify every API ↔ DB integration, fix correctness defects, restore single-source-of-truth across the finance layer, and consolidate duplicate models — all while preserving existing API contracts and supporting sub-30-minute rollback per phase.
 

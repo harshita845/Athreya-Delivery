@@ -1,6 +1,6 @@
-# Quick Commerce Backend API
+# Athreya Delivery Backend API
 
-A production-ready Node.js/Express backend for a quick commerce platform with multi-role authentication, product management, and category hierarchy.
+A production-ready Node.js/Express backend for a Athreya Delivery platform with multi-role authentication, product management, and category hierarchy.
 
 ## Features
 

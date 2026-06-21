@@ -1,4 +1,4 @@
-# Appzeto Quick-Commerce — Production-Grade Database Audit & Implementation Plan
+# Athreya Delivery Quick-Commerce — Production-Grade Database Audit & Implementation Plan
 ## Part 1 of 4: Executive Summary · Architecture Snapshot · Critical Findings · Model Inventory
 
 > **Audit goal:** verify every API persists and reads from the database correctly, eliminate orphan fields, fix broken associations, restore single-source-of-truth, and produce an execution-ready, backward-compatible roadmap.

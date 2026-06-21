@@ -1,5 +1,5 @@
 /**
- * Canonical workflow statuses for Quick Commerce orders (v2).
+ * Canonical workflow statuses for Athreya Delivery orders (v2).
  * Legacy `status` on Order is kept in sync for admin / older UIs.
  */
 export const WORKFLOW_STATUS = {

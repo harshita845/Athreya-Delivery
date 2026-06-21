@@ -93,9 +93,9 @@ const OrderDetail = () => {
     const handlePrintInvoice = async () => {
         const element = invoiceRef.current;
         if (!element) return;
-        
+
         showToast("Generating PDF Invoice...", "info");
-        
+
         try {
             const canvas = await html2canvas(element, {
                 scale: 2,
@@ -119,7 +119,7 @@ const OrderDetail = () => {
                             // Skip cross-origin stylesheets that we can't access
                         }
                     }
-                    
+
                     // Also explicitly reset root variables just in case
                     const style = clonedDoc.createElement('style');
                     style.innerHTML = `
@@ -137,7 +137,7 @@ const OrderDetail = () => {
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-            
+
             pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
             pdf.save(`Invoice_${order.orderId}.pdf`);
             showToast("Invoice downloaded successfully", "success");
@@ -206,7 +206,7 @@ const OrderDetail = () => {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button 
+                    <button
                         onClick={handlePrintInvoice}
                         className="flex items-center gap-2 px-5 py-3 bg-white ring-1 ring-slate-200 text-slate-700 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm"
                     >
@@ -335,10 +335,10 @@ const OrderDetail = () => {
                             Customer Node Information
                         </h4>
                         <div className="flex items-center gap-4">
-                            <img 
-                                src="https://cdn-icons-png.flaticon.com/512/149/149071.png" 
-                                alt="" 
-                                className="h-16 w-16 rounded-2xl bg-slate-50 ring-2 ring-white shadow-sm object-cover" 
+                            <img
+                                src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                                alt=""
+                                className="h-16 w-16 rounded-2xl bg-slate-50 ring-2 ring-white shadow-sm object-cover"
                             />
                             <div className="text-left">
                                 <h3 className="text-lg font-black text-slate-900 leading-tight">
@@ -479,14 +479,14 @@ const OrderDetail = () => {
 
             {/* Hidden Printable Invoice Template */}
             <div className="fixed -left-[9999px] top-0">
-                <div 
+                <div
                     ref={invoiceRef}
                     className="w-[800px] bg-white p-1"
                     style={{ backgroundColor: "#f8fafc" }}
                 >
                     {/* Inner Paper with Border */}
-                    <div style={{ 
-                        backgroundColor: "#ffffff", 
+                    <div style={{
+                        backgroundColor: "#ffffff",
                         margin: "40px",
                         padding: "65px",
                         border: "1px solid #e2e8f0",
@@ -613,7 +613,7 @@ const OrderDetail = () => {
                                 This is a system-generated commercial invoice. No physical signature required.
                             </div>
                             <div style={{ fontSize: "10px", color: "#94a3b8", marginTop: "5px" }}>
-                                {settings?.appName || 'Noyo Kart'} • Customer Support: support@appzeto.com
+                                {settings?.appName || 'Noyo Kart'} • Customer Support: support@Athreya Delivery.com
                             </div>
                         </div>
                     </div>

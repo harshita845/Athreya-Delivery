@@ -223,8 +223,8 @@ export const LocationProvider = ({ children }) => {
       // Native Flutter Bridge
       if (window.Flutter) {
         import("../../../lib/appZetoBridge").then(async (m) => {
-          const AppZetoBridge = m.default;
-          const coords = await AppZetoBridge.getLocation();
+          const appZetoBridge = m.default;
+          const coords = await appZetoBridge.getLocation();
           if (coords && coords.lat && coords.lng) {
             handleLocationSuccess(coords.lat, coords.lng);
           } else {
@@ -267,10 +267,10 @@ export const LocationProvider = ({ children }) => {
             "",
           location:
             addr?.location &&
-            typeof addr.location.lat === "number" &&
-            typeof addr.location.lng === "number" &&
-            Number.isFinite(addr.location.lat) &&
-            Number.isFinite(addr.location.lng)
+              typeof addr.location.lat === "number" &&
+              typeof addr.location.lng === "number" &&
+              Number.isFinite(addr.location.lat) &&
+              Number.isFinite(addr.location.lng)
               ? { lat: addr.location.lat, lng: addr.location.lng }
               : null,
           placeId: typeof addr?.placeId === "string" ? addr.placeId : null,
@@ -327,7 +327,7 @@ export const LocationProvider = ({ children }) => {
     isFetchingLocation,
     locationError,
     refreshLocation: fetchAndCacheLocation,
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [currentLocation, savedAddresses, isFetchingLocation, locationError, refreshAddresses]);
 
   return (
