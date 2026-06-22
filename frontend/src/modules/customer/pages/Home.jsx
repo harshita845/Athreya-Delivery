@@ -33,6 +33,7 @@ import { useSettings } from "@core/context/SettingsContext";
 import Lottie from "lottie-react";
 import { applyCloudinaryTransform } from "@/core/utils/imageUtils";
 import { getJSON, remove as removeStorage, STORAGE_KEYS } from "@core/utils/storage";
+import SkeletonLoader from "../components/shared/SkeletonLoader";
 
 import {
   MARQUEE_MESSAGES,
@@ -42,7 +43,10 @@ import {
 
 import LowestPriceSection from "../components/home/LowestPriceSection";
 import OfferSections from "../components/home/OfferSections";
-const getShopImage = (category, shopName) => {
+const getShopImage = (category, shopName, shopLogo) => {
+  if (shopLogo) {
+    return applyCloudinaryTransform(shopLogo, "f_auto,q_auto,w_400,h_300,c_fill");
+  }
   const cat = String(category || "").toLowerCase();
   const name = String(shopName || "").toLowerCase();
   if (cat.includes("milk") || cat.includes("dairy") || name.includes("milk") || name.includes("dairy")) {
@@ -748,46 +752,61 @@ const Home = () => {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              {dynamicShops.map((shop) => (
-                <div key={shop._id} onClick={() => navigate(`/shops/${shop._id}`)} className="bg-white rounded-2xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100/80 flex flex-col gap-2.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
-                  <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 relative">
-                    <img
-                      src={getShopImage(shop.category, shop.shopName)}
-                      alt={shop.shopName}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <span className="absolute top-2 right-2 bg-white/95 backdrop-blur-sm px-2 py-0.5 rounded-full text-[10px] font-extrabold text-slate-800 shadow-sm flex items-center gap-0.5">
-                      ⭐ {shop.rating || "4.6"}
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <h4 className="font-extrabold text-slate-850 text-xs md:text-sm lg:text-base line-clamp-1 leading-tight group-hover:text-primary transition-colors">
-                      {shop.shopName}
-                    </h4>
-                    <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] font-bold text-slate-500">
-                      <span>{shop.deliveryTime || "15-25 min"}</span>
-                      <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                      <span className="text-[#10b981]">Free Delivery</span>
-                    </div>
-                    {shop.distance !== undefined && (
-                      <span className="text-[10px] text-slate-400 font-medium">
-                        {typeof shop.distance === 'number' ? `${shop.distance.toFixed(1)} km away` : shop.distance}
+            {isLoading ? (
+              <SkeletonLoader variant="shopGrid" count={4} />
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                {dynamicShops.map((shop) => (
+                  <div key={shop._id} onClick={() => navigate(`/shops/${shop._id}`)} className="bg-white rounded-2xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100/80 flex flex-col gap-2.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
+                    <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 relative">
+                      <img
+                        src={getShopImage(shop.category, shop.shopName, shop.shopLogo || shop.logo || shop.shopImage)}
+                        alt={shop.shopName}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <span className="absolute top-2 right-2 bg-white/95 backdrop-blur-sm px-2 py-0.5 rounded-full text-[10px] font-extrabold text-slate-800 shadow-sm flex items-center gap-0.5">
+                        ⭐ {shop.rating || "4.6"}
                       </span>
-                    )}
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <h4 className="font-extrabold text-slate-850 text-xs md:text-sm lg:text-base line-clamp-1 leading-tight group-hover:text-primary transition-colors">
+                        {shop.shopName}
+                      </h4>
+                      <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] font-bold text-slate-500">
+                        <span>{shop.deliveryTime || "15-25 min"}</span>
+                        <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <span className="text-[#10b981]">Free Delivery</span>
+                      </div>
+                      {shop.distance !== undefined && (
+                        <span className="text-[10px] text-slate-400 font-medium">
+                          {typeof shop.distance === 'number' ? `${shop.distance.toFixed(1)} km away` : shop.distance}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          <LowestPriceSection products={products} onSeeAll={() => navigate("/category/all")} />
-          <OfferSections sections={offerSections} noServiceData={noServiceData} />
-
-          {sectionsForRenderer.length > 0 && (
+          {isLoading ? (
             <div className="container mx-auto max-w-6xl px-4 md:px-8 py-5 md:py-6">
-              <SectionRenderer sections={sectionsForRenderer} productsById={productsById} categoriesById={categoryMap} subcategoriesById={subcategoryMap} />
+              <h3 className="text-base md:text-xl font-black text-[#1A1A1A] tracking-tight uppercase mb-4">
+                Loading products...
+              </h3>
+              <SkeletonLoader variant="productGrid" count={8} />
             </div>
+          ) : (
+            <>
+              <LowestPriceSection products={products} onSeeAll={() => navigate("/category/all")} />
+              <OfferSections sections={offerSections} noServiceData={noServiceData} />
+
+              {sectionsForRenderer.length > 0 && (
+                <div className="container mx-auto max-w-6xl px-4 md:px-8 py-5 md:py-6">
+                  <SectionRenderer sections={sectionsForRenderer} productsById={productsById} categoriesById={categoryMap} subcategoriesById={subcategoryMap} />
+                </div>
+              )}
+            </>
           )}
         </>
       )}

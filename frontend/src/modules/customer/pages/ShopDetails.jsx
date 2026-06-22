@@ -10,6 +10,7 @@ import { customerApi } from "../services/customerApi";
 import ProductCard from "../components/shared/ProductCard";
 import { useCart } from "../context/CartContext";
 import { applyCloudinaryTransform } from "@/core/utils/imageUtils";
+import SkeletonLoader from "../components/shared/SkeletonLoader";
 
 const SHOP_CATEGORIES = [
   "All", "Groceries", "Fruits & Vegetables", "Dairy & Milk", "Bakery",
@@ -197,38 +198,11 @@ const ShopDetails = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 pt-[100px] pb-24 font-sans max-w-6xl mx-auto px-4 md:px-8">
-        {/* Banner Skeleton */}
-        <div className="w-full h-48 md:h-64 rounded-3xl bg-slate-200 animate-pulse mb-6" />
-        
-        {/* Info Skeleton */}
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 mb-8 space-y-4">
-          <div className="flex gap-4 items-center">
-            <div className="h-16 w-16 rounded-2xl bg-slate-200 animate-pulse" />
-            <div className="space-y-2 flex-1">
-              <div className="h-6 w-1/3 bg-slate-200 animate-pulse rounded" />
-              <div className="h-4 w-1/4 bg-slate-200 animate-pulse rounded" />
-            </div>
-          </div>
-          <div className="h-4 w-2/3 bg-slate-200 animate-pulse rounded" />
-        </div>
-
-        {/* Categories Skeleton */}
-        <div className="flex gap-3 overflow-hidden mb-8">
-          {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="h-10 w-24 bg-slate-200 rounded-full animate-pulse flex-shrink-0" />
-          ))}
-        </div>
-
-        {/* Products Grid Skeleton */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 h-64 flex flex-col space-y-3">
-              <div className="w-full flex-1 bg-slate-200 animate-pulse rounded-xl" />
-              <div className="h-4 w-3/4 bg-slate-200 animate-pulse rounded" />
-              <div className="h-6 w-1/2 bg-slate-200 animate-pulse rounded" />
-            </div>
-          ))}
+      <div className="min-h-screen bg-slate-50 pb-24 font-sans">
+        <SkeletonLoader variant="shopHeader" />
+        <div className="max-w-6xl mx-auto px-4 md:px-8 space-y-6">
+          <SkeletonLoader variant="categoryList" />
+          <SkeletonLoader variant="productGrid" count={8} />
         </div>
       </div>
     );
@@ -252,7 +226,7 @@ const ShopDetails = () => {
       
       {/* 1. Header Banner Area */}
       <div className="relative w-full h-48 md:h-72 overflow-hidden bg-slate-900">
-        <img src={getShopBanner()} alt={shop.shopName} className="w-full h-full object-cover opacity-80" />
+        <img src={applyCloudinaryTransform(getShopBanner(), "f_auto,q_auto,w_1200,h_400,c_fill")} alt={shop.shopName} className="w-full h-full object-cover opacity-80" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#fbf9ff] via-transparent to-black/30 pointer-events-none" />
         
         {/* Back Button */}
@@ -272,7 +246,7 @@ const ShopDetails = () => {
             <div className="flex items-center gap-4.5">
               <div className="h-20 w-20 rounded-2xl overflow-hidden bg-purple-50 border border-purple-100 flex items-center justify-center flex-shrink-0 shadow-inner">
                 {shop.shopLogo ? (
-                  <img src={shop.shopLogo} alt={shop.shopName} className="h-full w-full object-cover" />
+                  <img src={applyCloudinaryTransform(shop.shopLogo, "f_auto,q_auto,w_200,h_200,c_fill")} alt={shop.shopName} className="h-full w-full object-cover" />
                 ) : (
                   <span className="text-2xl font-black text-[#3a2a83]">{getInitials(shop.shopName)}</span>
                 )}
@@ -486,18 +460,17 @@ const ShopDetails = () => {
           <h2 className="text-base md:text-lg font-black text-slate-800 tracking-tight uppercase mb-4 flex items-center gap-1.5">
             📸 Shop Gallery
           </h2>
-          {/* Mobile: horizontal scroll, Desktop: grid */}
           <div className="hidden md:grid grid-cols-3 gap-4">
             {allGalleryImages.map((img, idx) => (
               <div key={idx} className="aspect-[4/3] rounded-2xl overflow-hidden shadow-sm border border-slate-100 bg-slate-100 group">
-                <img src={img} alt="Store Interior/Shelves" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <img src={applyCloudinaryTransform(img, "f_auto,q_auto,w_600,h_450,c_fill")} alt="Store Interior/Shelves" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
               </div>
             ))}
           </div>
           <div className="md:hidden flex gap-4 overflow-x-auto pb-3 no-scrollbar -mx-4 px-4">
             {allGalleryImages.map((img, idx) => (
               <div key={idx} className="w-72 aspect-[4/3] rounded-2xl overflow-hidden shadow-sm border border-slate-100 bg-slate-100 shrink-0">
-                <img src={img} alt="Store Interior/Shelves" className="w-full h-full object-cover" />
+                <img src={applyCloudinaryTransform(img, "f_auto,q_auto,w_600,h_450,c_fill")} alt="Store Interior/Shelves" className="w-full h-full object-cover" />
               </div>
             ))}
           </div>
@@ -551,7 +524,7 @@ const ShopDetails = () => {
                 >
                   <div className="aspect-[4/3] rounded-2xl bg-purple-50 overflow-hidden relative border border-slate-100">
                     {s.shopLogo ? (
-                      <img src={s.shopLogo} alt={s.shopName} className="w-full h-full object-cover" />
+                      <img src={applyCloudinaryTransform(s.shopLogo, "f_auto,q_auto,w_400,h_300,c_fill")} alt={s.shopName} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center font-black text-purple-700 text-lg">
                         {getInitials(s.shopName)}

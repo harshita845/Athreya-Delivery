@@ -83,6 +83,12 @@ export default defineConfig({
           if (id.includes('framer-motion')) return 'vendor-motion'
           if (id.includes('firebase')) return 'vendor-firebase'
           if (id.includes('recharts')) return 'vendor-charts'
+          if (id.includes('jspdf')) return 'vendor-jspdf'
+          if (id.includes('lottie-web') || id.includes('lottie-react')) return 'vendor-lottie'
+          if (id.includes('tesseract.js') || id.includes('tesseract.js-core')) return 'vendor-tesseract'
+          if (id.includes('@react-google-maps') || id.includes('react-google-maps')) return 'vendor-google-maps'
+          if (id.includes('date-fns')) return 'vendor-date-fns'
+          if (id.includes('lucide-react')) return 'vendor-lucide'
         },
       },
     },
