@@ -32,6 +32,8 @@ import {
     getUsers,
     getUserById,
     getSellers,
+    getSellerById,
+    updateSellerByAdmin,
     getSellerLocations,
     getPlatformSettings,
     updatePlatformSettings
@@ -151,6 +153,8 @@ router.get("/sellers", verifyToken, allowRoles("admin"), getSellers);
 router.get("/sellers/locations", verifyToken, allowRoles("admin"), getSellerLocations);
 router.get("/sellers/active", verifyToken, allowRoles("admin"), getActiveSellers);
 router.get("/sellers/pending", verifyToken, allowRoles("admin"), getPendingSellers);
+router.get("/sellers/:id", verifyToken, allowRoles("admin"), getSellerById);
+router.put("/sellers/:id", verifyToken, allowRoles("admin"), updateSellerByAdmin);
 router.patch("/sellers/approve/:id", verifyToken, allowRoles("admin"), approveSellerApplication);
 router.delete("/sellers/reject/:id", verifyToken, allowRoles("admin"), rejectSellerApplication);
 

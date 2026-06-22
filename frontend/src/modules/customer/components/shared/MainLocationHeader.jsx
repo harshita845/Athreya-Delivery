@@ -355,18 +355,14 @@ const MainLocationHeader = ({
             <div className="flex items-center gap-4 lg:gap-8">
               <div
                 onClick={() => navigate("/")}
-                className="flex items-center gap-3 cursor-pointer group shrink-0">
-                <div className="flex items-center gap-0 group-hover:scale-105 transition-all duration-300">
+                className="flex items-center cursor-pointer group shrink-0">
+                <div className="flex items-center group-hover:scale-105 transition-all duration-300">
                   <img
                     src={logoUrl}
                     alt="Athreya Delivery Logo"
                     loading="lazy"
-                    className="h-12 w-auto object-contain -mr-2 md:-mr-3"
+                    className="h-12 w-auto object-contain"
                   />
-                  <span className="text-lg font-black tracking-tight flex gap-1" style={{ color: headerFontColor }}>
-                    <span className="text-[#3a2a83]">ATHREYA</span>
-                    <span className="text-[#f15a24]">DELIVERY</span>
-                  </span>
                 </div>
               </div>
 
@@ -466,17 +462,13 @@ const MainLocationHeader = ({
                 overflow: "hidden",
               }}
               className="relative z-10">
-              <div className="mb-2 flex items-center gap-0 cursor-pointer" onClick={() => navigate("/")}>
+              <div className="mb-2 flex items-center cursor-pointer" onClick={() => navigate("/")}>
                 <img
                   src={logoUrl}
                   alt="Athreya Delivery Logo"
                   loading="lazy"
-                  className="h-10 w-auto object-contain -mr-2"
+                  className="h-10 w-auto object-contain"
                 />
-                <span className="text-sm font-black tracking-tight flex gap-1" style={{ color: headerFontColor }}>
-                  <span className="text-[#3a2a83]">ATHREYA</span>
-                  <span className="text-[#f15a24]">DELIVERY</span>
-                </span>
               </div>
               <div className="flex justify-between items-start">
                 <div className="flex flex-col">

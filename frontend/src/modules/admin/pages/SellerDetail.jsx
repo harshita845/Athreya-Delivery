@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Card from '@shared/components/ui/Card';
 import Badge from '@shared/components/ui/Badge';
@@ -24,71 +24,153 @@ import {
     XCircle,
     RotateCw,
     Search,
-    Download
+    Download,
+    Image,
+    ShieldAlert,
+    ExternalLink,
+    Check,
+    X,
+    FileText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@shared/components/ui/Toast';
 import Modal from '@shared/components/ui/Modal';
 import { motion } from 'framer-motion';
+import { adminApi } from '../services/adminApi';
 
 const SellerDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { showToast } = useToast();
-    const [activeTab, setActiveTab] = useState('orders');
+    const [activeTab, setActiveTab] = useState('info');
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [seller, setSeller] = useState(null);
+    const [rejectionReason, setRejectionReason] = useState('');
+    const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
 
-    // Mock Data for Seller
-    const [seller, setSeller] = useState({
-        id: id || 'SEL-001',
-        shopName: 'Fresh Mart Superstore',
-        ownerName: 'Rahul Sharma',
-        email: 'rahul@freshmart.com',
-        phone: '+91 98765 43210',
-        category: 'Grocery',
-        rating: 4.8,
-        status: 'active',
-        joinedDate: '12 Jan 2024',
-        location: 'Mumbai, Maharashtra',
-        image: 'https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&q=80&w=200',
-        walletBalance: 24500,
-        totalOrders: 1450,
-        totalRevenue: 540000,
-        commissionRate: '10%',
-        coords: { lat: 19.0760, lng: 72.8777 },
-        serviceRadius: 5,
-        bankInfo: {
-            bankName: 'HDFC Bank',
-            accountNo: 'XXXX XXXX 1234',
-            ifsc: 'HDFC0001234'
+    useEffect(() => {
+        fetchSellerDetails();
+    }, [id]);
+
+    const fetchSellerDetails = async () => {
+        setIsLoading(true);
+        try {
+            const response = await adminApi.getSellerById(id);
+            setSeller(response.data.result);
+        } catch (error) {
+            showToast(error.response?.data?.message || 'Failed to fetch seller details', 'error');
+        } finally {
+            setIsLoading(false);
         }
-    });
-
-    const handleRefresh = () => {
-        setIsRefreshing(true);
-        setTimeout(() => {
-            setIsRefreshing(false);
-            showToast('Seller data synchronized', 'success');
-        }, 800);
     };
 
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            await fetchSellerDetails();
+            showToast('Seller data synchronized', 'success');
+        } catch (error) {
+            // Error already handled in fetchSellerDetails
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
+
+    const handleApprove = async () => {
+        try {
+            await adminApi.approveSeller(id);
+            showToast('Seller application approved successfully', 'success');
+            fetchSellerDetails();
+        } catch (error) {
+            showToast(error.response?.data?.message || 'Failed to approve seller', 'error');
+        }
+    };
+
+    const handleReject = async () => {
+        if (!rejectionReason.trim()) {
+            showToast('Please enter a rejection reason', 'error');
+            return;
+        }
+        try {
+            await adminApi.rejectSeller(id, { reason: rejectionReason });
+            showToast('Seller application rejected', 'success');
+            setIsRejectModalOpen(false);
+            setRejectionReason('');
+            fetchSellerDetails();
+        } catch (error) {
+            showToast(error.response?.data?.message || 'Failed to reject seller', 'error');
+        }
+    };
+
+    const handleToggleHygiene = async () => {
+        try {
+            const newStatus = !seller.hygieneAssured;
+            await adminApi.updateSeller(id, { hygieneAssured: newStatus });
+            setSeller(prev => ({ ...prev, hygieneAssured: newStatus }));
+            showToast(`Hygiene assurance set to ${newStatus ? 'ON' : 'OFF'}`, 'success');
+        } catch (error) {
+            showToast('Failed to update hygiene status', 'error');
+        }
+    };
+
+    const handleToggleActive = async () => {
+        try {
+            const newStatus = !seller.isActive;
+            await adminApi.updateSeller(id, { isActive: newStatus });
+            setSeller(prev => ({ ...prev, isActive: newStatus }));
+            showToast(`Store is now ${newStatus ? 'Active' : 'Inactive'}`, 'success');
+        } catch (error) {
+            showToast('Failed to update store status', 'error');
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900"></div>
+            </div>
+        );
+    }
+
+    if (!seller) {
+        return (
+            <div className="text-center py-20">
+                <p className="text-slate-500 font-bold">Seller not found</p>
+                <button
+                    onClick={() => navigate('/admin/sellers/active')}
+                    className="mt-4 px-6 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold"
+                >
+                    Back to Directory
+                </button>
+            </div>
+        );
+    }
+
     return (
-        <div className="ds-section-spacing animate-in fade-in slide-in-from-bottom-4 duration-700 pb-12">
+        <div className="ds-section-spacing animate-in fade-in slide-in-from-bottom-4 duration-700 pb-12 font-['Outfit']">
             {/* Header / Action Bar */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
                     <button
-                        onClick={() => navigate('/admin/sellers/active')}
+                        onClick={() => navigate(seller.applicationStatus === 'pending' ? '/admin/sellers/pending' : '/admin/sellers/active')}
                         className="p-2.5 bg-white ring-1 ring-slate-200 rounded-xl hover:bg-slate-50 transition-all shadow-sm group"
                     >
                         <ChevronLeft className="h-5 w-5 text-slate-500 group-hover:-translate-x-0.5 transition-transform" />
                     </button>
                     <div>
                         <div className="flex items-center gap-2">
-                            <h1 className="ds-h1">{seller.shopName}</h1>
-                            <Badge variant="success" className="text-[10px] font-black uppercase tracking-widest">{seller.status}</Badge>
+                            <h1 className="text-2xl font-black text-slate-900">{seller.shopName}</h1>
+                            <Badge 
+                                variant={seller.applicationStatus === 'approved' ? 'success' : seller.applicationStatus === 'rejected' ? 'danger' : 'warning'} 
+                                className="text-[10px] font-black uppercase tracking-widest"
+                            >
+                                {seller.applicationStatus}
+                            </Badge>
                         </div>
-                        <p className="ds-description mt-1 text-slate-500 font-medium">Owned by {seller.ownerName} • {seller.category}</p>
+                        <p className="text-sm text-slate-500 font-medium mt-1">
+                            Owned by {seller.name} • {seller.category || 'General'}
+                        </p>
                     </div>
                 </div>
 
@@ -100,27 +182,42 @@ const SellerDetail = () => {
                         <RotateCw className={cn("h-4 w-4 text-primary", isRefreshing && "animate-spin")} />
                         SYNC DATA
                     </button>
-                    <button className="flex items-center gap-2 px-5 py-3 bg-slate-900 text-white rounded-2xl text-xs font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
-                        <Edit3 className="h-4 w-4" />
-                        EDIT SHOP
-                    </button>
+                    
+                    {seller.applicationStatus === 'pending' && (
+                        <>
+                            <button
+                                onClick={handleApprove}
+                                className="flex items-center gap-2 px-5 py-3 bg-emerald-600 text-white rounded-2xl text-xs font-bold hover:bg-emerald-700 transition-all shadow-md"
+                            >
+                                <CheckCircle2 className="h-4 w-4" />
+                                APPROVE
+                            </button>
+                            <button
+                                onClick={() => setIsRejectModalOpen(true)}
+                                className="flex items-center gap-2 px-5 py-3 bg-rose-600 text-white rounded-2xl text-xs font-bold hover:bg-rose-700 transition-all shadow-md"
+                            >
+                                <XCircle className="h-4 w-4" />
+                                REJECT
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
 
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
                 {[
-                    { label: 'Wallet Balance', value: `₹${seller.walletBalance.toLocaleString()}`, icon: Wallet, color: 'emerald', sub: 'Available for Payout' },
-                    { label: 'Total Revenue', value: `₹${(seller.totalRevenue / 1000).toFixed(1)}k`, icon: TrendingUp, color: 'blue', sub: 'Gross Sales' },
-                    { label: 'Orders Handled', value: seller.totalOrders, icon: ShoppingBag, color: 'indigo', sub: 'Lifetime Orders' },
-                    { label: 'Store Rating', value: `${seller.rating} / 5.0`, icon: Star, color: 'amber', sub: 'Based on 450+ reviews' },
+                    { label: 'Wallet Balance', value: `₹${seller.walletBalance.toLocaleString()}`, icon: Wallet, color: 'emerald', sub: 'Settled Available' },
+                    { label: 'Total Revenue', value: `₹${(seller.totalRevenue || 0).toLocaleString()}`, icon: TrendingUp, color: 'blue', sub: 'Gross Deliveries' },
+                    { label: 'Orders Handled', value: seller.totalOrders || 0, icon: ShoppingBag, color: 'indigo', sub: 'Lifetime Orders' },
+                    { label: 'Store Rating', value: `${seller.rating || 4.5} / 5.0`, icon: Star, color: 'amber', sub: 'Store Average' },
                 ].map((stat, i) => (
                     <Card key={i} className="p-6 border-none shadow-xl ring-1 ring-slate-100 bg-white group hover:ring-primary/20 transition-all">
                         <div className="flex items-center justify-between mb-4">
                             <div className={cn("p-2.5 rounded-2xl",
-                                stat.color === 'emerald' && "bg-brand-50 text-brand-600",
-                                stat.color === 'blue' && "bg-brand-50 text-brand-600",
-                                stat.color === 'indigo' && "bg-brand-50 text-brand-600",
+                                stat.color === 'emerald' && "bg-emerald-50 text-emerald-600",
+                                stat.color === 'blue' && "bg-blue-50 text-blue-600",
+                                stat.color === 'indigo' && "bg-indigo-50 text-indigo-600",
                                 stat.color === 'amber' && "bg-amber-50 text-amber-600",
                             )}>
                                 <stat.icon className="h-5 w-5" />
@@ -133,17 +230,15 @@ const SellerDetail = () => {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
                 {/* Main Content Area */}
-                <div className="lg:col-span-2 space-y-8">
+                <div className="lg:col-span-2 space-y-6">
                     {/* Tabs Navigation */}
                     <div className="flex items-center gap-2 p-1 bg-slate-100/50 backdrop-blur-sm rounded-2xl w-fit">
                         {[
-                            { id: 'orders', label: 'Order History', icon: History },
-                            { id: 'transactions', label: 'Transactions', icon: Banknote },
-                            { id: 'delivery', label: 'Delivery', icon: MapPin },
-                            { id: 'payouts', label: 'Withdrawals', icon: Wallet },
                             { id: 'info', label: 'Store Info', icon: Building2 },
+                            { id: 'visuals', label: 'Store Media', icon: Image },
+                            { id: 'verification', label: 'Controls & Safety', icon: ShieldAlert },
                         ].map((tab) => (
                             <button
                                 key={tab.id}
@@ -162,243 +257,198 @@ const SellerDetail = () => {
                     </div>
 
                     {/* Tab Content */}
-                    <Card className="border-none shadow-xl ring-1 ring-slate-100 bg-white rounded-xl overflow-hidden min-h-[500px]">
-                        {activeTab === 'orders' && (
-                            <div className="animate-in fade-in slide-in-from-right-2 duration-300">
-                                <div className="p-4 pb-4 flex items-center justify-between border-b border-slate-50">
-                                    <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest">Recent Orders</h4>
-                                    <div className="flex items-center gap-4">
-                                        <div className="relative group">
-                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-                                            <input
-                                                type="text"
-                                                placeholder="Order ID..."
-                                                className="pl-9 pr-4 py-2 bg-slate-50 border-none rounded-xl text-xs font-bold w-40 outline-none ring-1 ring-transparent focus:ring-primary/20"
-                                            />
+                    <Card className="border-none shadow-xl ring-1 ring-slate-100 bg-white rounded-xl overflow-hidden p-6 min-h-[450px]">
+                        {activeTab === 'info' && (
+                            <div className="space-y-8 animate-in fade-in duration-300">
+                                <div>
+                                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Operational Benchmarks</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Minimum Order</p>
+                                            <p className="text-base font-black text-slate-900">₹{seller.minimumOrderAmount || 0}</p>
                                         </div>
-                                        <button className="p-2 bg-slate-50 rounded-xl text-slate-400 hover:text-primary transition-colors">
-                                            <Download className="h-4 w-4" />
+                                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Delivery Fee</p>
+                                            <p className="text-base font-black text-slate-900">₹{seller.deliveryFee || 30}</p>
+                                        </div>
+                                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Free Delivery Above</p>
+                                            <p className="text-base font-black text-slate-900">₹{seller.freeDeliveryAbove || 499}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Store Timings & Contact</h4>
+                                        <div className="space-y-3">
+                                            <div className="flex items-center gap-3 text-slate-600">
+                                                <Clock className="h-4 w-4 text-slate-400" />
+                                                <span className="text-xs font-bold">{seller.storeTimings || "9:00 AM - 10:00 PM"}</span>
+                                            </div>
+                                            <div className="flex items-center gap-3 text-slate-600">
+                                                <Phone className="h-4 w-4 text-slate-400" />
+                                                <span className="text-xs font-bold">{seller.contactNumber || seller.phone}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">FSSAI / Documentation</h4>
+                                        {seller.documents ? (
+                                            <div className="space-y-2">
+                                                {Object.entries(seller.documents).map(([key, val]) => val && (
+                                                    <a 
+                                                        key={key}
+                                                        href={val} 
+                                                        target="_blank" 
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200/50 text-xs font-bold text-slate-700 transition-colors"
+                                                    >
+                                                        <span className="uppercase tracking-wider">{key.replace(/([A-Z])/g, ' $1')}</span>
+                                                        <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-xs text-slate-400 italic">No verification documents uploaded</p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Description</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed font-bold">
+                                        {seller.businessDescription || seller.description || "No business description provided by the merchant."}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'visuals' && (
+                            <div className="space-y-8 animate-in fade-in duration-300">
+                                {/* Banner & Logo previews */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="md:col-span-2">
+                                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Shop Banner</h5>
+                                        <div className="w-full aspect-video rounded-xl bg-slate-100 overflow-hidden border border-slate-200">
+                                            {seller.shopBanner ? (
+                                                <img src={seller.shopBanner} alt="Banner" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-slate-400 font-bold text-xs">No Banner</div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Shop Logo</h5>
+                                        <div className="w-full aspect-square rounded-xl bg-slate-100 overflow-hidden border border-slate-200 flex items-center justify-center">
+                                            {seller.shopLogo ? (
+                                                <img src={seller.shopLogo} alt="Logo" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="text-slate-400 font-bold text-xs">No Logo</div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Store Front image */}
+                                <div>
+                                    <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Store Front Image (Verification)</h5>
+                                    <div className="w-48 aspect-video rounded-xl bg-slate-100 overflow-hidden border border-slate-200 flex items-center justify-center">
+                                        {seller.storeFrontImage ? (
+                                            <img src={seller.storeFrontImage} alt="Store Front" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="text-slate-400 font-bold text-xs">No Store Front Image</div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Store Interior Images */}
+                                <div>
+                                    <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Interior Layouts</h5>
+                                    {seller.storeInteriorImages && seller.storeInteriorImages.length > 0 ? (
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            {seller.storeInteriorImages.map((img, idx) => (
+                                                <div key={idx} className="aspect-video rounded-xl bg-slate-100 overflow-hidden border border-slate-200">
+                                                    <img src={img} alt={`Interior ${idx + 1}`} className="w-full h-full object-cover" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-xs text-slate-400 italic">No interior images uploaded</p>
+                                    )}
+                                </div>
+
+                                {/* Shop Gallery Images */}
+                                <div>
+                                    <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Store Gallery</h5>
+                                    {seller.shopGallery && seller.shopGallery.length > 0 ? (
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            {seller.shopGallery.map((img, idx) => (
+                                                <div key={idx} className="aspect-square rounded-xl bg-slate-100 overflow-hidden border border-slate-200">
+                                                    <img src={img} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-xs text-slate-400 italic">No gallery images uploaded</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'verification' && (
+                            <div className="space-y-8 animate-in fade-in duration-300">
+                                <div>
+                                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Safety & Certification Badges</h4>
+                                    <div className="flex items-center justify-between p-5 bg-emerald-50/50 border border-emerald-100 rounded-2xl">
+                                        <div className="space-y-1">
+                                            <p className="text-xs font-black text-emerald-950 uppercase tracking-wider">Hygiene Assured Status</p>
+                                            <p className="text-xs text-emerald-700 font-bold">Showcases the hygiene/safety seal on customer storefront.</p>
+                                        </div>
+                                        <button
+                                            onClick={handleToggleHygiene}
+                                            className={cn(
+                                                "w-12 h-6 rounded-full transition-colors relative",
+                                                seller.hygieneAssured ? "bg-emerald-600" : "bg-slate-300"
+                                            )}
+                                        >
+                                            <span className={cn(
+                                                "w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform",
+                                                seller.hygieneAssured ? "left-6.5" : "left-0.5"
+                                            )} />
                                         </button>
                                     </div>
                                 </div>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-left">
-                                        <thead>
-                                            <tr className="bg-slate-50/50 border-b border-slate-50">
-                                                <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order ID</th>
-                                                <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer</th>
-                                                <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
-                                                <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-slate-50">
-                                            {[
-                                                { id: '#ORD-9912', customer: 'Aarav Patel', status: 'delivered', amount: 850, date: 'Today, 11:30 AM' },
-                                                { id: '#ORD-9884', customer: 'Ishani Roy', status: 'processing', amount: 1240, date: 'Today, 09:15 AM' },
-                                                { id: '#ORD-9821', customer: 'Kabir Singh', status: 'delivered', amount: 450, date: 'Yesterday' },
-                                                { id: '#ORD-9750', customer: 'Priya Verma', status: 'cancelled', amount: 2100, date: 'Yesterday' },
-                                                { id: '#ORD-9690', customer: 'Rohan Mehra', status: 'delivered', amount: 150, date: '14 Feb' },
-                                            ].map((order, i) => (
-                                                <tr key={i} className="group hover:bg-slate-50/50 transition-colors cursor-pointer">
-                                                    <td className="px-4 py-5">
-                                                        <span className="text-xs font-black text-slate-900">{order.id}</span>
-                                                        <p className="text-[10px] font-bold text-slate-400">{order.date}</p>
-                                                    </td>
-                                                    <td className="px-4 py-5">
-                                                        <span className="text-xs font-bold text-slate-700">{order.customer}</span>
-                                                    </td>
-                                                    <td className="px-4 py-5 text-center">
-                                                        <Badge
-                                                            variant={order.status === 'delivered' ? 'success' : order.status === 'cancelled' ? 'danger' : 'warning'}
-                                                            className="text-[9px] font-black"
-                                                        >
-                                                            {order.status.toUpperCase()}
-                                                        </Badge>
-                                                    </td>
-                                                    <td className="px-4 py-5 text-right font-black text-slate-900">
-                                                        ₹{order.amount.toLocaleString()}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        )}
 
-                        {activeTab === 'transactions' && (
-                            <div className="animate-in fade-in slide-in-from-right-2 duration-300 p-4">
-                                <div className="flex items-center justify-between mb-8">
-                                    <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">Financial ledger</h4>
-                                    <Badge variant="blue" className="text-[9px] font-black">LAST 30 DAYS</Badge>
-                                </div>
-                                <div className="space-y-4">
-                                    {[
-                                        { id: 'TXN-8821', type: 'credit', desc: 'Order #ORD-9912 Settlement', amount: 765, date: 'Today, 14:20' },
-                                        { id: 'TXN-8810', type: 'debit', desc: 'Withdrawal to Bank', amount: 15000, date: 'Yesterday' },
-                                        { id: 'TXN-8792', type: 'credit', desc: 'Order #ORD-9821 Settlement', amount: 405, date: 'Yesterday' },
-                                        { id: 'TXN-8750', type: 'credit', desc: 'Order #ORD-9690 Settlement', amount: 135, date: '14 Feb' },
-                                    ].map((txn, i) => (
-                                        <div key={i} className="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100 group hover:bg-white hover:shadow-md transition-all">
-                                            <div className="flex items-center gap-4">
-                                                <div className={cn("p-2 rounded-xl flex items-center justify-center",
-                                                    txn.type === 'credit' ? "bg-brand-100 text-brand-600" : "bg-rose-100 text-rose-600"
-                                                )}>
-                                                    {txn.type === 'credit' ? <TrendingUp className="h-4 w-4" /> : <Banknote className="h-4 w-4" />}
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs font-black text-slate-900">{txn.desc}</p>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{txn.id} • {txn.date}</p>
-                                                </div>
-                                            </div>
-                                            <div className="text-right">
-                                                <p className={cn("text-sm font-black", txn.type === 'credit' ? "text-brand-600" : "text-rose-600")}>
-                                                    {txn.type === 'credit' ? '+' : '-'} ₹{txn.amount.toLocaleString()}
-                                                </p>
-                                            </div>
+                                <div>
+                                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Merchant Operations Status</h4>
+                                    <div className="flex items-center justify-between p-5 bg-slate-50 border border-slate-200/60 rounded-2xl">
+                                        <div className="space-y-1">
+                                            <p className="text-xs font-black text-slate-900 uppercase tracking-wider">Visibility & Activation Status</p>
+                                            <p className="text-xs text-slate-500 font-bold">Temporarily suspend or restore this seller within the marketplace.</p>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 'delivery' && (
-                            <div className="animate-in fade-in slide-in-from-right-2 duration-300 h-[500px] relative overflow-hidden group">
-                                {/* Map Background Overlay */}
-                                <div className="absolute inset-0 grayscale-[0.3] contrast-[1.1] opacity-40 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=2000')]" />
-                                <div className="absolute inset-0 bg-gradient-to-tr from-slate-200/50 via-transparent to-primary/5" />
-
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="relative">
-                                        {/* Service Area Radar */}
-                                        <motion.div
-                                            initial={{ scale: 0, opacity: 0 }}
-                                            animate={{ scale: 1, opacity: 1 }}
-                                            transition={{ duration: 1, ease: "easeOut" }}
-                                            className="rounded-full bg-primary/20 border-2 border-primary/40 shadow-[0_0_50px_rgba(var(--primary),0.3)] animate-pulse"
-                                            style={{
-                                                width: `${seller.serviceRadius * 40}px`,
-                                                height: `${seller.serviceRadius * 40}px`
-                                            }}
-                                        />
-                                        {/* Store Marker */}
-                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                                            <div className="h-10 w-10 bg-slate-900 text-white rounded-2xl flex items-center justify-center shadow-2xl ring-4 ring-white z-10 relative">
-                                                <Building2 className="h-5 w-5" />
-                                            </div>
-                                            <div className="absolute inset-0 bg-primary rounded-2xl animate-ping opacity-20" />
-                                        </div>
+                                        <button
+                                            onClick={handleToggleActive}
+                                            className={cn(
+                                                "w-12 h-6 rounded-full transition-colors relative",
+                                                seller.isActive ? "bg-slate-900" : "bg-slate-300"
+                                            )}
+                                        >
+                                            <span className={cn(
+                                                "w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform",
+                                                seller.isActive ? "left-6.5" : "left-0.5"
+                                            )} />
+                                        </button>
                                     </div>
                                 </div>
 
-                                {/* Floating Legend */}
-                                <div className="absolute top-6 left-6 flex flex-col gap-2">
-                                    <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-xl shadow-lg border border-white/50">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Coverage View</p>
-                                        <h5 className="text-sm font-black text-slate-900">{seller.serviceRadius}km Delivery Area</h5>
+                                {seller.applicationStatus === 'rejected' && seller.rejectionReason && (
+                                    <div className="p-4 bg-rose-50 border border-rose-100 rounded-xl">
+                                        <p className="text-xs font-black text-rose-800 uppercase tracking-wider mb-1">Rejection Reason</p>
+                                        <p className="text-xs text-rose-700 font-bold">{seller.rejectionReason}</p>
                                     </div>
-                                </div>
-                                <div className="absolute bottom-6 right-6 p-4 max-w-[200px] bg-slate-900/90 backdrop-blur rounded-2xl text-white shadow-2xl border border-white/10">
-                                    <p className="text-[9px] font-black opacity-60 uppercase mb-1">Live Telemetry</p>
-                                    <p className="text-[10px] font-bold leading-relaxed">System monitoring active traffic within the {seller.serviceRadius}km designated boundary.</p>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 'payouts' && (
-                            <div className="animate-in fade-in slide-in-from-right-2 duration-300 p-4 text-center py-20">
-                                <div className="h-20 w-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <Clock className="h-10 w-10 text-slate-200" />
-                                </div>
-                                <h4 className="text-lg font-black text-slate-900 uppercase">Withdrawal tracking</h4>
-                                <p className="text-sm font-bold text-slate-400 mt-2 max-w-xs mx-auto">View withdrawal history and pending requests here.</p>
-                                <button className="mt-8 px-4 py-3 bg-slate-950 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:-translate-y-1 shadow-xl shadow-slate-200 transition-all">
-                                    START MANUAL PAYOUT
-                                </button>
-                            </div>
-                        )}
-
-                        {activeTab === 'info' && (
-                            <div className="animate-in fade-in slide-in-from-right-2 duration-300 p-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-left">
-                                    <div className="ds-section-spacing">
-                                        <div>
-                                            <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Store Identity</h5>
-                                            <div className="space-y-4">
-                                                <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                                    <div className="h-12 w-12 rounded-xl bg-slate-900 text-white flex items-center justify-center">
-                                                        <Building2 className="h-6 w-6" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-xs font-black text-slate-900">{seller.shopName}</p>
-                                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{seller.id}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Commission</p>
-                                                        <p className="text-xs font-black text-slate-900">{seller.commissionRate}</p>
-                                                    </div>
-                                                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Joined</p>
-                                                        <p className="text-xs font-black text-slate-900">{seller.joinedDate}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Bank Verification</h5>
-                                            <div className="p-6 bg-brand-50/50 rounded-xl border border-brand-100 space-y-4">
-                                                <div className="flex items-center justify-between">
-                                                    <p className="text-xs font-bold text-slate-600">Account Verified</p>
-                                                    <CheckCircle2 className="h-4 w-4 text-brand-500" />
-                                                </div>
-                                                <div>
-                                                    <p className="text-[9px] font-black text-brand-700/50 uppercase tracking-widest mb-1">Settlement Account</p>
-                                                    <p className="text-sm font-black text-slate-900">{seller.bankInfo.bankName}</p>
-                                                    <p className="text-xs font-bold text-slate-500 font-mono mt-0.5">{seller.bankInfo.accountNo}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="ds-section-spacing">
-                                        <div>
-                                            <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Operational Status</h5>
-                                            <div className="p-6 bg-slate-900 rounded-xl text-white">
-                                                <div className="flex items-center justify-between mb-6">
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="h-2 w-2 rounded-full bg-brand-500 animate-pulse"></div>
-                                                        <span className="text-[10px] font-black uppercase tracking-widest">LIVE NOW</span>
-                                                    </div>
-                                                    <button className="text-[10px] font-black text-rose-400 uppercase hover:underline">Force Close</button>
-                                                </div>
-                                                <div className="space-y-4 opacity-70">
-                                                    <div className="flex items-center justify-between py-2 border-b border-white/10">
-                                                        <span className="text-xs font-bold">Visibility</span>
-                                                        <span className="text-xs font-black uppercase tracking-widest">Global</span>
-                                                    </div>
-                                                    <div className="flex items-center justify-between py-2">
-                                                        <span className="text-xs font-bold">Delivery Partner</span>
-                                                        <span className="text-xs font-black uppercase tracking-widest text-brand-400">Integrated</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="p-6 bg-rose-50 rounded-xl border border-rose-100">
-                                            <h5 className="text-[10px] font-black text-rose-600 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                                <XCircle className="h-4 w-4" />
-                                                Safety Controls
-                                            </h5>
-                                            <p className="text-[10px] font-bold text-slate-500 leading-relaxed">Suspend this store immediately from the consumer app in case of policy violations.</p>
-                                            <button className="w-full mt-4 py-3 bg-rose-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-rose-200 hover:bg-rose-700 transition-all">
-                                                SUSPEND STORE
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                )}
                             </div>
                         )}
                     </Card>
@@ -407,59 +457,97 @@ const SellerDetail = () => {
                 {/* Sidebar Context */}
                 <div className="space-y-6">
                     {/* Owner Card */}
-                    <Card className="p-4 border-none shadow-xl ring-1 ring-slate-100 bg-white rounded-xl text-left">
-                        <div className="flex items-center gap-4 mb-8">
-                            <div className="h-16 w-16 bg-slate-100 rounded-2xl flex items-center justify-center overflow-hidden">
-                                <User className="h-8 w-8 text-slate-300" />
-                            </div>
-                            <div>
-                                <h4 className="text-lg font-black text-slate-900">{seller.ownerName}</h4>
-                                <Badge variant="primary" className="text-[8px] font-black tracking-[0.2em] px-2">PARTNER</Badge>
-                            </div>
-                        </div>
-
+                    <Card className="p-6 border-none shadow-xl ring-1 ring-slate-100 bg-white rounded-xl text-left">
+                        <h4 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-6">Owner Information</h4>
+                        
                         <div className="space-y-4">
-                            <div className="flex items-center gap-3 text-slate-500 hover:text-primary transition-colors cursor-pointer">
+                            <div className="flex items-center gap-3 text-slate-600">
+                                <div className="p-2 bg-slate-50 rounded-xl">
+                                    <User className="h-4 w-4" />
+                                </div>
+                                <span className="text-xs font-bold">{seller.name}</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-slate-600">
                                 <div className="p-2 bg-slate-50 rounded-xl">
                                     <Mail className="h-4 w-4" />
                                 </div>
-                                <span className="text-xs font-bold">{seller.email}</span>
+                                <span className="text-xs font-bold break-all">{seller.email}</span>
                             </div>
-                            <div className="flex items-center gap-3 text-slate-500 hover:text-primary transition-colors cursor-pointer">
+                            <div className="flex items-center gap-3 text-slate-600">
                                 <div className="p-2 bg-slate-50 rounded-xl">
                                     <Phone className="h-4 w-4" />
                                 </div>
                                 <span className="text-xs font-bold">{seller.phone}</span>
                             </div>
-                            <div className="flex items-center gap-3 text-slate-500">
-                                <div className="p-2 bg-slate-50 rounded-xl">
+                            <div className="flex items-start gap-3 text-slate-600">
+                                <div className="p-2 bg-slate-50 rounded-xl mt-0.5">
                                     <MapPin className="h-4 w-4" />
                                 </div>
-                                <span className="text-xs font-bold leading-relaxed">{seller.location}</span>
+                                <span className="text-xs font-bold leading-relaxed">
+                                    {seller.address || "Address not provided"}, {seller.locality || ""}, {seller.city || ""}, {seller.state || ""} - {seller.pincode || ""}
+                                </span>
                             </div>
                         </div>
-
-                        <button className="w-full mt-8 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all">
-                            MESSAGE OWNER
-                        </button>
                     </Card>
 
-                    {/* Quick Notifications */}
-                    <Card className="p-4 border-none shadow-xl ring-1 ring-slate-900 bg-slate-900 rounded-xl text-white">
-                        <h4 className="text-[10px] font-bold opacity-40 uppercase tracking-[0.2em] mb-6">Strategic Comms</h4>
-                        <div className="space-y-4">
-                            <p className="text-xs font-medium text-slate-400 italic leading-relaxed">Send a high-priority push to the shop manager app.</p>
-                            <textarea
-                                placeholder="Message to store..."
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-xs font-bold outline-none focus:ring-2 focus:ring-primary/20 transition-all min-h-[100px]"
-                            />
-                            <button className="w-full py-4 bg-primary text-primary-foreground rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
-                                SEND ALERT
-                            </button>
+                    {/* Geofencing info */}
+                    <Card className="p-6 border-none shadow-xl ring-1 ring-slate-100 bg-white rounded-xl text-left space-y-4">
+                        <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">Delivery Boundary</h4>
+                        <div className="space-y-3">
+                            <div className="flex justify-between py-1.5 border-b border-slate-100">
+                                <span className="text-xs font-bold text-slate-500">Service Radius</span>
+                                <span className="text-xs font-black text-slate-900">{seller.serviceRadius || 5} km</span>
+                            </div>
+                            {seller.location?.coordinates && (
+                                <div className="flex justify-between py-1.5 border-b border-slate-100">
+                                    <span className="text-xs font-bold text-slate-500">Coordinates</span>
+                                    <span className="text-xs font-black text-slate-900 font-mono">
+                                        {seller.location.coordinates[1]?.toFixed(4)}, {seller.location.coordinates[0]?.toFixed(4)}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </Card>
                 </div>
             </div>
+
+            {/* Rejection Reason Modal */}
+            {isRejectModalOpen && (
+                <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-6 shadow-2xl animate-in zoom-in-95 duration-200">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-black text-slate-900 uppercase">Reject Application</h3>
+                            <button onClick={() => setIsRejectModalOpen(false)} className="p-1 hover:bg-slate-100 rounded-full">
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="space-y-3">
+                            <label className="text-xs font-black uppercase tracking-wider text-slate-500">Reason for rejection</label>
+                            <textarea
+                                rows={4}
+                                value={rejectionReason}
+                                onChange={(e) => setRejectionReason(e.target.value)}
+                                placeholder="Describe why this seller application is being rejected (sent to merchant)..."
+                                className="w-full p-4 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-slate-900 transition-colors resize-none"
+                            />
+                        </div>
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setIsRejectModalOpen(false)}
+                                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-bold rounded-xl"
+                            >
+                                CANCEL
+                            </button>
+                            <button
+                                onClick={handleReject}
+                                className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl"
+                            >
+                                SUBMIT REJECTION
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

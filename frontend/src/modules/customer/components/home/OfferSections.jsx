@@ -68,7 +68,18 @@ const OfferSections = ({ sections, noServiceData }) => {
                     </p>
                   )}
                 </div>
-                <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl flex-shrink-0 shadow-[0_16px_30px_rgba(0,0,0,0.25)] border border-black/10 overflow-hidden relative bg-black/10 transition-transform hover:-translate-y-1 hover:rotate-[-4deg] hover:scale-105">
+                <motion.div
+                  animate={{
+                    boxShadow: ["0 4px 12px rgba(251,191,36,0.15)", "0 10px 28px rgba(251,191,36,0.5)", "0 4px 12px rgba(251,191,36,0.15)"],
+                    scale: [1, 1.02, 1]
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-2xl flex-shrink-0 border border-amber-300/40 overflow-hidden relative bg-black/10 transition-all hover:-translate-y-1 hover:rotate-[-4deg] hover:scale-105 cursor-pointer"
+                >
                   {sectionProducts[0]?.image ? (
                     <>
                       <img
@@ -85,19 +96,31 @@ const OfferSections = ({ sections, noServiceData }) => {
                   )}
 
                   {sectionProducts.length > 0 && (
-                    <div className="absolute top-1 left-1 px-2 py-0.5 rounded-full bg-black/70 text-[9px] font-semibold text-white/90 tracking-wide flex items-center gap-1">
-                      <span className="inline-block w-1.5 h-1.5 rounded-full bg-brand-400" />
+                    <div className="absolute top-1 left-1 px-2 py-0.5 rounded-full bg-black/75 text-[9px] font-semibold text-white/95 tracking-wide flex items-center gap-1 border border-white/10">
+                      <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
                       {sectionProducts.length} items
                     </div>
                   )}
 
                   <div className="relative z-10 flex items-center justify-center h-full">
-                    <Sparkles
-                      className="text-amber-200 drop-shadow-[0_0_12px_rgba(251,191,36,0.9)]"
-                      size={30}
-                    />
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.25, 1],
+                        rotate: [0, 10, -10, 0]
+                      }}
+                      transition={{
+                        duration: 2.5,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      <Sparkles
+                        className="text-amber-200 drop-shadow-[0_0_12px_rgba(251,191,36,0.95)]"
+                        size={30}
+                      />
+                    </motion.div>
                   </div>
-                </div>
+                </motion.div>
               </div>
               <div className="px-4 pt-4 md:px-5 md:pt-5 pb-1">
                 <div className="flex overflow-x-auto gap-3 md:gap-4 pb-0 no-scrollbar snap-x snap-mandatory">

@@ -45,6 +45,82 @@ const sellerSchema = new mongoose.Schema(
       trim: true,
     },
 
+    shopBanner: {
+      type: String,
+      trim: true,
+    },
+
+    shopLogo: {
+      type: String,
+      trim: true,
+    },
+
+    shopGallery: {
+      type: [String],
+      default: [],
+    },
+
+    storeFrontImage: {
+      type: String,
+      trim: true,
+    },
+
+    storeInteriorImages: {
+      type: [String],
+      default: [],
+    },
+
+    businessDescription: {
+      type: String,
+      trim: true,
+    },
+
+    storeTimings: {
+      type: String,
+      trim: true,
+      default: "9:00 AM - 10:00 PM",
+    },
+
+    contactNumber: {
+      type: String,
+      trim: true,
+    },
+
+    minimumOrderAmount: {
+      type: Number,
+      default: 0,
+    },
+
+    deliveryFee: {
+      type: Number,
+      default: 30,
+    },
+
+    freeDeliveryAbove: {
+      type: Number,
+      default: 499,
+    },
+
+    hygieneAssured: {
+      type: Boolean,
+      default: false,
+    },
+
+    rating: {
+      type: Number,
+      default: 4.5,
+    },
+
+    reviewCount: {
+      type: Number,
+      default: 0,
+    },
+
+    isOpen: {
+      type: Boolean,
+      default: true,
+    },
+
     address: {
       type: String,
       trim: true,

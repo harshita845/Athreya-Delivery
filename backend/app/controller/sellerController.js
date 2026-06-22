@@ -153,7 +153,12 @@ export const getSellerProfile = async (req, res) => {
 ================================ */
 export const updateSellerProfile = async (req, res) => {
   try {
-    const { name, shopName, phone, address, locality, pincode, city, state, lat, lng, radius } = req.body;
+    const {
+      name, shopName, phone, address, locality, pincode, city, state, lat, lng, radius,
+      shopBanner, shopLogo, shopGallery, storeFrontImage, storeInteriorImages,
+      businessDescription, storeTimings, contactNumber, minimumOrderAmount,
+      deliveryFee, freeDeliveryAbove, hygieneAssured, rating, reviewCount, isOpen, category, isActive
+    } = req.body;
 
     // Find seller
     const seller = await Seller.findById(req.user.id);
@@ -162,14 +167,33 @@ export const updateSellerProfile = async (req, res) => {
     }
 
     // Update fields if provided
-    if (name) seller.name = name;
-    if (shopName) seller.shopName = shopName;
-    if (phone) seller.phone = phone;
+    if (name !== undefined) seller.name = name;
+    if (shopName !== undefined) seller.shopName = shopName;
+    if (phone !== undefined) seller.phone = phone;
     if (address !== undefined) seller.address = address;
     if (locality !== undefined) seller.locality = locality;
     if (pincode !== undefined) seller.pincode = pincode;
     if (city !== undefined) seller.city = city;
     if (state !== undefined) seller.state = state;
+    if (category !== undefined) seller.category = category;
+
+    // Extended fields
+    if (shopBanner !== undefined) seller.shopBanner = shopBanner;
+    if (shopLogo !== undefined) seller.shopLogo = shopLogo;
+    if (shopGallery !== undefined) seller.shopGallery = shopGallery;
+    if (storeFrontImage !== undefined) seller.storeFrontImage = storeFrontImage;
+    if (storeInteriorImages !== undefined) seller.storeInteriorImages = storeInteriorImages;
+    if (businessDescription !== undefined) seller.businessDescription = businessDescription;
+    if (storeTimings !== undefined) seller.storeTimings = storeTimings;
+    if (contactNumber !== undefined) seller.contactNumber = contactNumber;
+    if (minimumOrderAmount !== undefined) seller.minimumOrderAmount = Number(minimumOrderAmount);
+    if (deliveryFee !== undefined) seller.deliveryFee = Number(deliveryFee);
+    if (freeDeliveryAbove !== undefined) seller.freeDeliveryAbove = Number(freeDeliveryAbove);
+    if (hygieneAssured !== undefined) seller.hygieneAssured = Boolean(hygieneAssured);
+    if (rating !== undefined) seller.rating = Number(rating);
+    if (reviewCount !== undefined) seller.reviewCount = Number(reviewCount);
+    if (isOpen !== undefined) seller.isOpen = Boolean(isOpen);
+    if (isActive !== undefined) seller.isActive = Boolean(isActive);
 
     // Validate and update geo data
     if (lat !== undefined && lng !== undefined) {

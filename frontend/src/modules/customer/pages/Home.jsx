@@ -709,12 +709,28 @@ const Home = () => {
                   </div>
                 </div>
               ) : (
-                <div className="w-full h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] bg-[#ecfeff] p-6 relative overflow-hidden flex items-center border-y border-primary/10 shadow-sm">
-                  <div className="relative z-10 w-3/5 flex flex-col items-start gap-2">
-                    <h4 className="text-2xl font-black text-[#1A1A1A] tracking-tight">Get <span className="text-primary">Products</span></h4>
-                    <button className="bg-[#FF1E56] text-white px-6 py-2.5 rounded-2xl font-black text-xs tracking-wide">Order now</button>
+                <div className="w-full h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] relative overflow-hidden bg-slate-100 flex items-center justify-center border-y border-slate-200/50">
+                  <video
+                    src="https://assets.mixkit.co/videos/preview/mixkit-delivery-man-carrying-a-box-41584-large.mp4"
+                    className="w-full h-full object-cover object-center pointer-events-none"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  />
+                  {/* Bottom Scrolling Marquee Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-[#3a2a83]/90 text-white py-1 md:py-1.5 overflow-hidden whitespace-nowrap z-30 font-black border-t border-white/10 uppercase tracking-widest text-[9px] md:text-[11px]">
+                      <div className="classic-marquee-track flex w-max items-center gap-8">
+                          <span>One App. Every Shop. Every Need. Delivered Fast & Safe</span>
+                          <span className="text-yellow-400">&bull;</span>
+                          <span>One App. Every Shop. Every Need. Delivered Fast & Safe</span>
+                          <span className="text-yellow-400">&bull;</span>
+                          <span>One App. Every Shop. Every Need. Delivered Fast & Safe</span>
+                          <span className="text-yellow-400">&bull;</span>
+                          <span>One App. Every Shop. Every Need. Delivered Fast & Safe</span>
+                          <span className="text-yellow-400">&bull;</span>
+                      </div>
                   </div>
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl -mt-12 -mr-12" />
                 </div>
               )}
             </div>
@@ -734,7 +750,7 @@ const Home = () => {
 
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
               {dynamicShops.map((shop) => (
-                <div key={shop._id} onClick={() => navigate(`/category/all`)} className="bg-white rounded-2xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100/80 flex flex-col gap-2.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
+                <div key={shop._id} onClick={() => navigate(`/shops/${shop._id}`)} className="bg-white rounded-2xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100/80 flex flex-col gap-2.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
                   <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 relative">
                     <img
                       src={getShopImage(shop.category, shop.shopName)}

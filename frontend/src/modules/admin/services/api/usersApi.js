@@ -12,6 +12,8 @@ export const adminUsersApi = {
     getUserById: (id) => axiosInstance.get(`/admin/users/${id}`),
 
     getSellers: (params) => axiosInstance.get('/admin/sellers', { params }),
+    getSellerById: (id) => axiosInstance.get(`/admin/sellers/${id}`),
+    updateSeller: (id, data) => axiosInstance.put(`/admin/sellers/${id}`, data),
     getActiveSellers: (params) =>
         axiosInstance.get('/admin/sellers/active', { params }),
     getSellerLocations: (params) =>

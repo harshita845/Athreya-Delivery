@@ -17,6 +17,11 @@ export const customerApi = {
 
   // Sellers & Location
   getNearbySellers: (params) => getWithDedupe("/seller/nearby", params),
+  getShopById: (id) => getWithDedupe(`/shops/${id}`),
+  getShopProducts: (id, params) => getWithDedupe(`/shops/${id}/products`, params),
+  getShopReviews: (id) => getWithDedupe(`/shops/${id}/reviews`),
+  getShopGallery: (id) => getWithDedupe(`/shops/${id}/gallery`),
+  getSimilarShops: (id) => getWithDedupe(`/shops/similar/${id}`),
 
   // Cart
   getCart: () => getWithDedupe("/cart", {}, { ttl: 2000 }), // Very short cache for cart

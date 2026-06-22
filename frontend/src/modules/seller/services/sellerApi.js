@@ -43,4 +43,9 @@ export const sellerApi = {
     approveReturn: (orderId, data) => axiosInstance.put(`/orders/returns/${orderId}/approve`, data),
     rejectReturn: (orderId, data) => axiosInstance.put(`/orders/returns/${orderId}/reject`, data),
     assignReturnDelivery: (orderId, data) => axiosInstance.put(`/orders/returns/${orderId}/assign-delivery`, data),
+
+    // Media
+    uploadMedia: (formData) => axiosInstance.post('/media/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    }),
 };
