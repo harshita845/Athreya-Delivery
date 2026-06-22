@@ -12,8 +12,8 @@ const LowestPriceSection = ({ products, onSeeAll }) => {
         <div className="absolute -top-10 -right-10 h-40 w-40 md:h-80 md:w-80 bg-primary/5 rounded-full blur-3xl opacity-40" />
         <div className="absolute -bottom-10 -left-10 h-40 w-40 md:h-80 md:w-80 bg-yellow-450/5 rounded-full blur-3xl opacity-40" />
 
-        <div className="container mx-auto px-4 md:px-8 lg:px-[50px] relative z-10">
-          <div className="flex justify-between items-center mb-6 md:mb-10 px-1">
+        <div className="container mx-auto max-w-6xl px-4 md:px-8 relative z-10">
+          <div className="flex justify-between items-center mb-3 md:mb-4 px-1">
             <div className="flex flex-col">
               <h3 className="text-base md:text-xl font-black text-[#1A1A1A] tracking-tight uppercase leading-none pt-[25px]">
                 Lowest Price <span className="text-primary">ever</span>
@@ -33,7 +33,7 @@ const LowestPriceSection = ({ products, onSeeAll }) => {
             </button>
           </div>
 
-          <div className="relative z-10 flex overflow-x-auto gap-3 md:gap-6 pb-2 md:pb-3 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory scroll-smooth">
+          <div className="relative z-10 flex overflow-x-auto gap-3 md:gap-6 pb-2 md:pb-3 no-scrollbar -mx-4 px-4 md:mx-0 md:px-1 snap-x snap-mandatory scroll-smooth">
             {products.slice(0, 12).map((product) => (
               <div key={product.id} className="w-[126px] sm:w-[136px] md:w-[148px] shrink-0 snap-start smooth-transform">
                 <ProductCard

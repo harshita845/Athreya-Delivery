@@ -346,7 +346,7 @@ const Home = () => {
   const { currentLocation } = useLocation();
   const { settings } = useSettings();
   const navigate = useNavigate();
-  
+
   const quickCatsRef = useRef(null);
   const cachedHomePageData = getCachedHomePageData(currentLocation);
 
@@ -439,7 +439,7 @@ const Home = () => {
 
   useEffect(() => {
     if (products.length === 0 && !isLoading) {
-      import("@/assets/lottie/animation.json").then((m) => setNoServiceData(m.default)).catch(() => {});
+      import("@/assets/lottie/animation.json").then((m) => setNoServiceData(m.default)).catch(() => { });
     }
   }, [products.length, isLoading]);
 
@@ -473,6 +473,10 @@ const Home = () => {
       if (cached) {
         applyHomePageData(cached, { cacheKey, persist: false });
         setIsLoading(false);
+        window.__homeDataLoaded__ = true;
+        if (typeof window !== "undefined" && window.__resolveHomeData__) {
+          window.__resolveHomeData__();
+        }
         return;
       }
     }
@@ -529,7 +533,7 @@ const Home = () => {
         nearbySellers: (shopsRes?.data?.results || shopsRes?.data?.result || []),
         heroConfig: heroConfigMemoryCache.__home__ || EMPTY_HERO_CONFIG,
       };
-      
+
       const isCatSuccess = catRes && catRes.data && catRes.data.success;
       const dbCats = isCatSuccess ? (catRes.data.results || catRes.data.result || []) : MOCK_CATEGORIES_DATA;
       const catMap = {};
@@ -575,7 +579,13 @@ const Home = () => {
       const sectionsList = sectionsRes?.data?.results || sectionsRes?.data?.result || sectionsRes?.data;
       nextHomeData.offerSections = Array.isArray(sectionsList) ? sectionsList : [];
       applyHomePageData(nextHomeData, { cacheKey });
-    } catch (error) { console.error("Error:", error); } finally { setIsLoading(false); }
+    } catch (error) { console.error("Error:", error); } finally {
+      setIsLoading(false);
+      window.__homeDataLoaded__ = true;
+      if (typeof window !== "undefined" && window.__resolveHomeData__) {
+        window.__resolveHomeData__();
+      }
+    }
   };
 
   const hydrateSelectedSectionProducts = async (sections = []) => {
@@ -589,7 +599,7 @@ const Home = () => {
       const missingResults = await Promise.allSettled(missingIds.map((id) => customerApi.getProductById(id, locationParams)));
       const fetchedMissing = missingResults.filter((r) => r.status === "fulfilled").flatMap((r) => { const p = r.value?.data?.result || r.value?.data?.results; return Array.isArray(p) ? p : (p ? [p] : []); }).map((p) => ({ ...p, id: p._id, image: p.mainImage || p.image || "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&q=80&w=400&h=400", price: p.salePrice || p.price, originalPrice: p.price, weight: p.weight || "1 unit", deliveryTime: "8-15 mins" }));
       if (fetchedMissing.length) setProducts((prev) => { const merged = [...prev]; const mergedIds = new Set(merged.map((p) => String(p?._id || p?.id || "").trim())); fetchedMissing.forEach((p) => { const key = String(p?._id || p?.id || "").trim(); if (!mergedIds.has(key)) { merged.push(p); mergedIds.add(key); } }); return merged; });
-    } catch (e) {}
+    } catch (e) { }
   };
 
   useEffect(() => { fetchData(); }, [currentLocation?.latitude, currentLocation?.longitude]);
@@ -721,15 +731,15 @@ const Home = () => {
                 PARTNER STORES IN YOUR AREA &bull; HYGIENE ASSURED
               </span>
             </div>
-            
+
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
               {dynamicShops.map((shop) => (
-                <div key={shop._id} onClick={() => navigate(`/seller/${shop._id}`)} className="bg-white rounded-2xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100/80 flex flex-col gap-2.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
+                <div key={shop._id} onClick={() => navigate(`/category/all`)} className="bg-white rounded-2xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100/80 flex flex-col gap-2.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
                   <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 relative">
-                    <img 
-                      src={getShopImage(shop.category, shop.shopName)} 
-                      alt={shop.shopName} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    <img
+                      src={getShopImage(shop.category, shop.shopName)}
+                      alt={shop.shopName}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <span className="absolute top-2 right-2 bg-white/95 backdrop-blur-sm px-2 py-0.5 rounded-full text-[10px] font-extrabold text-slate-800 shadow-sm flex items-center gap-0.5">
                       ⭐ {shop.rating || "4.6"}

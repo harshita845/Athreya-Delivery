@@ -20,16 +20,29 @@ const SplashScreen = ({ onFinished }) => {
     const tl = gsap.timeline({
       onComplete: () => {
         // Exit fade out & slide up animation
-        gsap.to(containerRef.current, {
-          opacity: 0,
-          y: -40,
-          scale: 0.95,
-          duration: 0.25,
-          ease: "power3.inOut",
-          onComplete: () => {
-            if (onFinished) onFinished();
-          }
-        });
+        const finish = () => {
+          gsap.to(containerRef.current, {
+            opacity: 0,
+            y: -40,
+            scale: 0.95,
+            duration: 0.25,
+            ease: "power3.inOut",
+            onComplete: () => {
+              if (onFinished) onFinished();
+            }
+          });
+        };
+
+        if (typeof window !== "undefined" && window.__homeDataLoaded__) {
+          finish();
+        } else if (typeof window !== "undefined") {
+          window.__resolveHomeData__ = () => {
+            finish();
+            window.__resolveHomeData__ = null;
+          };
+        } else {
+          finish();
+        }
       }
     });
 
