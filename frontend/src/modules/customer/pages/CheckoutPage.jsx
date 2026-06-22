@@ -935,11 +935,11 @@ const CheckoutPage = () => {
               <ChevronLeft size={28} className="text-white" />
             </button>
             <div className="flex flex-col items-center">
-              <div className="flex items-center gap-2 mb-1 cursor-pointer" onClick={() => navigate("/")}>
+              <div className="flex items-center gap-0 mb-1 cursor-pointer" onClick={() => navigate("/")}>
                 <img
                   src={settings?.logoUrl || LogoImage}
                   alt="Athreya Delivery Logo"
-                  className="h-10 md:h-12 w-auto object-contain"
+                  className="h-10 md:h-12 w-auto object-contain -mr-1.5 md:-mr-3"
                 />
                 <span className="text-sm md:text-lg font-black tracking-tight text-white flex gap-1">
                   <span className="text-white">ATHREYA</span>

@@ -137,25 +137,25 @@ const CategoriesPage = () => {
     }, [flipRows]);
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-linear-to-br from-[#fbf9ff] via-[#f5f1ff] to-[#fbf9ff]">
             <MainLocationHeader />
-            <div className="max-w-[1280px] mx-auto px-4 pt-[240px] md:pt-[250px] pb-20">
+            <div className="max-w-[1280px] mx-auto px-4 pt-[150px] md:pt-[170px] pb-20">
                 {groups.map((group, groupIdx) => (
                     <div key={groupIdx} className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${groupIdx * 100}ms` }}>
                         {/* Group Title */}
-                        <h2 className="text-xl md:text-2xl font-black text-[#1A1A1A] mb-6 px-1">
+                        <h2 className="text-lg md:text-xl font-bold tracking-tight text-slate-800 mb-5 px-1 font-sans">
                             {group.title}
                         </h2>
-
+ 
                         {/* Categories Grid */}
-                        <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-3 gap-y-8">
+                        <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-3 gap-y-6">
                             {group.categories.map((category) => (
                                 <div key={category.id} className="flex flex-col group cursor-pointer">
                                     <Link
                                         to={`/category/${category.id}`}
                                         className="block"
                                     >
-                                        <div className="aspect-square mb-2 [perspective:1000px]">
+                                        <div className="aspect-square mb-1.5 [perspective:1000px]">
                                             <div
                                                 className="relative w-full h-full transition-transform duration-500 [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] will-change-transform"
                                                 style={{
@@ -180,7 +180,7 @@ const CategoriesPage = () => {
                                                         className="w-full h-full rounded-full object-cover"
                                                     />
                                                 </div>
-
+ 
                                                 <div
                                                     className="absolute inset-0 rounded-full bg-gradient-to-br from-[#F6EFE4] via-[#EEE7F8] to-[#E7F1FB] text-slate-700 flex items-center justify-center p-2 text-center shadow-inner border border-white/70"
                                                     style={{
@@ -194,6 +194,11 @@ const CategoriesPage = () => {
                                                     </span>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div className="text-center px-1">
+                                            <span className="text-[11px] md:text-[13px] font-bold text-slate-700 group-hover:text-primary transition-colors block truncate max-w-full font-sans leading-tight">
+                                                {category.name}
+                                            </span>
                                         </div>
                                     </Link>
                                 </div>

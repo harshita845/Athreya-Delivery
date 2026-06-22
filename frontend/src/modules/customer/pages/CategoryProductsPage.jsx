@@ -134,10 +134,10 @@ const CategoryProductsPage = () => {
     }, [safeProducts]);
 
     return (
-        <div className="flex flex-col min-h-screen bg-white max-w-md mx-auto relative font-sans">
+        <div className="flex flex-col min-h-screen bg-linear-to-br from-[#fbf9ff] via-[#f5f1ff] to-[#fbf9ff] max-w-md mx-auto relative font-sans">
             {/* Header */}
             <header className={cn(
-                "sticky top-0 z-50 bg-white border-b border-gray-50 px-4 py-4 flex items-center justify-between",
+                "sticky top-0 z-50 bg-[#fbf9ff]/95 backdrop-blur-md border-b border-purple-100/40 px-4 py-4 flex items-center justify-between",
                 isProductDetailOpen && "hidden md:flex"
             )}>
                 <div className="flex items-center gap-3">
@@ -180,7 +180,7 @@ const CategoryProductsPage = () => {
                 ) : (
                     <>
                         {/* Sidebar */}
-                        <aside className="w-[70px] border-r border-gray-50 flex flex-col bg-white overflow-y-auto hide-scrollbar sticky top-[60px] h-[calc(100vh-60px)] pb-32 flex-shrink-0">
+                        <aside className="w-[70px] border-r border-purple-100/40 flex flex-col bg-[#f5f1ff]/50 overflow-y-auto hide-scrollbar sticky top-[60px] h-[calc(100vh-60px)] pb-32 flex-shrink-0">
                             {subCategories.map((cat) => (
                                 <button
                                     key={cat.id}
@@ -188,8 +188,8 @@ const CategoryProductsPage = () => {
                                     className={cn(
                                         "flex flex-col items-center py-4 px-1 gap-2 transition-all relative border-l-4",
                                         selectedSubCategory === cat.id
-                                            ? "bg-[#F7FCF5] border-primary"
-                                            : "border-transparent hover:bg-gray-50"
+                                            ? "bg-white border-primary"
+                                            : "border-transparent hover:bg-white/40"
                                     )}
                                 >
                                     <div className={cn(
@@ -209,7 +209,7 @@ const CategoryProductsPage = () => {
                         </aside>
 
                         {/* Content */}
-                        <main className="flex-1 p-2 pb-24 bg-white space-y-4 overflow-x-hidden">
+                        <main className="flex-1 p-2 pb-24 bg-transparent space-y-4 overflow-x-hidden">
                             <div className="grid grid-cols-2 gap-x-2 gap-y-3">
                                 {filteredProducts.map((product) => (
                                     <ProductCard key={product.id} product={product} compact={true} />

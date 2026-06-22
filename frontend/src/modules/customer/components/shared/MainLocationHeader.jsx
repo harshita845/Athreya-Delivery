@@ -88,7 +88,7 @@ function CategoryNavColumn({
       className="category-column relative z-[2] flex min-w-[64px] shrink-0 cursor-pointer flex-col items-center gap-1 border-b-2 px-0.5 pb-1 pt-1 snap-start md:min-w-[84px]">
       <div
         style={{ borderColor: isActive ? activeColor : "#e2e8f0" }}
-        className="category-icon-circle relative z-10 flex h-12 w-12 items-center justify-center md:h-16 md:w-16 rounded-full bg-slate-50 border-2 shadow-sm transition-all overflow-hidden"
+        className="category-icon-circle relative z-10 flex h-12 w-12 items-center justify-center md:h-13 md:w-13 rounded-full bg-slate-50 border-2 shadow-sm transition-all overflow-hidden"
       >
         {typeof cat.icon === "function" ||
           (typeof cat.icon === "object" && cat.icon.$$typeof) ? (
@@ -356,12 +356,12 @@ const MainLocationHeader = ({
               <div
                 onClick={() => navigate("/")}
                 className="flex items-center gap-3 cursor-pointer group shrink-0">
-                <div className="flex items-center gap-2 group-hover:scale-105 transition-all duration-300">
+                <div className="flex items-center gap-0 group-hover:scale-105 transition-all duration-300">
                   <img
                     src={logoUrl}
                     alt="Athreya Delivery Logo"
                     loading="lazy"
-                    className="h-12 w-auto object-contain"
+                    className="h-12 w-auto object-contain -mr-2 md:-mr-3"
                   />
                   <span className="text-lg font-black tracking-tight flex gap-1" style={{ color: headerFontColor }}>
                     <span className="text-[#3a2a83]">ATHREYA</span>
@@ -466,12 +466,12 @@ const MainLocationHeader = ({
                 overflow: "hidden",
               }}
               className="relative z-10">
-              <div className="mb-2 flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
+              <div className="mb-2 flex items-center gap-0 cursor-pointer" onClick={() => navigate("/")}>
                 <img
                   src={logoUrl}
                   alt="Athreya Delivery Logo"
                   loading="lazy"
-                  className="h-10 w-auto object-contain"
+                  className="h-10 w-auto object-contain -mr-2"
                 />
                 <span className="text-sm font-black tracking-tight flex gap-1" style={{ color: headerFontColor }}>
                   <span className="text-[#3a2a83]">ATHREYA</span>
@@ -546,7 +546,7 @@ const MainLocationHeader = ({
                 display: displayNav,
                 overflowY: "hidden",
               }}
-              className="relative flex items-end md:justify-center gap-0 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 z-10 snap-x pt-1 min-h-[100px] md:min-h-[120px] pb-1 bg-[#f5f3ff] border-t border-purple-100/40 shadow-inner">
+              className="relative flex items-end md:justify-center gap-0 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 z-10 snap-x pt-1 min-h-[100px] md:min-h-[96px] pb-1 bg-[#f5f3ff] border-t border-purple-100/40 shadow-inner">
               {categories.slice(0, 10).map((cat) => {
                 const isActive = activeCategory?.id === cat.id;
                 return (

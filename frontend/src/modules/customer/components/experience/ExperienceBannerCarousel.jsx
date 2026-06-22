@@ -77,7 +77,7 @@ const ExperienceBannerCarousel = ({ section, items, fullWidth = false, slideGap 
   }, []);
 
   return (
-    <div className={cn("overflow-hidden touch-pan-y", fullWidth && "w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]")}>
+    <div className={cn("overflow-hidden touch-pan-y", fullWidth && "w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] md:w-full md:static md:ml-0 md:mr-0 md:max-w-6xl md:mx-auto md:rounded-[2rem]")}>
       <motion.div
         ref={containerRef}
         drag="x"
@@ -94,7 +94,7 @@ const ExperienceBannerCarousel = ({ section, items, fullWidth = false, slideGap 
             key={idx}
             className={cn(
               "relative shrink-0 overflow-hidden bg-slate-100 flex items-center justify-center box-border",
-              fullWidth ? "h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] rounded-none px-0" : "h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] px-4 md:px-8"
+              fullWidth ? "h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] md:rounded-[2rem] px-0" : "h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] px-4 md:px-8"
             )}
             style={{ width: `${100 / totalItems}%` }}
           >

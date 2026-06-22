@@ -89,7 +89,7 @@ const SectionRenderer = ({ sections = [], productsById = {}, categoriesById = {}
         if (section.displayType === "categories") {
           const ids = section.config?.categories?.categoryIds || [];
           const rows = section.config?.categories?.rows || 1;
-          const visibleCount = rows * 4;
+          const visibleCount = rows * 12;
           const allItems = ids
             .map((id) => categoriesById[id])
             .filter(Boolean)
@@ -121,7 +121,7 @@ const SectionRenderer = ({ sections = [], productsById = {}, categoriesById = {}
                   </div>
                 </div>
               )}
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-3 md:gap-4">
                   {visibleItems.map((cat) => (
                     <button
                       key={cat._id}
@@ -160,7 +160,7 @@ const SectionRenderer = ({ sections = [], productsById = {}, categoriesById = {}
         if (section.displayType === "subcategories") {
           const ids = section.config?.subcategories?.subcategoryIds || [];
           const rows = section.config?.subcategories?.rows || 1;
-          const visibleCount = rows * 4;
+          const visibleCount = rows * 12;
           const allItems = ids
             .map((id) => subcategoriesById[id])
             .filter(Boolean)
@@ -191,7 +191,7 @@ const SectionRenderer = ({ sections = [], productsById = {}, categoriesById = {}
                   </div>
                 </div>
               )}
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-3 md:gap-4">
                   {visibleItems.map((cat) => (
                     <button
                       key={cat._id}

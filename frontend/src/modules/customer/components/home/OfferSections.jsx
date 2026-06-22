@@ -13,7 +13,7 @@ const OfferSections = ({ sections, noServiceData }) => {
   if (!sections || sections.length === 0) return null;
 
   return (
-    <div className="w-full px-0 pt-0 pb-2 md:pb-4">
+    <div className="container mx-auto max-w-6xl px-4 md:px-8 pt-0 pb-2 md:pb-4">
       {[...sections]
         .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
         .map((section) => {
@@ -38,7 +38,7 @@ const OfferSections = ({ sections, noServiceData }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.4 }}
-              className="mb-4 rounded-none overflow-hidden shadow-[0_18px_35px_rgba(15,23,42,0.16)] bg-white border-y border-slate-100/70 border-x-0 md:border-x">
+              className="mb-6 rounded-none md:rounded-[2rem] overflow-hidden shadow-[0_18px_35px_rgba(15,23,42,0.08)] bg-white border border-slate-100/70">
               <div
                 className="relative flex items-center justify-between px-5 md:px-8 py-5 md:py-6 text-black"
                 style={{

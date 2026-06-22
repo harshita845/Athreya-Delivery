@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import LogoImage from "../../assets/Logo.png";
+import { useSettings } from '@core/context/SettingsContext';
 
 const SplashScreen = ({ onFinished }) => {
+  const { settings } = useSettings();
   const [percentage, setPercentage] = useState(0);
   const containerRef = useRef(null);
   const logoRef = useRef(null);
@@ -22,7 +24,7 @@ const SplashScreen = ({ onFinished }) => {
           opacity: 0,
           y: -40,
           scale: 0.95,
-          duration: 0.45,
+          duration: 0.25,
           ease: "power3.inOut",
           onComplete: () => {
             if (onFinished) onFinished();
@@ -34,33 +36,33 @@ const SplashScreen = ({ onFinished }) => {
     // 1. Logo entry (scale 0.8 -> 1.0, fade in)
     tl.fromTo(logoRef.current,
       { opacity: 0, scale: 0.8 },
-      { opacity: 1, scale: 1, duration: 1.0, ease: "back.out(1.5)" }
+      { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.5)" }
     );
 
     // 2. Text elements entry
     tl.fromTo(textRef.current,
       { opacity: 0, y: 15 },
-      { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-      "-=0.6" // overlaps with logo entry completion
+      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" },
+      "-=0.3" // overlaps with logo entry completion
     );
 
     // 3. Loader display
     tl.fromTo(progressSectionRef.current,
       { opacity: 0 },
-      { opacity: 1, duration: 0.4 },
-      "-=0.4"
+      { opacity: 1, duration: 0.2 },
+      "-=0.2"
     );
 
-    // 4. Progress bar fill & counter animation (takes 2.0s, total timeline ~3.0s)
+    // 4. Progress bar fill & counter animation (takes 0.6s)
     tl.to(progressBarRef.current, {
       scaleX: 1,
-      duration: 2.0,
+      duration: 0.6,
       ease: "power2.inOut"
-    }, "-=0.2");
+    }, "-=0.1");
 
     tl.to(progressObj, {
       value: 100,
-      duration: 2.0,
+      duration: 0.6,
       ease: "power2.inOut",
       onUpdate: () => {
         setPercentage(Math.floor(progressObj.value));
@@ -104,12 +106,12 @@ const SplashScreen = ({ onFinished }) => {
         >
           <div className="absolute inset-0 bg-gradient-to-tr from-[#3a2a83]/20 to-transparent opacity-100" />
           <img
-            src={LogoImage}
+            src={settings?.logoUrl || LogoImage}
             alt="Athreya Delivery Logo"
             className="w-full h-full object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.35)]"
           />
           {/* Shimmering beam effect */}
-          <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white/10 opacity-30 shadow-2xl animate-[shimmer_2.2s_infinite]" />
+          <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-100 shadow-2xl animate-[shimmer_2.2s_infinite]" />
         </div>
 
         {/* Brand Text Header */}

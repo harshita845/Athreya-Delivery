@@ -105,12 +105,12 @@ const Header = () => {
                 <div className="px-4 md:px-8 h-18 bg-white/95 backdrop-blur-sm rounded-full shadow-2xl flex items-center justify-between border border-white/20">
                     {/* Logo */}
                     <div className="flex items-center gap-6 mr-4 md:mr-12">
-                        <Link to="/" className="flex items-center gap-2 group">
+                        <Link to="/" className="flex items-center gap-0 group">
                             <img
                                 src={logoUrl}
                                 alt="Athreya Delivery Logo"
                                 loading="lazy"
-                                className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105"
+                                className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105 -mr-2 md:-mr-3"
                             />
                             <span className="text-base md:text-lg font-black tracking-tight flex gap-1 text-slate-800">
                                 <span className="text-[#3a2a83]">ATHREYA</span>

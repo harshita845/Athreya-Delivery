@@ -100,8 +100,8 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-24 md:pb-8 font-sans">
-            <div className="sticky top-0 z-30 bg-slate-50/95 backdrop-blur-sm px-4 pt-4 pb-3 border-b border-slate-200/60 mb-4 flex items-center justify-between gap-2">
+        <div className="min-h-screen bg-linear-to-br from-[#fbf9ff] via-[#f5f1ff] to-[#fbf9ff] pb-24 md:pb-8 font-sans">
+            <div className="sticky top-0 z-30 bg-[#fbf9ff]/95 backdrop-blur-sm px-4 pt-4 pb-3 border-b border-purple-100/40 mb-4 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => navigate(-1)}
@@ -112,11 +112,11 @@ const ProfilePage = () => {
                     <h1 className="text-xl font-semibold text-slate-900 tracking-tight">My Profile</h1>
                 </div>
                 <div className="flex items-center gap-4 ml-auto">
-                    <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
+                    <div className="hidden md:flex items-center gap-0 cursor-pointer" onClick={() => navigate("/")}>
                         <img
                             src={logoUrl}
                             alt="Athreya Delivery Logo"
-                            className="h-10 md:h-12 w-auto object-contain"
+                            className="h-10 md:h-12 w-auto object-contain -mr-2 md:-mr-3"
                         />
                         <span className="text-sm md:text-base font-black tracking-tight flex gap-1">
                             <span className="text-[#3a2a83]">ATHREYA</span>

@@ -673,7 +673,7 @@ const Home = () => {
   };
 
   return (
-    <div className={`min-h-screen pt-[215px] md:pt-[275px] ${products.length === 0 && !isLoading ? "bg-white" : "bg-[#F5F7F8]"}`}>
+    <div className={`min-h-screen pt-[215px] md:pt-[245px] ${products.length === 0 && !isLoading ? "bg-white" : "bg-[#F5F7F8]"}`}>
       <div className={cn("contents", isProductDetailOpen && "hidden md:contents")}>
         <MainLocationHeader categories={categories} activeCategory={activeCategory} onCategorySelect={setActiveCategory} />
       </div>
@@ -711,7 +711,7 @@ const Home = () => {
           </motion.div>
 
           {/* All Shops Near You Section */}
-          <div className="container mx-auto px-4 md:px-8 lg:px-[50px] py-8 my-6 bg-[#f5f3ff]/70 rounded-[2rem] border border-purple-100/50 shadow-[0_8px_32px_rgba(245,243,255,0.6)]">
+          <div className="container mx-auto max-w-6xl px-4 md:px-8 py-5 my-4 bg-[#f5f3ff]/70 rounded-[2rem] border border-purple-100/50 shadow-[0_8px_32px_rgba(245,243,255,0.6)]">
             <h3 className="text-base md:text-xl font-black text-[#1A1A1A] tracking-tight uppercase leading-none">
               All Shops near me
             </h3>
@@ -759,7 +759,7 @@ const Home = () => {
           <OfferSections sections={offerSections} noServiceData={noServiceData} />
 
           {sectionsForRenderer.length > 0 && (
-            <div className="container mx-auto px-4 md:px-8 lg:px-[50px] py-10 md:py-16">
+            <div className="container mx-auto max-w-6xl px-4 md:px-8 py-5 md:py-6">
               <SectionRenderer sections={sectionsForRenderer} productsById={productsById} categoriesById={categoryMap} subcategoriesById={subcategoryMap} />
             </div>
           )}
