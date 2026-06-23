@@ -412,7 +412,7 @@ const NotificationComposer = () => {
                             <button
                                 onClick={handleSend}
                                 disabled={!title || !message || isSending}
-                                className="ds-btn ds-btn-lg w-full bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                className="ds-btn ds-btn-lg w-full bg-[#1e40af] text-white hover:bg-[#1d3fad] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 <HiOutlineBolt className="ds-icon-md text-amber-400" />
                                 {isSending ? 'SENDING...' : 'BLAST SIGNAL'}
@@ -482,10 +482,10 @@ const NotificationComposer = () => {
                     {/* Real-time Preview */}
                     <div className="space-y-3">
                         <h3 className="ds-h4 px-1">Protocol Preview</h3>
-                        <Card className="ds-card-standard bg-gradient-to-br from-slate-900 to-slate-800 border-none">
+                        <Card className="ds-card-standard bg-slate-50 border border-slate-200">
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center">
-                                    <span className="ds-caption text-slate-400">Live Preview</span>
+                                    <span className="ds-caption text-slate-500">Live Preview</span>
                                     <Badge variant="success" className="ds-badge ds-badge-success text-[8px]">
                                         LOCKED
                                     </Badge>
@@ -495,30 +495,30 @@ const NotificationComposer = () => {
                                 <motion.div
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="bg-white/10 backdrop-blur-xl p-4 rounded-xl border border-white/10 space-y-3"
+                                    className="bg-white p-4 rounded-xl border border-slate-200/60 shadow-sm space-y-3"
                                 >
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
-                                            <div className="h-5 w-5 bg-primary rounded-lg flex items-center justify-center">
+                                            <div className="h-5 w-5 bg-[#1e40af] rounded-lg flex items-center justify-center">
                                                 <HiOutlineDevicePhoneMobile className="h-3 w-3 text-white" />
                                             </div>
-                                            <span className="text-[10px] font-bold text-white uppercase tracking-wider">{appName}</span>
+                                            <span className="text-[10px] font-bold text-slate-800 uppercase tracking-wider">{appName}</span>
                                         </div>
-                                        <span className="text-[10px] font-semibold text-white/90">Just Now</span>
+                                        <span className="text-[10px] font-semibold text-slate-500">Just Now</span>
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-bold text-white mb-1.5 truncate">
+                                        <h4 className="text-sm font-bold text-slate-900 mb-1.5 truncate">
                                             {title || 'Hot Deals are back! 🔥'}
                                         </h4>
                                         {imagePreview ? (
                                             <img
                                                 src={imagePreview}
                                                 alt="Notification attachment"
-                                                className="w-full h-32 object-cover rounded-xl border border-white/10 mb-2"
+                                                className="w-full h-32 object-cover rounded-xl border border-slate-200 mb-2"
                                                 loading="lazy"
                                             />
                                         ) : null}
-                                        <p className="text-xs font-medium text-white/95 line-clamp-3 leading-relaxed">
+                                        <p className="text-xs font-medium text-slate-600 line-clamp-3 leading-relaxed">
                                             {message || 'Type your message to see it reflect here in real-time...'}
                                         </p>
                                     </div>
@@ -538,18 +538,18 @@ const NotificationComposer = () => {
                                     className={cn(
                                         "w-full p-4 rounded-xl text-left transition-all",
                                         selectedSegment === seg.id
-                                            ? "bg-slate-900 text-white shadow-lg ring-2 ring-slate-900"
+                                            ? "bg-blue-50 text-[#1e40af] shadow-md ring-2 ring-blue-300/70"
                                             : "bg-white text-slate-700 ring-1 ring-slate-200 hover:ring-slate-300"
                                     )}
                                 >
                                     <div className="flex items-start gap-3">
                                         <div className={cn(
                                             "p-2 rounded-lg flex-shrink-0",
-                                            selectedSegment === seg.id ? "bg-white/10" : `bg-${seg.color}-50`
+                                            selectedSegment === seg.id ? "bg-blue-100/80" : `bg-${seg.color}-50`
                                         )}>
                                             <seg.icon className={cn(
                                                 "ds-icon-md",
-                                                selectedSegment === seg.id ? "text-white" : `text-${seg.color}-600`
+                                                selectedSegment === seg.id ? "text-[#1e40af]" : `text-${seg.color}-600`
                                             )} />
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -557,14 +557,14 @@ const NotificationComposer = () => {
                                                 <h4 className="ds-body font-bold truncate">{seg.label}</h4>
                                                 <span className={cn(
                                                     "ds-body font-bold",
-                                                    selectedSegment === seg.id ? "text-primary" : "text-slate-900"
+                                                    selectedSegment === seg.id ? "text-[#1e40af]" : "text-slate-900"
                                                 )}>
                                                     {Number(seg.count || 0).toLocaleString('en-IN')}
                                                 </span>
                                             </div>
                                             <p className={cn(
                                                 "ds-caption",
-                                                selectedSegment === seg.id ? "text-white/60" : "text-slate-400"
+                                                selectedSegment === seg.id ? "text-blue-600/80" : "text-slate-400"
                                             )}>
                                                 {seg.description}
                                             </p>

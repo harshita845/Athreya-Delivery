@@ -232,10 +232,11 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .glass-card {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: #f1edff !important;
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    @apply shadow-lg hover:shadow-xl transition-all duration-300;
+    border: 1px solid #dcd4ff !important;
+    box-shadow: 0 8px 32px 0 rgba(167, 139, 250, 0.08);
+    @apply shadow-lg hover:shadow-xl hover:shadow-purple-100/50 hover:border-purple-300/50 transition-all duration-300;
   }
 
   /* Performance optimization for mobile devices: remove expensive backdrop-filter */
@@ -246,7 +247,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .glass-card {
-      background-color: rgba(255, 255, 255, 0.98);
+      background-color: #f1edff !important;
       backdrop-filter: none;
     }
   }
@@ -424,7 +425,85 @@ h1, h2, h3, h4, h5, h6 {
   will-change: transform;
 }
 
+/* Header Action Icons Flip Animation */
 .header-action-button:hover svg {
   transform: rotateY(360deg);
+}
+
+/* Premium Colored Stats Cards */
+.stat-card-colored {
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+}
+
+.stat-card-colored p,
+.stat-card-colored span,
+.stat-card-colored h1,
+.stat-card-colored h2,
+.stat-card-colored h3,
+.stat-card-colored h4 {
+  color: #ffffff !important;
+}
+
+.stat-card-colored .ds-caption {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.stat-card-colored .ds-stat-large {
+  color: #ffffff !important;
+}
+
+.stat-card-colored .text-slate-600,
+.stat-card-colored .text-slate-900,
+.stat-card-colored .text-slate-500 {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.stat-card-colored .bg-brand-50,
+.stat-card-colored .bg-purple-50,
+.stat-card-colored .bg-orange-50 {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.stat-card-colored .text-brand-600,
+.stat-card-colored .text-purple-600,
+.stat-card-colored .text-orange-600 {
+  color: #ffffff !important;
+}
+
+.stat-card-colored .ds-stat-card-icon {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.stat-card-colored .ds-stat-card-icon svg {
+  color: #ffffff !important;
+}
+
+.stat-card-colored .ds-stat-card-trend {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.stat-card-colored svg {
+  color: #ffffff !important;
+}
+
+.stat-card-purple {
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%) !important;
+}
+
+.stat-card-coral {
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%) !important;
+}
+
+.stat-card-blue {
+  background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%) !important;
+}
+
+.stat-card-orange {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%) !important;
 }
 

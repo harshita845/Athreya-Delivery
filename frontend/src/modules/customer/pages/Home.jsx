@@ -760,7 +760,7 @@ const Home = () => {
                   <div key={shop._id} onClick={() => navigate(`/shops/${shop._id}`)} className="bg-white rounded-2xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100/80 flex flex-col gap-2.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
                     <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 relative">
                       <img
-                        src={getShopImage(shop.category, shop.shopName, shop.shopLogo || shop.logo || shop.shopImage)}
+                        src={getShopImage(shop.category, shop.shopName, shop.storeFrontImage || shop.shopLogo || shop.logo || shop.shopImage)}
                         alt={shop.shopName}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />

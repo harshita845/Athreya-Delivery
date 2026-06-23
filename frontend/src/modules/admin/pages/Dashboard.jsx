@@ -142,19 +142,27 @@ const AdminDashboard = () => {
 
             {/* Main Stats Grid */}
             <div className="ds-grid-stats">
-                {stats.map((stat) => (
-                    <StatCard
-                        key={stat.label}
-                        label={stat.label}
-                        value={stat.value}
-                        icon={stat.icon}
-                        trend={stat.trend}
-                        description={stat.description}
-                        color={stat.color}
-                        bg={stat.bg}
-                        className={cn("ring-1 ring-gray-100", stat.bg + "/30")}
-                    />
-                ))}
+                {stats.map((stat, idx) => {
+                    const cardClasses = [
+                        "stat-card-purple stat-card-colored",
+                        "stat-card-coral stat-card-colored",
+                        "stat-card-blue stat-card-colored",
+                        "stat-card-orange stat-card-colored"
+                    ];
+                    return (
+                        <StatCard
+                            key={stat.label}
+                            label={stat.label}
+                            value={stat.value}
+                            icon={stat.icon}
+                            trend={stat.trend}
+                            description={stat.description}
+                            color={stat.color}
+                            bg={stat.bg}
+                            className={cardClasses[idx % 4]}
+                        />
+                    );
+                })}
             </div>
 
             <div className="ds-grid-cards-3">

@@ -52,6 +52,7 @@ const ShopDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [gallerySlideIndex, setGallerySlideIndex] = useState(0);
 
   // Advanced Filters State
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -173,6 +174,14 @@ const ShopDetails = () => {
     return list;
   }, [gallery]);
 
+  useEffect(() => {
+    if (allGalleryImages.length <= 1) return;
+    const timer = setInterval(() => {
+      setGallerySlideIndex((prev) => (prev + 1) % allGalleryImages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [allGalleryImages]);
+
   // Fallback category banner helpers
   const categoryBannerMap = {
     grocery: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200&h=400",
@@ -184,6 +193,9 @@ const ShopDetails = () => {
 
   const getShopBanner = () => {
     if (shop?.shopBanner) return shop.shopBanner;
+    if (shop?.storeInteriorImages?.[0]) return shop.storeInteriorImages[0];
+    if (shop?.storeFrontImage) return shop.storeFrontImage;
+    if (shop?.shopGallery?.[0]) return shop.shopGallery[0];
     const cat = String(shop?.category || "").toLowerCase();
     if (cat.includes("grocery") || cat.includes("kirana")) return categoryBannerMap.grocery;
     if (cat.includes("veg") || cat.includes("fruit")) return categoryBannerMap.vegetables;
@@ -460,19 +472,55 @@ const ShopDetails = () => {
           <h2 className="text-base md:text-lg font-black text-slate-800 tracking-tight uppercase mb-4 flex items-center gap-1.5">
             📸 Shop Gallery
           </h2>
-          <div className="hidden md:grid grid-cols-3 gap-4">
+          
+          <div className="relative w-full aspect-[4/3] md:aspect-[21/9] rounded-3xl overflow-hidden shadow-md border border-slate-100 bg-slate-50 group">
             {allGalleryImages.map((img, idx) => (
-              <div key={idx} className="aspect-[4/3] rounded-2xl overflow-hidden shadow-sm border border-slate-100 bg-slate-100 group">
-                <img src={applyCloudinaryTransform(img, "f_auto,q_auto,w_600,h_450,c_fill")} alt="Store Interior/Shelves" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <div
+                key={idx}
+                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                  idx === gallerySlideIndex ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
+              >
+                <img
+                  src={applyCloudinaryTransform(img, "f_auto,q_auto,w_1200,h_600,c_fill")}
+                  alt={`Gallery Image ${idx + 1}`}
+                  className="w-full h-full object-cover"
+                />
               </div>
             ))}
-          </div>
-          <div className="md:hidden flex gap-4 overflow-x-auto pb-3 no-scrollbar -mx-4 px-4">
-            {allGalleryImages.map((img, idx) => (
-              <div key={idx} className="w-72 aspect-[4/3] rounded-2xl overflow-hidden shadow-sm border border-slate-100 bg-slate-100 shrink-0">
-                <img src={applyCloudinaryTransform(img, "f_auto,q_auto,w_600,h_450,c_fill")} alt="Store Interior/Shelves" className="w-full h-full object-cover" />
+            
+            {/* Prev/Next Navigation Buttons */}
+            {allGalleryImages.length > 1 && (
+              <>
+                <button
+                  onClick={() => setGallerySlideIndex((prev) => (prev === 0 ? allGalleryImages.length - 1 : prev - 1))}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white shadow-md flex items-center justify-center text-slate-850 hover:text-primary transition-all active:scale-90 opacity-0 group-hover:opacity-100 z-10"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={() => setGallerySlideIndex((prev) => (prev + 1) % allGalleryImages.length)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white shadow-md flex items-center justify-center text-slate-850 hover:text-primary transition-all active:scale-90 opacity-0 group-hover:opacity-100 z-10"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </>
+            )}
+
+            {/* Slider Dots */}
+            {allGalleryImages.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/25 backdrop-blur-xs px-2.5 py-1.5 rounded-full z-10">
+                {allGalleryImages.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setGallerySlideIndex(idx)}
+                    className={`w-1.5 h-1.5 rounded-full transition-all ${
+                      idx === gallerySlideIndex ? "bg-white scale-125" : "bg-white/40 hover:bg-white/60"
+                    }`}
+                  />
+                ))}
               </div>
-            ))}
+            )}
           </div>
         </div>
 

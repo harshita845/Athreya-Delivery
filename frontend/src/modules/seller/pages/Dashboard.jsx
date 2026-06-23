@@ -247,31 +247,39 @@ const Dashboard = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => (
-          <Card key={stat.label} className="hover:shadow-lg transition-shadow">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <p className="text-base font-medium text-slate-600">{stat.label}</p>
-                <p className="text-2xl font-bold text-slate-900 mt-2">{stat.value}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span
-                    className={cn(
-                      "text-xs font-semibold flex items-center gap-1",
-                      stat.changeType === "increase" ? "text-brand-600" : "text-red-600"
-                    )}
-                  >
-                    <TrendingUp className={cn("h-3 w-3", stat.changeType === "decrease" && "rotate-180")} />
-                    {stat.change}
-                  </span>
-                  <span className="text-sm text-slate-600">{stat.description}</span>
+        {stats.map((stat, idx) => {
+          const cardClasses = [
+            "stat-card-purple stat-card-colored",
+            "stat-card-coral stat-card-colored",
+            "stat-card-blue stat-card-colored",
+            "stat-card-orange stat-card-colored"
+          ];
+          return (
+            <Card key={stat.label} className={cn("hover:shadow-lg transition-all duration-300", cardClasses[idx % 4])}>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="text-base font-medium text-slate-600">{stat.label}</p>
+                  <p className="text-2xl font-bold text-slate-900 mt-2">{stat.value}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span
+                      className={cn(
+                        "text-xs font-semibold flex items-center gap-1",
+                        stat.changeType === "increase" ? "text-brand-600" : "text-red-600"
+                      )}
+                    >
+                      <TrendingUp className={cn("h-3 w-3", stat.changeType === "decrease" && "rotate-180")} />
+                      {stat.change}
+                    </span>
+                    <span className="text-sm text-slate-600">{stat.description}</span>
+                  </div>
+                </div>
+                <div className={cn("p-3 rounded-lg", stat.iconBg)}>
+                  <stat.icon className={cn("h-6 w-6", stat.iconColor)} />
                 </div>
               </div>
-              <div className={cn("p-3 rounded-lg", stat.iconBg)}>
-                <stat.icon className={cn("h-6 w-6", stat.iconColor)} />
-              </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          );
+        })}
       </div>
 
       {/* Quick Actions */}
