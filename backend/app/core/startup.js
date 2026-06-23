@@ -87,10 +87,6 @@ async function validateDependencies() {
       }
     } else {
       result.checks.redis = { status: 'DISABLED', message: 'Redis is disabled' };
-      if (isProduction) {
-        result.valid = false;
-        result.errors.push('Redis is required in production mode');
-      }
     }
   } catch (error) {
     result.checks.redis = { status: 'ERROR', message: error.message };
