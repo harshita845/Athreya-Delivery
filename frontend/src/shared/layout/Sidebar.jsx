@@ -334,8 +334,10 @@ const Sidebar = ({ items, title, isOpen, onClose }) => {
     <>
       {/* Desktop Sidebar */}
       <aside className={cn(
-        "fixed left-0 inset-y-0 w-72 bg-[#f0f7ff] text-slate-700 border-r border-blue-100 shadow-[20px_0_60px_rgba(30,64,175,0.05)] md:flex flex-col z-50 transition-all duration-300",
-        (role === "admin" || role === "seller") ? "hidden md:flex" : "flex",
+        "fixed left-0 inset-y-0 w-72 text-slate-700 md:flex flex-col z-50 transition-all duration-300",
+        (role === "admin" || role === "seller") 
+          ? "hidden md:flex bg-white border-r border-slate-150 shadow-[20px_0_60px_rgba(0,0,0,0.02)]" 
+          : "bg-[#f0f7ff] border-r border-blue-100 shadow-[20px_0_60px_rgba(30,64,175,0.05)] flex",
       )}>
         <SidebarContent {...commonProps} />
       </aside>
@@ -361,7 +363,10 @@ const Sidebar = ({ items, title, isOpen, onClose }) => {
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-                className="flex-1 bg-[#f0f7ff] shadow-2xl flex flex-col pointer-events-auto min-h-0"
+                className={cn(
+                  "flex-1 shadow-2xl flex flex-col pointer-events-auto min-h-0",
+                  (role === "admin" || role === "seller") ? "bg-white" : "bg-[#f0f7ff]"
+                )}
               >
                 <SidebarContent {...commonProps} />
               </motion.div>
