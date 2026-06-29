@@ -5,8 +5,7 @@ import { customerApi } from '../services/customerApi';
 import { applyCloudinaryTransform } from '@/core/utils/imageUtils';
 
 const COLORS = [
-    "#F2EEE4", "#EFE7E2", "#EAF1F4", "#F0E8F2",
-    "#EAF4EC", "#F5F1E6", "#EEF2F6", "#F2EEF5"
+    "#ffffff"
 ];
 
 const CategoriesPage = () => {
@@ -137,7 +136,8 @@ const CategoriesPage = () => {
     }, [flipRows]);
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-[#fbf9ff] via-[#f5f1ff] to-[#fbf9ff]">
+        <div className="min-h-screen bg-white">
+
             <MainLocationHeader />
             <div className="max-w-[1280px] mx-auto px-4 pt-[150px] md:pt-[170px] pb-20">
                 {groups.map((group, groupIdx) => (
@@ -165,9 +165,9 @@ const CategoriesPage = () => {
                                                 }}
                                             >
                                                 <div
-                                                    className="absolute inset-0 rounded-full p-2.5 flex items-center justify-center shadow-sm"
+                                                    className="absolute inset-0 rounded-full p-2.5 flex items-center justify-center border border-[#1a6e2e]/20"
                                                     style={{
-                                                        backgroundColor: category.color,
+                                                        backgroundColor: "#ffffff",
                                                         transform: 'rotateY(0deg)',
                                                         backfaceVisibility: 'hidden',
                                                         WebkitBackfaceVisibility: 'hidden'
@@ -182,7 +182,7 @@ const CategoriesPage = () => {
                                                 </div>
  
                                                 <div
-                                                    className="absolute inset-0 rounded-full bg-gradient-to-br from-[#F6EFE4] via-[#EEE7F8] to-[#E7F1FB] text-slate-700 flex items-center justify-center p-2 text-center shadow-inner border border-white/70"
+                                                    className="absolute inset-0 rounded-full bg-white text-[#1a6e2e] flex items-center justify-center p-2 text-center border border-[#1a6e2e]/20"
                                                     style={{
                                                         transform: 'rotateY(180deg)',
                                                         backfaceVisibility: 'hidden',
@@ -196,7 +196,7 @@ const CategoriesPage = () => {
                                             </div>
                                         </div>
                                         <div className="text-center px-1">
-                                            <span className="text-[11px] md:text-[13px] font-bold text-slate-700 group-hover:text-primary transition-colors block truncate max-w-full font-sans leading-tight">
+                                            <span className="text-[11px] md:text-[13px] font-bold text-slate-700 group-hover:text-[#1a6e2e] transition-colors block truncate max-w-full font-sans leading-tight">
                                                 {category.name}
                                             </span>
                                         </div>

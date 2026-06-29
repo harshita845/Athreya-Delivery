@@ -381,7 +381,7 @@ const ChatPage = () => {
           </button>
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="h-10 w-10 bg-primary rounded-full flex items-center justify-center text-white font-black text-sm shadow-sm ring-2 ring-white overflow-hidden">
+              <div className="h-10 w-10 bg-[#1a6e2e] rounded-full flex items-center justify-center text-white font-black text-sm border border-[#1a6e2e]/20 ring-2 ring-white overflow-hidden">
                 {brandLogoUrl && !logoFailed ? (
                   <img
                     src={brandLogoUrl}
@@ -393,14 +393,14 @@ const ChatPage = () => {
                   appInitials
                 )}
               </div>
-              <div className="absolute bottom-0 right-0 h-3 w-3 bg-brand-500 rounded-full border-2 border-white animate-pulse"></div>
+              <div className="absolute bottom-0 right-0 h-3 w-3 bg-[#1a6e2e]/10 rounded-full border-2 border-white animate-pulse"></div>
             </div>
             <div>
               <h1 className="text-base font-black text-slate-800 leading-none">
                 Support Chat
               </h1>
-              <p className="text-[10px] text-brand-600 font-bold mt-1 uppercase tracking-wider flex items-center gap-1">
-                <span className="h-1 w-1 bg-brand-500 rounded-full"></span>
+              <p className="text-[10px] text-[#1a6e2e] font-bold mt-1 uppercase tracking-wider flex items-center gap-1">
+                <span className="h-1 w-1 bg-[#1a6e2e]/10 rounded-full"></span>
                 Online
               </p>
             </div>
@@ -453,9 +453,9 @@ const ChatPage = () => {
               className={`max-w-[80%] relative group ${msg.sender === "user" ? "items-end" : "items-start"} flex flex-col`}
             >
               <div
-                className={`px-4 py-3 rounded-2xl shadow-sm border text-sm leading-relaxed ${
+                className={`px-4 py-3 rounded-2xl border border-[#1a6e2e]/20 border text-sm leading-relaxed ${
                   msg.sender === "user"
-                    ? "bg-primary text-primary-foreground border-black/25 rounded-tr-none"
+                    ? "bg-[#1a6e2e] text-[#1a6e2e]-foreground border-black/25 rounded-tr-none"
                     : "bg-white text-slate-700 border-slate-800/40 rounded-tl-none"
                 }`}
               >
@@ -491,7 +491,7 @@ const ChatPage = () => {
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              className="absolute bottom-full left-4 mb-2 bg-white rounded-2xl shadow-xl border border-slate-100 p-3 grid grid-cols-5 gap-2 w-64 z-50"
+              className="absolute bottom-full left-4 mb-2 bg-white rounded-2xl border border-[#1a6e2e]/20 border border-slate-100 p-3 grid grid-cols-5 gap-2 w-64 z-50"
             >
               {emojis.map((emoji) => (
                 <button
@@ -512,7 +512,7 @@ const ChatPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="absolute bottom-full right-4 mb-2 bg-white rounded-xl shadow-lg border border-slate-100 p-2 z-50"
+              className="absolute bottom-full right-4 mb-2 bg-white rounded-xl border border-[#1a6e2e]/20 border border-slate-100 p-2 z-50"
             >
               <div className="relative">
                 <img
@@ -526,7 +526,7 @@ const ChatPage = () => {
                     setSelectedImage(null);
                     setSelectedImageFile(null);
                   }}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 border border-[#1a6e2e]/20 hover:bg-red-600 transition-colors"
                 >
                   <div
                     className="h-3 w-3 bg-white rotate-45 transform origin-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -560,7 +560,7 @@ const ChatPage = () => {
                 initial={{ opacity: 0, y: 12, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 12, scale: 0.98 }}
-                className="absolute bottom-full left-4 mb-3 w-48 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden"
+                className="absolute bottom-full left-4 mb-3 w-48 max-w-[calc(100vw-2rem)] bg-white rounded-2xl border border-[#1a6e2e]/20 border border-slate-100 z-50 overflow-hidden"
               >
                 <button
                   type="button"
@@ -588,14 +588,14 @@ const ChatPage = () => {
           )}
         </AnimatePresence>
 
-        <div className="flex items-end gap-2 bg-slate-50 p-2 rounded-[1.5rem] border-2 border-slate-800/70 focus-within:border-slate-900 focus-within:shadow-[0_0_0_4px_rgba(15,23,42,0.08)] transition-all">
+        <div className="flex items-end gap-2 bg-slate-50 p-2 rounded-[1.5rem] border-2 border-slate-800/70 focus-within:border-slate-900 focus-within: transition-all">
           <button
             onClick={() => {
               setShowAttachmentMenu(false);
               setShowEmojiPicker(!showEmojiPicker);
             }}
             className={`p-2.5 rounded-full hover:text-slate-600 hover:bg-slate-200 transition-colors flex-shrink-0 ${
-              showEmojiPicker ? "text-primary bg-brand-50" : "text-slate-400"
+              showEmojiPicker ? "text-[#1a6e2e] bg-[#1a6e2e]/10" : "text-slate-400"
             }`}
           >
             <Smile size={22} />
@@ -638,7 +638,7 @@ const ChatPage = () => {
           <button
             onClick={handleSend}
             disabled={!String(inputText || "").trim() || isSending}
-            className="p-2.5 rounded-full bg-primary text-primary-foreground hover:bg-[var(--brand-400)] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-brand-200 flex-shrink-0"
+            className="p-2.5 rounded-full bg-[#1a6e2e] text-[#1a6e2e]-foreground hover:bg-[#1a6e2e] transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-[#1a6e2e]/20 shadow-brand-200 flex-shrink-0"
           >
             <Send size={20} className="ml-0.5" />
           </button>

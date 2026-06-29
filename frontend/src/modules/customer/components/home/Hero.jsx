@@ -3,6 +3,9 @@ import { ArrowRight, Sparkles, Tag, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import heroVideo from '@/assets/hero_video.mp4';
 import LazyImage from '@/shared/components/LazyImage';
+import { useSettings } from '@/core/context/SettingsContext';
+import LogoImage from '@/assets/Logo.png';
+
 
 const banners = [
     {
@@ -13,7 +16,7 @@ const banners = [
         badgeColor: "bg-orange-500 text-white",
         title: "Fresh",
         highlight: "Vegetables",
-        highlightColor: "text-brand-300",
+        highlightColor: "text-[#1a6e2e]",
         subtitle: "Hand-picked daily for maximum freshness and taste.",
         cta: "Shop Veggies"
     },
@@ -34,17 +37,19 @@ const banners = [
         image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=2070&auto=format&fit=crop", // Changed Image
         badge: "New Stock",
         badgeIcon: Star,
-        badgeColor: "bg-black  text-primary-foreground",
+        badgeColor: "bg-black  text-[#1a6e2e]-foreground",
         title: "Healthy",
         highlight: "Choices",
-        highlightColor: "text-brand-300",
+        highlightColor: "text-[#1a6e2e]",
         subtitle: "Everything you need for a balanced and healthy diet.",
         cta: "Start Healthy"
     }
 ];
 
 const Hero = () => {
+    const { settings } = useSettings();
     const [current, setCurrent] = useState(0);
+
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -54,7 +59,7 @@ const Hero = () => {
     }, []);
 
     return (
-        <section className="relative w-full overflow-hidden bg-primary pt-12 pb-12 md:pb-24 lg:pt-16">
+        <section className="relative w-full overflow-hidden bg-[#1a6e2e] pt-12 pb-12 md:pb-24 lg:pt-16">
 
             {/* --- Corner Decorations (Leaves/Flowers) --- */}
             <div className="absolute top-0 left-0 w-64 h-64 -translate-x-1/2 -translate-y-1/2 opacity-20 pointer-events-none">
@@ -75,7 +80,7 @@ const Hero = () => {
 
                 {/* Left Side: MAXIMIZED Banner Carousel */}
                 <div className="relative w-full flex justify-start animate-in fade-in slide-in-from-left-8 duration-700 z-20">
-                    <div className="relative w-full aspect-video md:h-[600px] rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl group border-[3px] md:border-[6px] border-white/10 backdrop-blur-sm bg-white/5">
+                    <div className="relative w-full aspect-video md:h-[600px] rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border border-[#1a6e2e]/20 group border-[3px] md:border-[6px] border-white/10  bg-white/5">
 
                         {banners.map((banner, index) => (
                             <div
@@ -93,12 +98,12 @@ const Hero = () => {
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 md:p-12 flex flex-col justify-end text-white">
                                     <div className={`transform transition-all duration-700 ${index === current ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
                                         <div className="flex items-center gap-2 mb-2 md:mb-3">
-                                            <span className={`${banner.badgeColor} font-black px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs uppercase tracking-wider shadow-lg flex items-center gap-1`}>
+                                            <span className={`${banner.badgeColor} font-black px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs uppercase tracking-wider border border-[#1a6e2e]/20 flex items-center gap-1`}>
                                                 <banner.badgeIcon size={12} className="md:w-[14px] md:h-[14px]" fill="currentColor" /> {banner.badge}
                                             </span>
                                         </div>
 
-                                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-extrabold mb-2 md:mb-4 leading-[1.1] drop-shadow-lg">
+                                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-extrabold mb-2 md:mb-4 leading-[1.1] drop-border border-[#1a6e2e]/20">
                                             {banner.title} <br /> <span className={banner.highlightColor}>{banner.highlight}</span>
                                         </h1>
 
@@ -106,7 +111,7 @@ const Hero = () => {
                                             {banner.subtitle}
                                         </p>
 
-                                        <Button className="bg-white text-primary hover:bg-[#ecfeff] hover:scale-105 active:scale-95 font-bold px-6 py-5 md:px-8 md:py-7 rounded-xl md:rounded-2xl text-sm md:text-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all w-auto">
+                                        <Button className="bg-white text-[#1a6e2e] hover:bg-[#ecfeff] hover:scale-105 active:scale-95 font-bold px-6 py-5 md:px-8 md:py-7 rounded-xl md:rounded-2xl text-sm md:text-lg  transition-all w-auto">
                                             {banner.cta} <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5 transition-transform group-hover:translate-x-1" />
                                         </Button>
                                     </div>
@@ -130,7 +135,7 @@ const Hero = () => {
 
                 {/* Right Side: Video MAXIMIZED (Slightly Reduced Height/Width) */}
                 <div className="relative w-full flex justify-center md:justify-end animate-in fade-in zoom-in duration-1000 delay-200 z-20">
-                    <div className="relative z-10 w-full aspect-video md:aspect-auto md:h-[600px] overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl border-[3px] md:border-[6px] border-white/10 backdrop-blur-sm bg-white/5 transform hover:scale-[1.01] transition-transform duration-500">
+                    <div className="relative z-10 w-full aspect-video md:aspect-auto md:h-[600px] overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] border border-[#1a6e2e]/20 border-[3px] md:border-[6px] border-white/10  bg-white/5 transform hover:scale-[1.01] transition-transform duration-500">
                         <video
                             src={heroVideo}
                             autoPlay
@@ -139,6 +144,11 @@ const Hero = () => {
                             playsInline
                             className="w-full h-full object-cover scale-[1.22] origin-top"
                         />
+                        {/* Logo overlay on video */}
+                        <div className="absolute top-6 left-6 z-20 bg-white/90  px-3.5 py-2 rounded-2xl border border-[#1a6e2e]/20 border border-white/20 flex items-center justify-center max-h-16 pointer-events-none">
+                            <img src={settings?.logoUrl || LogoImage} alt="Logo" className="h-8 sm:h-10 w-auto object-contain" />
+                        </div>
+
                         {/* Bottom Scrolling Marquee Overlay */}
                         <div className="absolute bottom-0 left-0 right-0 bg-[#3a2a83]/90 text-white py-1.5 md:py-2.5 overflow-hidden whitespace-nowrap z-30 font-black border-t border-white/10 uppercase tracking-widest text-[10px] md:text-xs">
                             <div className="classic-marquee-track flex w-max items-center gap-8">

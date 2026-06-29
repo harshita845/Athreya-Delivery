@@ -23,11 +23,15 @@ import mediaRoute from "./mediaRoutes.js";
 import healthRoute from "./healthRoutes.js";
 import metricsRoute from "./metricsRoutes.js";
 import authOtpRoute from "../modules/otp/otp.routes.js";
+import returnRequestRoute from "./returnRequestRoutes.js";
+import cancellationRequestRoute from "./cancellationRequestRoutes.js";
 
 import express from "express";
 
 const setupRoutes = (app) => {
     const router = express.Router();
+    router.use("/", returnRequestRoute);
+    router.use("/", cancellationRequestRoute);
 
     // Health and metrics endpoints (no /api prefix for standard paths)
     app.use("/health", healthRoute);

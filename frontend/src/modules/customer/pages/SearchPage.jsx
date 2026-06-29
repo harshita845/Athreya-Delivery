@@ -216,17 +216,17 @@ const SearchPage = () => {
         <div className="min-h-screen bg-white font-outfit">
             {/* Header / Search Input */}
             <div className={cn(
-                "sticky top-0 z-50 bg-linear-to-r from-primary to-[var(--brand-400)] shadow-[0_4px_20px_rgba(0,0,0,0.12)] relative overflow-hidden",
+                "sticky top-0 z-50 bg-[#1a6e2e] border-b border-transparent relative overflow-hidden",
                 isProductDetailOpen && "hidden md:block"
             )}>
                 {/* Decorative background elements */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-12 -mb-12 blur-xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-full -ml-12 -mb-12 pointer-events-none" />
 
                 <div className="px-4 pt-5 pb-6 flex items-center md:justify-center gap-3 relative z-10">
                         <button
                             onClick={() => navigate(-1)}
-                            className="flex items-center justify-center w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full text-white backdrop-blur-md border border-white/10 transition-all flex-shrink-0 shadow-sm active:scale-90"
+                            className="flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full text-white border border-white/20 transition-all flex-shrink-0 active:scale-90"
                         >
                             <ArrowLeft size={22} strokeWidth={2.5} />
                         </button>
@@ -242,7 +242,7 @@ const SearchPage = () => {
                                 value={query}
                                 onKeyDown={handleKeyDown}
                                 onChange={(e) => setQuery(e.target.value)}
-                                className="w-full h-12 bg-white rounded-2xl pl-11 pr-14 shadow-xl shadow-black/10 border-none outline-none text-slate-800 font-bold placeholder:text-slate-400 placeholder:font-medium focus:ring-4 focus:ring-white/20 transition-all"
+                                className="w-full h-12 bg-white rounded-2xl pl-11 pr-14 border border-[#1a6e2e]/20 outline-none text-slate-800 font-bold placeholder:text-slate-400 placeholder:font-medium focus:ring-4 focus:ring-white/20 transition-all"
                             />
                             
                             {/* Integrated Actions inside Search Input */}
@@ -260,7 +260,7 @@ const SearchPage = () => {
                                     onClick={handleVoiceSearch}
                                     className={cn(
                                         "p-2 transition-all rounded-full relative",
-                                        isListening ? "text-red-500 bg-red-50 scale-110" : "text-slate-400 hover:text-primary hover:bg-slate-50"
+                                        isListening ? "text-red-500 bg-red-50 scale-110" : "text-slate-400 hover:text-[#1a6e2e] hover:bg-slate-50"
                                     )}
                                 >
                                     <Mic size={20} strokeWidth={2.5} className={cn(isListening && "animate-pulse")} />
@@ -316,11 +316,11 @@ const SearchPage = () => {
                                     {pastSearches.map((term) => (
                                         <div
                                             key={term}
-                                            className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-100 shadow-sm rounded-full whitespace-nowrap active:scale-95 transition-transform cursor-pointer"
+                                            className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#1a6e2e]/20 rounded-full whitespace-nowrap active:scale-95 transition-transform cursor-pointer"
                                             onClick={() => setQuery(term)}
                                         >
-                                            <div className="h-5 w-5 rounded flex items-center justify-center" style={{ backgroundColor: (settings?.primaryColor || 'var(--primary)') + '20' }}>
-                                                <History size={12} style={{ color: settings?.primaryColor || 'var(--primary)' }} />
+                                            <div className="h-5 w-5 rounded flex items-center justify-center" style={{ backgroundColor: '#1a6e2e20' }}>
+                                                <History size={12} style={{ color: '#1a6e2e' }} />
                                             </div>
                                             <span className="text-sm font-bold text-slate-700">{term}</span>
                                             <button
@@ -341,7 +341,7 @@ const SearchPage = () => {
                                 <h2 className="text-xl font-black text-slate-800 tracking-tight">Lowest Price Ever!</h2>
                                 <button 
                                     className="flex items-center gap-1 md:gap-1.5 px-3 py-1 md:px-4 md:py-1.5 bg-slate-50 hover:bg-slate-100 rounded-full text-xs md:text-sm font-black transition-all" 
-                                    style={{ color: settings?.primaryColor || 'var(--primary)' }}
+                                    style={{ color: '#1a6e2e' }}
                                     onClick={() => navigate('/category/all')}
                                 >
                                     See All <ChevronRight size={14} strokeWidth={3} />

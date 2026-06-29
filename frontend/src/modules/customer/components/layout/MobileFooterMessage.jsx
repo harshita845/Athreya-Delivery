@@ -34,7 +34,7 @@ const MobileFooterMessage = () => {
 
     return (
         <div className="md:hidden w-full pb-20 pt-2 bg-transparent">
-            <div className="w-full overflow-hidden shadow-md border-y border-slate-100/50 bg-white aspect-[21/9]">
+            <div className="w-full overflow-hidden border-y border-[#1a6e2e]/20 bg-white aspect-[21/9]">
                 {isVideo ? (
                     <video
                         src={mediaUrl}

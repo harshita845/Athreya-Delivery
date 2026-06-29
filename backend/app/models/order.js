@@ -403,6 +403,19 @@ const orderSchema = new mongoose.Schema(
     deliveredAt: {
       type: Date,
     },
+    delivered_at: {
+      type: Date,
+      default: null,
+    },
+    return_eligible_until: {
+      type: Date,
+      default: null,
+    },
+    return_request_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ReturnRequest",
+      default: null,
+    },
     skippedBy: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -584,6 +597,15 @@ orderSchema.pre('save', function(next) {
   if (!this.status && this.orderStatus) {
     this.status = this.orderStatus;
   }
+  if (this.status === "delivered" || this.orderStatus === "delivered" || this.workflowStatus === "DELIVERED") {
+    if (!this.delivered_at) {
+      this.delivered_at = new Date();
+    }
+    if (!this.deliveredAt) {
+      this.deliveredAt = this.delivered_at;
+    }
+    this.return_eligible_until = new Date(this.delivered_at.getTime() + 2 * 60 * 60 * 1000);
+  }
   if (!this.paymentMode) {
     const method = String(this.payment?.method || "").toLowerCase();
     this.paymentMode = method === "online" ? "ONLINE" : "COD";
@@ -657,6 +679,15 @@ function mirrorCanonicalToLegacy(update) {
   }
   if (set.orderStatus && set.status == null) {
     set.status = set.orderStatus;
+  }
+
+  if (set.status === "delivered" || set.orderStatus === "delivered" || set.workflowStatus === "DELIVERED") {
+    if (set.delivered_at == null) {
+      const now = new Date();
+      set.delivered_at = now;
+      set.deliveredAt = now;
+      set.return_eligible_until = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+    }
   }
 
   // paymentStatus → payment.status (legacy nested doc).

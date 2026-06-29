@@ -32,6 +32,7 @@ export const NOTIFICATION_ROLES = Object.freeze({
   SELLER: "seller",
   DELIVERY: "delivery",
   ADMIN: "admin",
+  DELIVERY_BOY: "delivery_boy",
 });
 
 export const ROLE_TO_USER_MODEL = Object.freeze({
@@ -39,6 +40,7 @@ export const ROLE_TO_USER_MODEL = Object.freeze({
   [NOTIFICATION_ROLES.SELLER]: "Seller",
   [NOTIFICATION_ROLES.DELIVERY]: "Delivery",
   [NOTIFICATION_ROLES.ADMIN]: "Admin",
+  [NOTIFICATION_ROLES.DELIVERY_BOY]: "DeliveryBoy",
 });
 
 export const ROLE_TO_RECIPIENT_MODEL = Object.freeze({
@@ -46,6 +48,7 @@ export const ROLE_TO_RECIPIENT_MODEL = Object.freeze({
   [NOTIFICATION_ROLES.SELLER]: "Seller",
   [NOTIFICATION_ROLES.DELIVERY]: "Delivery",
   [NOTIFICATION_ROLES.ADMIN]: "Admin",
+  [NOTIFICATION_ROLES.DELIVERY_BOY]: "DeliveryBoy",
 });
 
 export const DEFAULT_DEDUP_TTL_SECONDS = () =>

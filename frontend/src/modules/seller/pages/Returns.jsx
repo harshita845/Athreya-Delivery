@@ -16,18 +16,21 @@ import { MagicCard } from "@/components/ui/magic-card";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Loader2, X } from "lucide-react";
-import { onReturnDropOtp } from "@core/services/orderSocket";
+import { onReturnDropOtp, onCancellationDropOtp } from "@core/services/orderSocket";
 import { createSocketTokenReader } from "@core/utils/authStorage";
 import { STORAGE_KEYS } from "@core/utils/storage";
+import AssignDeliveryBoy from "./AssignDeliveryBoy";
 
 const Returns = () => {
     const { showToast } = useToast();
+    const [requestType, setRequestType] = useState("return"); // "return" | "cancellation"
     const [returns, setReturns] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("All");
     const [selectedReturn, setSelectedReturn] = useState(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+    const [isAssignOpen, setIsAssignOpen] = useState(false);
     const [rejectReason, setRejectReason] = useState("");
     const [submittingReject, setSubmittingReject] = useState(false);
     const [assigningPickup, setAssigningPickup] = useState(false);
@@ -41,55 +44,58 @@ const Returns = () => {
         "Rejected",
         "Pickup Assigned",
         "In Transit",
-        "QC Passed",
-        "QC Failed",
+        "Under Dispute",
+        "Cancelled",
         "Completed",
     ];
 
     const mapReturnStatusLabel = (status) => {
-        switch (status) {
-            case "return_requested":
+        const norm = String(status || "").toUpperCase();
+        switch (norm) {
+            case "REQUESTED":
                 return "Requested";
-            case "return_approved":
+            case "SELLER_APPROVED":
                 return "Approved";
-            case "return_rejected":
+            case "SELLER_REJECTED":
                 return "Rejected";
-            case "return_pickup_assigned":
+            case "PICKUP_SCHEDULED":
                 return "Pickup Assigned";
-            case "return_in_transit":
-            case "return_drop_pending":
+            case "PICKED_UP":
+            case "DELIVERED_TO_SELLER":
+            case "REFUND_INITIATED":
                 return "In Transit";
-            case "qc_passed":
-                return "QC Passed";
-            case "qc_failed":
-                return "QC Failed";
-            case "returned":
-            case "refund_completed":
+            case "REFUND_COMPLETED":
+            case "CLOSED":
                 return "Completed";
+            case "UNDER_DISPUTE":
+                return "Under Dispute";
+            case "CANCELLED":
+                return "Cancelled";
             default:
                 return status || "Unknown";
         }
     };
 
     const getStatusVariant = (status) => {
-        switch (status) {
-            case "return_requested":
+        const norm = String(status || "").toUpperCase();
+        switch (norm) {
+            case "REQUESTED":
                 return "warning";
-            case "return_approved":
+            case "SELLER_APPROVED":
                 return "info";
-            case "return_rejected":
+            case "SELLER_REJECTED":
+            case "CANCELLED":
                 return "error";
-            case "return_pickup_assigned":
-            case "return_in_transit":
-            case "return_drop_pending":
+            case "PICKUP_SCHEDULED":
+            case "PICKED_UP":
+            case "DELIVERED_TO_SELLER":
+            case "REFUND_INITIATED":
                 return "secondary";
-            case "qc_passed":
+            case "REFUND_COMPLETED":
+            case "CLOSED":
                 return "success";
-            case "qc_failed":
-                return "error";
-            case "refund_completed":
-            case "returned":
-                return "success";
+            case "UNDER_DISPUTE":
+                return "warning";
             default:
                 return "secondary";
         }
@@ -98,15 +104,15 @@ const Returns = () => {
     const fetchReturns = async () => {
         try {
             setLoading(true);
-            const res = await sellerApi.getReturns();
-            const payload = res.data.result || {};
-            const items = Array.isArray(payload.items)
-                ? payload.items
-                : res.data.results || [];
-            setReturns(items || []);
+            const res = requestType === "cancellation"
+                ? await sellerApi.getSellerCancellationRequests()
+                : await sellerApi.getSellerReturnRequests();
+            const payload = res.data.result || res.data;
+            const items = Array.isArray(payload) ? payload : payload.cancellation_requests || payload.return_requests || payload.items || [];
+            setReturns(items);
         } catch (error) {
-            console.error("Failed to fetch returns", error);
-            showToast("Failed to fetch return requests", "error");
+            console.error(`Failed to fetch ${requestType} requests`, error);
+            showToast(`Failed to fetch ${requestType} requests`, "error");
         } finally {
             setLoading(false);
         }
@@ -115,22 +121,35 @@ const Returns = () => {
     useEffect(() => {
         fetchReturns();
 
-        // Listen for return drop OTPs (when rider arrives at seller)
+        // Listen for return/cancellation drop OTPs (when rider arrives at seller)
         const getToken = createSocketTokenReader(STORAGE_KEYS.AUTH_SELLER);
-        const unsubscribe = onReturnDropOtp(getToken, (payload) => {
-            const { orderId, otp, expiresAt } = payload;
-            setActiveOtps(prev => ({
-                ...prev,
-                [orderId]: { otp, expiresAt }
-            }));
-            showToast(`Rider arrived for Return #${orderId}. OTP: ${otp}`, "info");
-        });
+        let unsubscribe;
+
+        if (requestType === "cancellation") {
+            unsubscribe = onCancellationDropOtp(getToken, (payload) => {
+                const { orderId, otp, expiresAt } = payload;
+                setActiveOtps(prev => ({
+                    ...prev,
+                    [orderId]: { otp, expiresAt }
+                }));
+                showToast(`Rider arrived for Cancellation #${orderId}. OTP: ${otp}`, "info");
+            });
+        } else {
+            unsubscribe = onReturnDropOtp(getToken, (payload) => {
+                const { orderId, otp, expiresAt } = payload;
+                setActiveOtps(prev => ({
+                    ...prev,
+                    [orderId]: { otp, expiresAt }
+                }));
+                showToast(`Rider arrived for Return #${orderId}. OTP: ${otp}`, "info");
+            });
+        }
 
         return () => {
             if (typeof unsubscribe === "function") unsubscribe();
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [requestType]);
 
     useEffect(() => {
         if (isDetailsOpen || isRejectModalOpen) {
@@ -146,7 +165,7 @@ const Returns = () => {
     const filteredReturns = useMemo(() => {
         if (activeTab === "All") return returns;
         return returns.filter((r) => {
-            const label = mapReturnStatusLabel(r.returnStatus);
+            const label = mapReturnStatusLabel(r.status);
             return label === activeTab;
         });
     }, [returns, activeTab]);
@@ -156,15 +175,20 @@ const Returns = () => {
         setIsDetailsOpen(true);
     };
 
-    const handleApprove = async (orderId) => {
+    const handleApprove = async (returnRequestId) => {
         try {
-            await sellerApi.approveReturn(orderId, {});
-            showToast("Return approved", "success");
+            if (requestType === "cancellation") {
+                await sellerApi.approveSellerCancellationRequest(returnRequestId, { note: "Approved by seller" });
+            } else {
+                await sellerApi.approveSellerReturnRequest(returnRequestId, { seller_note: "Approved by seller" });
+            }
+            showToast(`${requestType === "cancellation" ? "Cancellation" : "Return"} approved successfully`, "success");
+            setIsDetailsOpen(false);
             await fetchReturns();
         } catch (error) {
-            console.error("Failed to approve return", error);
+            console.error(`Failed to approve ${requestType}`, error);
             showToast(
-                error.response?.data?.message || "Failed to approve return",
+                error.response?.data?.message || `Failed to approve ${requestType}`,
                 "error"
             );
         }
@@ -172,18 +196,23 @@ const Returns = () => {
 
     const handleReject = async () => {
         if (!rejectReason.trim() || !selectedReturn) return;
+        const returnRequestId = selectedReturn._id || selectedReturn.id;
         try {
             setSubmittingReject(true);
-            await sellerApi.rejectReturn(selectedReturn.orderId, { reason: rejectReason });
-            showToast("Return rejected", "success");
+            if (requestType === "cancellation") {
+                await sellerApi.rejectSellerCancellationRequest(returnRequestId, { note: rejectReason });
+            } else {
+                await sellerApi.rejectSellerReturnRequest(returnRequestId, { seller_note: rejectReason });
+            }
+            showToast(`${requestType === "cancellation" ? "Cancellation" : "Return"} rejected successfully`, "success");
             setIsRejectModalOpen(false);
             setRejectReason("");
             setIsDetailsOpen(false);
             await fetchReturns();
         } catch (error) {
-            console.error("Failed to reject return", error);
+            console.error(`Failed to reject ${requestType}`, error);
             showToast(
-                error.response?.data?.message || "Failed to reject return",
+                error.response?.data?.message || `Failed to reject ${requestType}`,
                 "error"
             );
         } finally {
@@ -191,22 +220,8 @@ const Returns = () => {
         }
     };
 
-    const handleAssignPickup = async (orderId) => {
-        try {
-            setAssigningPickup(true);
-            await sellerApi.assignReturnDelivery(orderId, {});
-            showToast("Riders notified for return pickup", "success");
-            setIsDetailsOpen(false);
-            await fetchReturns();
-        } catch (error) {
-            console.error("Failed to assign pickup", error);
-            showToast(
-                error.response?.data?.message || "No nearby riders found or assignment failed",
-                "error"
-            );
-        } finally {
-            setAssigningPickup(false);
-        }
+    const handleAssignPickup = () => {
+        setIsAssignOpen(true);
     };
 
     return (
@@ -215,7 +230,7 @@ const Returns = () => {
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
                     <div className="min-w-0">
                         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 flex flex-wrap items-center gap-2">
-                            Return Requests
+                            {requestType === "cancellation" ? "Cancellation" : "Return"} Requests
                             <Badge
                                 variant="secondary"
                                 className="text-[10px] px-1.5 py-0 font-bold tracking-widest uppercase"
@@ -224,10 +239,34 @@ const Returns = () => {
                             </Badge>
                         </h1>
                         <p className="text-slate-600 text-sm sm:text-base mt-0.5 font-medium">
-                            Review and manage customer return requests.
+                            Review and manage customer {requestType === "cancellation" ? "order cancellation" : "return"} requests.
                         </p>
                     </div>
-                    <div className="flex gap-2 flex-shrink-0">
+                    <div className="flex flex-wrap items-center gap-3 flex-shrink-0">
+                        <div className="flex items-center gap-1.5 bg-slate-100/80 backdrop-blur-sm p-1 rounded-xl border border-slate-200/50">
+                            <button
+                                onClick={() => { setRequestType("return"); setActiveTab("All"); }}
+                                className={cn(
+                                    "px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-300",
+                                    requestType === "return"
+                                        ? "bg-slate-900 text-white shadow-md shadow-slate-900/10 scale-[1.02]"
+                                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                                )}
+                            >
+                                Returns
+                            </button>
+                            <button
+                                onClick={() => { setRequestType("cancellation"); setActiveTab("All"); }}
+                                className={cn(
+                                    "px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-300",
+                                    requestType === "cancellation"
+                                        ? "bg-slate-900 text-white shadow-md shadow-slate-900/10 scale-[1.02]"
+                                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                                )}
+                            >
+                                Cancellations
+                            </button>
+                        </div>
                         <Button
                             onClick={fetchReturns}
                             variant="outline"
@@ -253,7 +292,7 @@ const Returns = () => {
                         {["Requested", "Approved", "Rejected", "Completed"].map(
                             (label, i) => {
                                 const count = returns.filter(
-                                    (r) => mapReturnStatusLabel(r.returnStatus) === label
+                                    (r) => mapReturnStatusLabel(r.status) === label
                                 ).length;
                                 return (
                                     <BlurFade key={label} delay={0.1 + i * 0.05}>
@@ -333,13 +372,13 @@ const Returns = () => {
                                                     onClick={() => openDetails(ret)}
                                                 >
                                                     <p className="text-xs font-black text-slate-900 truncate">
-                                                        #{ret.orderId}
+                                                        #{ret.order_id?.orderId || ret.orderId}
                                                     </p>
                                                     <p className="text-xs font-semibold text-slate-600 mt-0.5 flex items-center gap-1">
                                                         <HiOutlineCalendarDays className="h-3 w-3 shrink-0" />
-                                                        {ret.returnRequestedAt
+                                                        {ret.createdAt
                                                             ? new Date(
-                                                                ret.returnRequestedAt
+                                                                ret.createdAt
                                                             ).toLocaleString("en-IN", {
                                                                 day: "2-digit",
                                                                 month: "short",
@@ -349,41 +388,33 @@ const Returns = () => {
                                                             : "N/A"}
                                                     </p>
                                                     <p className="text-xs font-bold text-slate-800 mt-1">
-                                                        {ret.customer?.name || "Customer"}
+                                                        {ret.customer_id?.name || ret.customer?.name || "Customer"}
                                                     </p>
                                                     <p className="text-xs text-slate-500 mt-1 line-clamp-2">
-                                                        {ret.returnReason ||
-                                                            "No reason provided"}
+                                                        {ret.reason_description || ret.reason || "No description"}
                                                     </p>
                                                     {/* Proper Data: Rider tracking for in-transit */}
-                                                    {(ret.returnStatus === "return_in_transit" || ret.returnStatus === "return_drop_pending" || ret.returnStatus === "return_pickup_assigned") && ret.returnDeliveryBoy && (
+                                                    {(ret.status === "PICKUP_SCHEDULED" || ret.status === "PICKED_UP" || ret.status === "DELIVERED_TO_SELLER") && ret.delivery_boy_id && (
                                                         <div className="mt-2 flex items-center gap-1.5 px-2 py-1 bg-brand-50 rounded-lg border border-brand-100 w-fit">
                                                             <HiOutlineTruck className="h-3 w-3 text-brand-600" />
-                                                            <span className="text-[10px] font-bold text-brand-700">Rider: {ret.returnDeliveryBoy.name}</span>
-                                                        </div>
-                                                    )}
-                                                    {/* Proper Data: QC Note for passed/failed */}
-                                                    {(ret.returnStatus === "qc_passed" || ret.returnStatus === "qc_failed") && ret.returnQcNote && (
-                                                        <div className="mt-2 flex items-start gap-1.5 px-2 py-1 bg-slate-50 rounded-lg border border-slate-100 w-fit max-w-[200px]">
-                                                            <HiOutlineInboxStack className="h-3 w-3 text-slate-500 mt-0.5" />
-                                                            <span className="text-[10px] font-medium text-slate-600 italic line-clamp-2">QC: {ret.returnQcNote}</span>
+                                                            <span className="text-[10px] font-bold text-brand-700">Rider: {ret.delivery_boy_id.name}</span>
                                                         </div>
                                                     )}
                                                 </div>
                                                 <div className="flex flex-col items-end gap-2 shrink-0">
                                                     <Badge
                                                         variant={getStatusVariant(
-                                                            ret.returnStatus
+                                                            ret.status
                                                         )}
                                                         className="text-[10px] font-black uppercase px-2 py-0"
                                                     >
-                                                        {mapReturnStatusLabel(ret.returnStatus)}
+                                                        {mapReturnStatusLabel(ret.status)}
                                                     </Badge>
                                                     <p className="text-xs font-black text-slate-900">
                                                         {"\u20B9"}
-                                                        {ret.returnRefundAmount ||
-                                                            ret.pricing?.subtotal ||
-                                                            0}
+                                                        {requestType === "cancellation"
+                                                            ? (ret.order_id?.paymentBreakdown?.grandTotal || ret.order_id?.pricing?.total || 0)
+                                                            : (ret.refund_amount || 0)}
                                                     </p>
                                                     <button
                                                         onClick={() => openDetails(ret)}
@@ -422,17 +453,17 @@ const Returns = () => {
                             <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-slate-100 shrink-0">
                                 <div>
                                     <h3 className="text-base font-black text-slate-900">
-                                        Return for Order #{selectedReturn.orderId}
+                                        {requestType === "cancellation" ? "Cancellation" : "Return"} for Order #{selectedReturn.order_id?.orderId || selectedReturn.orderId}
                                     </h3>
                                     <div className="flex items-center space-x-2 mt-0.5">
                                         <Badge
                                             variant={getStatusVariant(
-                                                selectedReturn.returnStatus
+                                                selectedReturn.status
                                             )}
                                             className="text-[10px] font-black uppercase tracking-widest px-1.5 py-0"
                                         >
                                             {mapReturnStatusLabel(
-                                                selectedReturn.returnStatus
+                                                selectedReturn.status
                                             )}
                                         </Badge>
                                     </div>
@@ -451,43 +482,35 @@ const Returns = () => {
                                         Customer
                                     </p>
                                     <p className="text-sm font-bold text-slate-900">
-                                        {selectedReturn.customer?.name || "Customer"}
+                                        {selectedReturn.customer_id?.name || selectedReturn.customer?.name || "Customer"}
                                     </p>
                                     <p className="text-xs text-slate-500">
-                                        {selectedReturn.customer?.phone || ""}
+                                        {selectedReturn.customer_id?.phone || selectedReturn.customer?.phone || ""}
                                     </p>
                                 </div>
 
                                 <div className="space-y-2">
                                     <p className="text-xs font-bold text-slate-600 uppercase tracking-widest">
-                                        Return Details
+                                        {requestType === "cancellation" ? "Cancellation" : "Return"} Details
                                     </p>
                                     <div className="bg-slate-50 rounded-2xl p-3 border border-slate-100 space-y-2">
                                         <p className="text-sm font-bold text-slate-800">
-                                            Reason: <span className="font-medium text-slate-600">{selectedReturn.returnReason || "N/A"}</span>
+                                            Reason: <span className="font-medium text-slate-600">{selectedReturn.reason || "N/A"}</span>
                                         </p>
-                                        {selectedReturn.returnReasonDetail && (
+                                        {selectedReturn.reason_description && (
                                             <p className="text-sm text-slate-700 italic border-l-2 border-slate-300 pl-2">
-                                                {selectedReturn.returnReasonDetail}
+                                                {selectedReturn.reason_description}
                                             </p>
-                                        )}
-                                        {selectedReturn.returnConditionAssurance !== undefined && (
-                                            <div className="flex items-start gap-1.5 pt-1">
-                                                <div className={`mt-1 h-2 w-2 shrink-0 rounded-full ${selectedReturn.returnConditionAssurance ? 'bg-emerald-500' : 'bg-slate-300'}`} />
-                                                <p className="text-xs font-semibold text-slate-600">
-                                                    {selectedReturn.returnConditionAssurance ? "Customer confirmed proper accessories & good condition." : "Customer did NOT confirm condition."}
-                                                </p>
-                                            </div>
                                         )}
                                     </div>
 
-                                    {selectedReturn.returnImages?.length > 0 && (
+                                    {selectedReturn.product_images?.length > 0 && (
                                         <div className="pt-2 space-y-2">
                                             <p className="text-xs font-bold text-slate-600 uppercase tracking-widest">
-                                                Customer Photos ({selectedReturn.returnImages.length})
+                                                Customer Photos ({selectedReturn.product_images.length})
                                             </p>
                                             <div className="flex gap-2 overflow-x-auto pb-2">
-                                                {selectedReturn.returnImages.map((img, idx) => (
+                                                {selectedReturn.product_images.map((img, idx) => (
                                                     <div key={idx} className="relative aspect-square w-20 rounded-xl overflow-hidden border border-slate-200 shrink-0 cursor-pointer hover:border-slate-400" onClick={() => window.open(img, '_blank')}>
                                                         <img src={img} alt={`Return ${idx}`} className="w-full h-full object-cover" />
                                                     </div>
@@ -495,18 +518,18 @@ const Returns = () => {
                                             </div>
                                         </div>
                                     )}
-                                    {selectedReturn.returnRejectedReason && (
-                                        <p className="text-xs text-rose-600 font-semibold">
-                                            Rejection reason:{" "}
-                                            {selectedReturn.returnRejectedReason}
+                                    {selectedReturn.seller_note && (
+                                        <p className="text-xs text-rose-600 font-semibold bg-rose-50 p-2.5 rounded-xl border border-rose-100">
+                                            Seller Rejection Note:{" "}
+                                            {selectedReturn.seller_note}
                                         </p>
                                     )}
                                 </div>
 
                                 {/* Tracking Info Section */}
-                                {(selectedReturn.returnStatus === "return_pickup_assigned" ||
-                                    selectedReturn.returnStatus === "return_in_transit" ||
-                                    selectedReturn.returnStatus === "return_drop_pending") && selectedReturn.returnDeliveryBoy && (
+                                {(selectedReturn.status === "PICKUP_SCHEDULED" ||
+                                    selectedReturn.status === "PICKED_UP" ||
+                                    selectedReturn.status === "DELIVERED_TO_SELLER") && selectedReturn.delivery_boy_id && (
                                         <div className="bg-brand-50 rounded-2xl p-4 border border-brand-100 space-y-2">
                                             <div className="flex items-center gap-2">
                                                 <div className="h-8 w-8 rounded-lg bg-black  flex items-center justify-center text-white">
@@ -514,118 +537,71 @@ const Returns = () => {
                                                 </div>
                                                 <div>
                                                     <p className="text-[10px] font-black text-brand-600 uppercase tracking-widest leading-none mb-1">Rider Assigned</p>
-                                                    <p className="text-sm font-bold text-slate-900 leading-none">{selectedReturn.returnDeliveryBoy.name}</p>
+                                                    <p className="text-sm font-bold text-slate-900 leading-none">{selectedReturn.delivery_boy_id.name}</p>
                                                 </div>
                                             </div>
-                                            {selectedReturn.returnDeliveryBoy.phone && (
+                                            {selectedReturn.delivery_boy_id.phone && (
                                                 <a
-                                                    href={`tel:${selectedReturn.returnDeliveryBoy.phone}`}
+                                                    href={`tel:${selectedReturn.delivery_boy_id.phone}`}
                                                     className="inline-flex items-center gap-1.5 text-[11px] font-bold text-brand-700 bg-white px-3 py-1.5 rounded-lg border border-brand-200 shadow-sm hover:bg-brand-100 transition-colors"
                                                 >
-                                                    📞 {selectedReturn.returnDeliveryBoy.phone}
+                                                    📞 {selectedReturn.delivery_boy_id.phone}
                                                 </a>
                                             )}
-                                            {selectedReturn.returnStatus === "return_drop_pending" && (
-                                                <p className="text-[10px] font-bold text-brand-800 italic mt-1 bg-white/50 p-2 rounded-lg">
-                                                    Rider is at your location. Please check the OTP below to confirm the drop.
-                                                </p>
-                                            )}
                                         </div>
                                     )}
-
-                                {/* QC Info Section */}
-                                {(selectedReturn.returnStatus === "qc_passed" || selectedReturn.returnStatus === "qc_failed") && (
-                                    <div className={`rounded-2xl p-4 border space-y-2 ${selectedReturn.returnStatus === "qc_passed" ? "bg-emerald-50 border-emerald-100" : "bg-rose-50 border-rose-100"
-                                        }`}>
-                                        <div className="flex items-center gap-2">
-                                            <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-white ${selectedReturn.returnStatus === "qc_passed" ? "bg-emerald-600" : "bg-rose-600"
-                                                }`}>
-                                                <HiOutlineInboxStack className="h-5 w-5" />
-                                            </div>
-                                            <div>
-                                                <p className={`text-[10px] font-black uppercase tracking-widest leading-none mb-1 ${selectedReturn.returnStatus === "qc_passed" ? "text-emerald-600" : "text-rose-600"
-                                                    }`}>Quality Check Results</p>
-                                                <p className="text-sm font-bold text-slate-900 leading-none">
-                                                    {selectedReturn.returnStatus === "qc_passed" ? "QC Passed" : "QC Failed"}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        {selectedReturn.returnQcNote && (
-                                            <div className="bg-white/60 p-3 rounded-xl border border-black/5">
-                                                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1">QC Decision Note:</p>
-                                                <p className="text-sm text-slate-800 italic leading-relaxed">
-                                                    "{selectedReturn.returnQcNote}"
-                                                </p>
-                                            </div>
-                                        )}
-                                        {selectedReturn.returnQcAt && (
-                                            <p className="text-[10px] font-medium text-slate-500">
-                                                Reviewed on: {new Date(selectedReturn.returnQcAt).toLocaleString()}
-                                            </p>
-                                        )}
-                                    </div>
-                                )}
 
                                 {/* Quality Check Comparison (2-Way) */}
-                                <div className="space-y-3 pt-2">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
-                                        Product Comparison (QC)
-                                    </p>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {/* 1. Original Listing Image */}
-                                        <div className="space-y-1.5 flex flex-col h-full group">
-                                            <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner group-hover:border-slate-300 transition-colors">
-                                                <img
-                                                    src={selectedReturn.items?.[0]?.image || "https://placehold.co/400x400/f8fafc/64748b?text=Original"}
-                                                    alt="Original"
-                                                    className="h-full w-full object-cover"
-                                                />
-                                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/60 to-transparent p-2">
-                                                    <p className="text-[9px] font-black text-white uppercase leading-none">Listing</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                        {/* 3. Return Pickup Proof */}
-                                        <div className="space-y-1.5 flex flex-col h-full group">
-                                            <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner group-hover:border-slate-300 transition-colors flex items-center justify-center">
-                                                {selectedReturn.returnPickupImages?.[0] ? (
+                                {requestType !== "cancellation" && (
+                                    <div className="space-y-3 pt-2">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
+                                            Product Comparison
+                                        </p>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {/* 1. Original Listing Image */}
+                                            <div className="space-y-1.5 flex flex-col h-full group">
+                                                <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner group-hover:border-slate-300 transition-colors">
                                                     <img
-                                                        src={selectedReturn.returnPickupImages[0]}
-                                                        alt="Return Pickup"
+                                                        src={selectedReturn.order_id?.items?.[0]?.image || "https://placehold.co/400x400/f8fafc/64748b?text=Original"}
+                                                        alt="Original"
                                                         className="h-full w-full object-cover"
                                                     />
-                                                ) : (
-                                                    <div className="flex flex-col items-center gap-1.5 text-slate-400 px-3 text-center">
-                                                        <HiOutlineInboxStack className="h-5 w-5" />
-                                                        <p className="text-[8px] font-bold leading-tight uppercase">Not Picked Yet</p>
+                                                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/60 to-transparent p-2">
+                                                        <p className="text-[9px] font-black text-white uppercase leading-none">Listing</p>
                                                     </div>
-                                                )}
-                                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-emerald-900/60 to-transparent p-2">
-                                                    <p className="text-[9px] font-black text-white uppercase leading-none">Return</p>
+                                                </div>
+                                            </div>
+
+                                            {/* 3. Return Proof */}
+                                            <div className="space-y-1.5 flex flex-col h-full group">
+                                                <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner group-hover:border-slate-300 transition-colors flex items-center justify-center">
+                                                    {selectedReturn.product_images?.[0] ? (
+                                                        <img
+                                                            src={selectedReturn.product_images[0]}
+                                                            alt="Return Proof"
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="flex flex-col items-center gap-1.5 text-slate-400 px-3 text-center">
+                                                            <HiOutlineInboxStack className="h-5 w-5" />
+                                                            <p className="text-[8px] font-bold leading-tight uppercase">No Photos</p>
+                                                        </div>
+                                                    )}
+                                                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-emerald-900/60 to-transparent p-2">
+                                                        <p className="text-[9px] font-black text-white uppercase leading-none">Proof</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    {selectedReturn.returnPickupCondition && (
-                                        <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl">
-                                            <div className={`h-2 w-2 rounded-full ${selectedReturn.returnPickupCondition === 'good' ? 'bg-emerald-500' :
-                                                    selectedReturn.returnPickupCondition === 'damaged' ? 'bg-rose-500' : 'bg-amber-500'
-                                                }`} />
-                                            <p className="text-[11px] font-bold text-slate-600">
-                                                Rider Condition Report: <span className="uppercase text-slate-900">{selectedReturn.returnPickupCondition}</span>
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
+                                )}
 
                                 <div className="space-y-2">
                                     <p className="text-xs font-bold text-slate-600 uppercase tracking-widest">
                                         Items
                                     </p>
                                     <div className="space-y-2">
-                                        {(selectedReturn.returnItems || []).map(
+                                        {(selectedReturn.order_id?.items || []).map(
                                             (item, idx) => (
                                                 <div
                                                     key={idx}
@@ -653,32 +629,24 @@ const Returns = () => {
                                         Payment Breakdown
                                     </p>
                                     <p className="text-xs text-slate-700">
-                                        Product refund:{" "}
+                                        {requestType === "cancellation" ? "Total order refund:" : "Product refund:"}{" "}
                                         <span className="font-black">
                                             {"\u20B9"}
-                                            {selectedReturn.returnRefundAmount ||
-                                                selectedReturn.pricing?.subtotal ||
-                                                0}
-                                        </span>
-                                    </p>
-                                    <p className="text-xs text-slate-700">
-                                        Return delivery commission:{" "}
-                                        <span className="font-black">
-                                            {"\u20B9"}
-                                            {selectedReturn.returnDeliveryCommission ||
-                                                0}
+                                            {requestType === "cancellation"
+                                                ? (selectedReturn.order_id?.paymentBreakdown?.grandTotal || selectedReturn.order_id?.pricing?.total || 0)
+                                                : (selectedReturn.refund_amount || 0)}
                                         </span>
                                     </p>
                                 </div>
 
                                 {/* Active OTP Display */}
-                                {activeOtps[selectedReturn.orderId] && (
+                                {activeOtps[selectedReturn.order_id?._id || selectedReturn.order_id] && (
                                     <div className="bg-brand-50 border-2 border-dashed border-brand-200 rounded-3xl p-6 text-center space-y-3 animate-in fade-in zoom-in duration-500">
                                         <p className="text-[10px] font-black text-brand-600 uppercase tracking-[0.2em]">
                                             Rider Arrived - Share OTP
                                         </p>
                                         <div className="flex items-center justify-center gap-3">
-                                            {activeOtps[selectedReturn.orderId].otp.split('').map((char, i) => (
+                                            {activeOtps[selectedReturn.order_id?._id || selectedReturn.order_id].otp.split('').map((char, i) => (
                                                 <div key={i} className="h-14 w-12 bg-white rounded-xl shadow-sm border border-brand-100 flex items-center justify-center text-3xl font-black text-slate-900 border-b-4 border-b-brand-500">
                                                     {char}
                                                 </div>
@@ -701,7 +669,7 @@ const Returns = () => {
                                     </button>
 
                                     {/* Action: Approve/Reject */}
-                                    {canManageReturns && selectedReturn.returnStatus === "return_requested" && (
+                                    {canManageReturns && selectedReturn.status === "REQUESTED" && (
                                         <>
                                             <Button
                                                 variant="outline"
@@ -712,32 +680,53 @@ const Returns = () => {
                                             </Button>
                                             <Button
                                                 className="text-xs font-bold bg-slate-900"
-                                                onClick={() => handleApprove(selectedReturn.orderId)}
+                                                onClick={() => handleApprove(selectedReturn._id || selectedReturn.id)}
                                             >
-                                                Approve Return
+                                                Approve {requestType === "cancellation" ? "Cancellation" : "Return"}
                                             </Button>
                                         </>
                                     )}
 
                                     {/* Action: Assign Pickup */}
-                                    {canManageReturns && (selectedReturn.returnStatus === "return_approved") && (
+                                    {canManageReturns && (selectedReturn.status === "SELLER_APPROVED") && (
                                         <Button
                                             className="text-xs font-bold bg-black  hover:bg-brand-700"
-                                            disabled={assigningPickup}
-                                            onClick={() => handleAssignPickup(selectedReturn.orderId)}
+                                            onClick={handleAssignPickup}
                                         >
-                                            {assigningPickup ? (
-                                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                            ) : (
-                                                <HiOutlineInboxStack className="h-4 w-4 mr-2" />
-                                            )}
+                                            <HiOutlineInboxStack className="h-4 w-4 mr-2" />
                                             Assign Pickup
+                                        </Button>
+                                    )}
+
+                                    {/* Action: Reassign Pickup */}
+                                    {canManageReturns && (selectedReturn.status === "PICKUP_SCHEDULED") && (
+                                        <Button
+                                            className="text-xs font-bold bg-black  hover:bg-brand-700"
+                                            onClick={handleAssignPickup}
+                                        >
+                                            <HiOutlineInboxStack className="h-4 w-4 mr-2" />
+                                            Reassign Rider
                                         </Button>
                                     )}
                                 </div>
                             </div>
                         </motion.div>
                     </div>
+                )}
+            </AnimatePresence>
+            <AnimatePresence>
+                {isAssignOpen && selectedReturn && (
+                    <AssignDeliveryBoy
+                        returnRequest={selectedReturn}
+                        cancellationRequest={selectedReturn}
+                        type={requestType}
+                        onClose={() => setIsAssignOpen(false)}
+                        onAssigned={() => {
+                            setIsAssignOpen(false);
+                            setIsDetailsOpen(false);
+                            fetchReturns();
+                        }}
+                    />
                 )}
             </AnimatePresence>
             <AnimatePresence>

@@ -161,16 +161,16 @@ const DeliveryOtpDisplay = ({ orderId, checkoutGroupId = null }) => {
   // Show delivery confirmation
   if (isDelivered) {
     return (
-      <div className="bg-brand-50 border border-brand-200 rounded-2xl p-6 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="bg-[#1a6e2e]/10 border border-[#1a6e2e]/20 rounded-2xl p-6 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="flex justify-center mb-3">
-          <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center">
-            <CheckCircle className="w-10 h-10 text-brand-600" />
+          <div className="w-16 h-16 bg-[#1a6e2e]/10 rounded-full flex items-center justify-center">
+            <CheckCircle className="w-10 h-10 text-[#1a6e2e]" />
           </div>
         </div>
-        <h3 className="text-lg font-bold text-brand-900 mb-1">
+        <h3 className="text-lg font-bold text-[#1a6e2e] mb-1">
           Delivery Confirmed!
         </h3>
-        <p className="text-sm text-brand-700">
+        <p className="text-sm text-[#1a6e2e]">
           Your order has been successfully delivered
         </p>
       </div>
@@ -186,15 +186,15 @@ const DeliveryOtpDisplay = ({ orderId, checkoutGroupId = null }) => {
         {/* Delivery Person Nearby Indicator */}
         {/* Requirement 4.4: Show visual indicator that delivery person is nearby */}
         {otpData.deliveryPersonNearby && (
-          <div className="bg-brand-50 border border-brand-200 rounded-xl p-3 flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <MapPin className="w-5 h-5 text-brand-600" />
+          <div className="bg-[#1a6e2e]/10 border border-[#1a6e2e]/20 rounded-xl p-3 flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#1a6e2e]/10 rounded-full flex items-center justify-center flex-shrink-0">
+              <MapPin className="w-5 h-5 text-[#1a6e2e]" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-brand-900 uppercase tracking-wider">
+              <p className="text-xs font-bold text-[#1a6e2e] uppercase tracking-wider">
                 Delivery Partner Nearby
               </p>
-              <p className="text-xs text-brand-700">
+              <p className="text-xs text-[#1a6e2e]">
                 Within 0-120 meters of your location
               </p>
             </div>
@@ -208,7 +208,7 @@ const DeliveryOtpDisplay = ({ orderId, checkoutGroupId = null }) => {
           className={`border rounded-2xl p-6 text-center transition-colors duration-300 ${
             isExpiringSoon
               ? "bg-amber-50 border-amber-300"
-              : "bg-gradient-to-br from-purple-50 to-brand-50 border-purple-200"
+              : "bg-slate-50 border-purple-200"
           }`}
         >
           <div className="flex items-center justify-center gap-2 mb-2">

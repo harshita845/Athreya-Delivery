@@ -68,4 +68,31 @@ export const deliveryApi = {
     axiosInstance.post(`/orders/workflow/${orderId}/return-drop-otp/request`, body),
   verifyReturnDropOtp: (orderId, body) =>
     axiosInstance.post(`/orders/workflow/${orderId}/return-drop-otp/verify`, body),
+
+  // Cancellation OTP Handlers
+  requestCancellationOtp: (orderId, body) =>
+    axiosInstance.post(`/orders/workflow/${orderId}/cancellation-otp/request`, body),
+  verifyCancellationOtp: (orderId, body) =>
+    axiosInstance.post(`/orders/workflow/${orderId}/cancellation-otp/verify`, body),
+  requestCancellationDropOtp: (orderId, body) =>
+    axiosInstance.post(`/orders/workflow/${orderId}/cancellation-drop-otp/request`, body),
+  verifyCancellationDropOtp: (orderId, body) =>
+    axiosInstance.post(`/orders/workflow/${orderId}/cancellation-drop-otp/verify`, body),
+
+  // Return Requests (New System)
+  getMyReturnTasks: () => axiosInstance.get('/delivery-boy/return-tasks'),
+  getReturnTaskDetail: (returnRequestId) => axiosInstance.get(`/return-requests/${returnRequestId}`),
+  acceptReturnTask: (returnRequestId) => axiosInstance.post(`/delivery-boy/return-tasks/${returnRequestId}/accept`),
+  declineReturnTask: (returnRequestId) => axiosInstance.post(`/delivery-boy/return-tasks/${returnRequestId}/decline`),
+  markReturnPickedUp: (returnRequestId, formData) => axiosInstance.post(`/delivery-boy/return-tasks/${returnRequestId}/picked-up`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  markReturnDeliveredToSeller: (returnRequestId) => axiosInstance.post(`/delivery-boy/return-tasks/${returnRequestId}/delivered-to-seller`),
+  updateReturnRiderLocation: (data) => axiosInstance.put('/delivery-boy/location', data),
+
+  // Cancellation Requests Logistics
+  getMyCancellationTasks: () => axiosInstance.get('/delivery-boy/cancellation-tasks'),
+  getCancellationTaskDetail: (cancellationRequestId) => axiosInstance.get(`/cancellation-requests/${cancellationRequestId}`),
+  acceptCancellationTask: (cancellationRequestId) => axiosInstance.post(`/delivery-boy/cancellation-tasks/${cancellationRequestId}/accept`),
+  declineCancellationTask: (cancellationRequestId, data) => axiosInstance.post(`/delivery-boy/cancellation-tasks/${cancellationRequestId}/decline`, data),
 };

@@ -38,7 +38,7 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
   displayAddress,
 }) {
   return (
-    <motion.div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+    <motion.div className="bg-white rounded-2xl p-4 border border-[#1a6e2e]/20">
       {/* "Order for someone else" toggle */}
       <div className="flex justify-between items-center mb-3">
         <span className="text-xs text-slate-500 font-medium">
@@ -46,7 +46,7 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
         </span>
         <button
           onClick={onToggleRecipientForm}
-          className="text-primary text-xs font-bold hover:underline">
+          className="text-[#1a6e2e] text-xs font-bold hover:underline">
           {showRecipientForm
             ? "Close"
             : savedRecipient
@@ -57,16 +57,16 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
 
       {/* Saved recipient card */}
       {savedRecipient && !showRecipientForm && (
-        <div className="mb-4 p-4 bg-brand-50 border border-brand-100 rounded-2xl flex items-start justify-between">
+        <div className="mb-4 p-4 bg-[#1a6e2e]/10 border border-[#1a6e2e]/20 rounded-2xl flex items-start justify-between">
           <div className="flex gap-3">
-            <div className="h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center text-primary flex-shrink-0">
+            <div className="h-10 w-10 rounded-full bg-[#1a6e2e]/20 flex items-center justify-center text-[#1a6e2e] flex-shrink-0">
               <Contact2 size={18} />
             </div>
             <div>
               <p className="text-sm font-bold text-slate-800">
                 {savedRecipient.name}
               </p>
-              <p className="text-xs text-primary font-bold mb-1">
+              <p className="text-xs text-[#1a6e2e] font-bold mb-1">
                 {savedRecipient.phone}
               </p>
               <p className="text-xs text-slate-500 leading-tight">
@@ -93,7 +93,7 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden mb-4">
-            <div className="bg-[#f8f9fb] rounded-2xl p-4 border border-slate-100 space-y-4">
+            <div className="bg-white rounded-2xl p-4 border border-[#1a6e2e]/20 space-y-4">
               <div>
                 <h4 className="text-sm font-bold text-slate-800 mb-3">
                   Enter delivery address details
@@ -105,7 +105,7 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
                     onChange={(e) =>
                       onRecipientDataChange({ ...recipientData, completeAddress: e.target.value })
                     }
-                    className="h-12 rounded-xl border-slate-200 focus:ring-primary focus:border-primary text-sm"
+                    className="h-12 rounded-xl border-[#1a6e2e]/20 focus:ring-[#1a6e2e] focus:border-[#1a6e2e] text-sm"
                   />
                   <Input
                     placeholder="Find landmark (optional)"
@@ -113,7 +113,7 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
                     onChange={(e) =>
                       onRecipientDataChange({ ...recipientData, landmark: e.target.value })
                     }
-                    className="h-12 rounded-xl border-slate-200 focus:ring-primary focus:border-primary text-sm"
+                    className="h-12 rounded-xl border-[#1a6e2e]/20 focus:ring-[#1a6e2e] focus:border-[#1a6e2e] text-sm"
                   />
                   <Input
                     placeholder="Enter pin code (optional)"
@@ -121,7 +121,7 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
                     onChange={(e) =>
                       onRecipientDataChange({ ...recipientData, pincode: e.target.value })
                     }
-                    className="h-12 rounded-xl border-slate-200 focus:ring-primary focus:border-primary text-sm"
+                    className="h-12 rounded-xl border-[#1a6e2e]/20 focus:ring-[#1a6e2e] focus:border-[#1a6e2e] text-sm"
                   />
                 </div>
               </div>
@@ -140,7 +140,7 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
                     onChange={(e) =>
                       onRecipientDataChange({ ...recipientData, name: e.target.value })
                     }
-                    className="h-12 rounded-xl border-slate-200 focus:ring-primary focus:border-primary text-sm"
+                    className="h-12 rounded-xl border-[#1a6e2e]/20 focus:ring-[#1a6e2e] focus:border-[#1a6e2e] text-sm"
                   />
                   <div className="relative">
                     <Input
@@ -149,7 +149,7 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
                       onChange={(e) =>
                         onRecipientDataChange({ ...recipientData, phone: e.target.value })
                       }
-                      className="h-12 rounded-xl border-slate-200 focus:ring-primary focus:border-primary text-sm pr-10"
+                      className="h-12 rounded-xl border-[#1a6e2e]/20 focus:ring-[#1a6e2e] focus:border-[#1a6e2e] text-sm pr-10"
                     />
                     <Contact2
                       size={18}
@@ -161,7 +161,7 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
 
               <Button
                 onClick={onSaveRecipient}
-                className="w-full h-12 bg-[var(--brand-700)] hover:bg-[var(--brand-600)] text-white font-bold rounded-xl">
+                className="w-full h-12 bg-[#1a6e2e] text-white font-bold rounded-xl border border-transparent">
                 Save address
               </Button>
             </div>
@@ -176,10 +176,10 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
       </div>
 
       {/* Active address card */}
-      <div className="border rounded-xl p-3 mb-3 relative cursor-pointer transition-all border-primary bg-brand-50/50">
+      <div className="border rounded-xl p-3 mb-3 relative cursor-pointer transition-all border-[#1a6e2e] bg-[#1a6e2e]/10">
         <div className="flex items-start gap-3">
           <div className="mt-1">
-            <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+            <div className="h-5 w-5 rounded-full bg-[#1a6e2e] flex items-center justify-center border border-transparent">
               <Check size={12} className="text-white stroke-[4]" />
             </div>
           </div>
@@ -194,7 +194,7 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); onSelectAddress(); }}
-                  className="text-primary text-xs font-bold hover:underline">
+                  className="text-[#1a6e2e] text-xs font-bold hover:underline">
                   Change
                 </button>
               </div>
@@ -210,20 +210,20 @@ const CheckoutAddressSection = React.memo(function CheckoutAddressSection({
         type="button"
         onClick={onUseCurrentLocation}
         disabled={isFetchingLocation}
-        className="mt-3 w-full py-2.5 rounded-2xl border border-dashed border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+        className="mt-3 w-full py-2.5 rounded-2xl border border-dashed border-[#1a6e2e]/30 text-xs font-bold text-slate-700 hover:bg-[#1a6e2e]/5 transition-colors">
         {isFetchingLocation ? "Detecting live location..." : "Use current live location"}
       </button>
 
       {/* Confirmation banner */}
-      <motion.div className="mt-3 rounded-2xl border border-brand-100 bg-brand-50/70 px-4 py-3 flex items-center gap-3 shadow-sm">
-        <div className="h-8 w-8 rounded-full bg-black  flex items-center justify-center shadow-brand-500/40 shadow-md">
+      <motion.div className="mt-3 rounded-2xl border border-[#1a6e2e]/20 bg-[#1a6e2e]/10 px-4 py-3 flex items-center gap-3">
+        <div className="h-8 w-8 rounded-full bg-[#1a6e2e] flex items-center justify-center border border-transparent">
           <Check size={16} className="text-white stroke-[3]" />
         </div>
         <div className="flex-1">
-          <p className="text-[13px] font-semibold text-brand-900">
+          <p className="text-[13px] font-semibold text-[#1a6e2e]">
             Delivery address confirmed
           </p>
-          <p className="text-[11px] font-medium text-brand-800/80">
+          <p className="text-[11px] font-medium text-[#1a6e2e]">
             We&apos;ll deliver to the address you&apos;ve entered above.
           </p>
         </div>

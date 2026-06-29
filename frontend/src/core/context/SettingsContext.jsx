@@ -9,12 +9,14 @@ import React, {
 import axiosInstance from "@core/api/axios";
 import { getWithDedupe } from "@core/api/dedupe";
 import { DEFAULT_SETTINGS, applyThemeVariables } from "./SettingsDefaults";
+import LogoImage from "@/assets/Logo.png";
+
 
 // Create context with null so we can check if it's provided
 const SettingsContext = createContext(null);
 
 export const SettingsProvider = ({ children }) => {
-  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState({ ...DEFAULT_SETTINGS, logoUrl: LogoImage });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -28,7 +30,7 @@ export const SettingsProvider = ({ children }) => {
         forceRefresh: options.forceRefresh || false 
       });
       const data = res.data?.result || res.data;
-      const merged = { ...DEFAULT_SETTINGS, ...data };
+      const merged = { ...DEFAULT_SETTINGS, ...data, logoUrl: LogoImage };
       setSettings(merged);
       applyThemeVariables(merged);
     } catch (err) {
@@ -38,8 +40,9 @@ export const SettingsProvider = ({ children }) => {
           err.message ||
           "Failed to load settings",
       );
-      setSettings(DEFAULT_SETTINGS);
-      applyThemeVariables(DEFAULT_SETTINGS);
+      setSettings({ ...DEFAULT_SETTINGS, logoUrl: LogoImage });
+      applyThemeVariables({ ...DEFAULT_SETTINGS, logoUrl: LogoImage });
+
     } finally {
       setLoading(false);
     }

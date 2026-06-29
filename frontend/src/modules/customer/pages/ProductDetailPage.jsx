@@ -134,7 +134,7 @@ const ProductDetailPage = () => {
     if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-white">
-                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                <div className="w-16 h-16 border-4 border-[#1a6e2e] border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -150,7 +150,7 @@ const ProductDetailPage = () => {
                     )}
                 </div>
                 <h3 className="text-3xl font-[1000] text-slate-800 tracking-tighter mb-4 uppercase">
-                    Item <span className="text-primary">Unavailable</span>
+                    Item <span className="text-[#1a6e2e]">Unavailable</span>
                 </h3>
                 <p className="text-slate-500 font-bold text-sm max-w-[280px] mb-8 leading-relaxed">
                     {error === "Product not available in your area" 
@@ -160,7 +160,7 @@ const ProductDetailPage = () => {
                 <div className="flex flex-col gap-3 w-full max-w-xs">
                     <button 
                         onClick={() => navigate('/')}
-                        className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-800 active:scale-95 transition-all shadow-xl shadow-black/10"
+                        className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-800 active:scale-95 transition-all border border-[#1a6e2e]/20"
                     >
                         Go to Home
                     </button>
@@ -181,13 +181,13 @@ const ProductDetailPage = () => {
 
     return (
         <div className="relative z-10 py-8 w-full max-w-[1920px] mx-auto px-4 md:px-[50px] animate-in fade-in duration-700 mt-24">
-            <Link to={-1} className="inline-flex items-center gap-2 text-slate-500 hover:text-primary font-bold mb-6 transition-colors group">
+            <Link to={-1} className="inline-flex items-center gap-2 text-slate-500 hover:text-[#1a6e2e] font-bold mb-6 transition-colors group">
                 <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" /> Back
             </Link>
 
             <div className="flex flex-col lg:flex-row gap-10 xl:gap-16">
                 <div className="lg:w-[45%] xl:w-[40%] space-y-4">
-                    <div className="relative aspect-square rounded-[2rem] overflow-hidden bg-white border border-slate-100 shadow-sm transition-all hover:shadow-xl group">
+                    <div className="relative aspect-square rounded-[2rem] overflow-hidden bg-white border border-[#1a6e2e]/20 transition-all group">
                         <img
                             src={applyCloudinaryTransform(activeImage, "f_auto,q_auto,w_800")}
                             alt={product.name}
@@ -197,7 +197,7 @@ const ProductDetailPage = () => {
                         <button
                             onClick={handleToggleWishlist}
                             className={cn(
-                                "absolute top-5 right-5 p-3.5 rounded-full shadow-2xl transition-all duration-300 hover:scale-110",
+                                "absolute top-5 right-5 p-3.5 rounded-full border border-[#1a6e2e]/20 transition-all duration-300 hover:scale-110",
                                 isWishlisted ? "bg-red-50 text-red-500" : "bg-white text-slate-400"
                             )}
                         >
@@ -212,7 +212,7 @@ const ProductDetailPage = () => {
                                 onClick={() => setActiveImage(img)}
                                 className={cn(
                                     "relative h-20 w-20 md:h-24 md:w-24 rounded-2xl overflow-hidden flex-shrink-0 transition-all border-2",
-                                    activeImage === img ? "border-primary shadow-lg scale-95" : "border-transparent opacity-70 hover:opacity-100"
+                                    activeImage === img ? "border-[#1a6e2e] scale-95" : "border-transparent opacity-70 hover:opacity-100"
                                 )}
                             >
                                 <img src={applyCloudinaryTransform(img, "f_auto,q_auto,w_150")} alt={`Angle ${idx}`} loading="lazy" className="w-full h-full object-contain p-1" />
@@ -224,7 +224,7 @@ const ProductDetailPage = () => {
                 <div className="lg:w-[55%] xl:w-[60%] space-y-6 md:space-y-8">
                     <div>
                         <div className="flex items-center gap-3 mb-4">
-                            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border border-primary/20">
+                            <span className="bg-[#1a6e2e]/10 text-[#1a6e2e] px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border border-[#1a6e2e]/20">
                                 {product.categoryId?.name || 'Essential'}
                             </span>
                             <div className="flex items-center gap-1 text-orange-500 font-bold bg-orange-50 px-3 py-0.5 rounded-full text-xs">
@@ -237,7 +237,7 @@ const ProductDetailPage = () => {
                         </h1>
 
                         <div className="flex items-baseline gap-4 mb-5">
-                            <span className="text-4xl font-black text-primary">₹{product.salePrice || product.price}</span>
+                            <span className="text-4xl font-black text-[#1a6e2e]">₹{product.salePrice || product.price}</span>
                             {(product.salePrice && product.salePrice < product.price) && (
                                 <span className="text-lg text-slate-400 line-through font-bold">₹{product.price}</span>
                             )}
@@ -255,7 +255,7 @@ const ProductDetailPage = () => {
 
                     <div className="flex flex-col sm:flex-row items-center gap-6 p-6 bg-slate-50 rounded-[2.5rem] border border-slate-100">
                         {quantity > 0 ? (
-                            <div className="flex items-center bg-primary text-primary-foreground rounded-2xl h-16 w-full sm:w-auto px-2 shadow-xl shadow-brand-100">
+                            <div className="flex items-center bg-[#1a6e2e] text-white rounded-2xl h-16 w-full sm:w-auto px-2 border border-transparent">
                                 <button
                                     onClick={() => updateQuantity(product.id, -1, "")}
                                     className="w-12 h-12 flex items-center justify-center hover:bg-white/20 rounded-xl transition-all"
@@ -276,14 +276,14 @@ const ProductDetailPage = () => {
                                     addToCart(product);
                                     showToast(`${product.name} added to cart`, 'success');
                                 }}
-                                className="h-16 w-full sm:w-64 bg-primary hover:bg-[var(--brand-400)] text-white text-lg font-black rounded-2xl shadow-xl transition-all hover:-translate-y-1"
+                                className="h-16 w-full sm:w-64 bg-[#1a6e2e] hover:bg-[#1a6e2e]/90 text-white text-lg font-black rounded-2xl border border-transparent transition-all hover:-translate-y-1"
                             >
                                 <Plus className="mr-2" size={24} strokeWidth={3} /> ADD TO CART
                             </Button>
                         )}
 
                         <div className="flex flex-col gap-1 text-center sm:text-left">
-                            <span className="text-xs font-black text-primary uppercase tracking-widest flex items-center justify-center sm:justify-start gap-1">
+                            <span className="text-xs font-black text-[#1a6e2e] uppercase tracking-widest flex items-center justify-center sm:justify-start gap-1">
                                 <ShieldCheck size={14} /> Quality Guaranteed
                             </span>
                             <span className="text-sm font-bold text-slate-400 flex items-center justify-center sm:justify-start gap-1">
@@ -293,15 +293,15 @@ const ProductDetailPage = () => {
                     </div>
 
                     <div className="grid grid-cols-3 gap-4">
-                        <div className="bg-white p-4 rounded-2xl border border-slate-100 text-center shadow-sm">
+                        <div className="bg-white p-4 rounded-2xl border border-[#1a6e2e]/20 text-center">
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Weight</p>
                             <p className="text-sm font-black text-slate-800">{product.weight || '1 unit'}</p>
                         </div>
-                        <div className="bg-white p-4 rounded-2xl border border-slate-100 text-center shadow-sm">
+                        <div className="bg-white p-4 rounded-2xl border border-[#1a6e2e]/20 text-center">
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Stock</p>
                             <p className="text-sm font-black text-slate-800">{product.stock > 0 ? 'In Stock' : 'Out of Stock'}</p>
                         </div>
-                        <div className="bg-white p-4 rounded-2xl border border-slate-100 text-center shadow-sm">
+                        <div className="bg-white p-4 rounded-2xl border border-[#1a6e2e]/20 text-center">
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Brand</p>
                             <p className="text-sm font-black text-slate-800">{product.brand || 'Premium'}</p>
                         </div>
@@ -312,7 +312,7 @@ const ProductDetailPage = () => {
             <div className="mt-20 border-t border-slate-100 pt-16">
                 <div className="flex flex-col lg:flex-row gap-12">
                     <div className="lg:w-[40%]">
-                        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm sticky top-24">
+                        <div className="bg-white p-8 rounded-[2.5rem] border border-[#1a6e2e]/20 sticky top-24">
                             <h3 className="text-2xl font-black text-slate-800 mb-2">Write a Review</h3>
                             <p className="text-slate-500 font-medium mb-6 text-sm">Share your experience with this product</p>
 
@@ -342,14 +342,14 @@ const ProductDetailPage = () => {
                                         value={newReview.comment}
                                         onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
                                         placeholder="What did you like or dislike?"
-                                        className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-bold min-h-[120px] outline-none ring-1 ring-transparent focus:ring-primary/20 transition-all"
+                                        className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-bold min-h-[120px] outline-none ring-1 ring-transparent focus:ring-[#1a6e2e]/20 transition-all"
                                     />
                                 </div>
 
                                 <Button
                                     type="submit"
                                     disabled={isSubmittingReview}
-                                    className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-2xl shadow-xl transition-all active:scale-95"
+                                    className="w-full h-14 bg-[#1a6e2e] hover:bg-[#1a6e2e]/90 text-white font-black rounded-2xl border border-transparent transition-all active:scale-95"
                                 >
                                     {isSubmittingReview ? "SUBMITTING..." : "SUBMIT REVIEW"}
                                 </Button>
@@ -360,20 +360,20 @@ const ProductDetailPage = () => {
                     <div className="lg:w-[60%] space-y-8">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-3xl font-black text-slate-800">Customer Reviews</h3>
-                            <div className="flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-xl border border-primary/10">
-                                <MessageSquare size={18} className="text-primary" />
-                                <span className="font-black text-primary">{reviews.length} Verified</span>
+                            <div className="flex items-center gap-2 px-4 py-2 bg-[#1a6e2e]/10 rounded-xl border border-[#1a6e2e]/20">
+                                <MessageSquare size={18} className="text-[#1a6e2e]" />
+                                <span className="font-black text-[#1a6e2e]">{reviews.length} Verified</span>
                             </div>
                         </div>
 
                         {reviewLoading ? (
                             <div className="flex justify-center p-20">
-                                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                                <div className="w-8 h-8 border-4 border-[#1a6e2e] border-t-transparent rounded-full animate-spin" />
                             </div>
                         ) : reviews.length > 0 ? (
                             <div className="space-y-6">
                                 {reviews.map((review) => (
-                                    <div key={review._id} className="p-8 rounded-[2rem] bg-white border border-slate-100 shadow-sm">
+                                    <div key={review._id} className="p-8 rounded-[2rem] bg-white border border-[#1a6e2e]/20">
                                         <div className="flex justify-between items-start mb-4">
                                             <div className="flex items-center gap-4">
                                                 <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center font-black text-slate-400 text-xl">

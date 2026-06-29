@@ -11,7 +11,7 @@ const TermsPage = () => {
     return (
         <div className="min-h-screen bg-slate-50 font-sans pb-10">
             {/* Header */}
-            <div className="bg-white sticky top-0 z-30 px-4 py-3 flex items-center gap-1 shadow-sm">
+            <div className="bg-white sticky top-0 z-30 px-4 py-3 flex items-center gap-1 border-b border-[#1a6e2e]/20">
                 <button
                     onClick={() => navigate(-1)}
                     className="p-2 -ml-2 rounded-full hover:bg-slate-100 transition-colors"
@@ -22,9 +22,9 @@ const TermsPage = () => {
             </div>
 
             <div className="p-5 max-w-3xl mx-auto space-y-6">
-                <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+                <div className="bg-white rounded-3xl p-6 border border-[#1a6e2e]/20">
                     <div className="flex items-center gap-4 mb-6">
-                        <div className="h-12 w-12 rounded-2xl bg-brand-50 flex items-center justify-center text-primary">
+                        <div className="h-12 w-12 rounded-2xl bg-[#1a6e2e]/10 flex items-center justify-center text-[#1a6e2e]">
                             <ScrollText size={24} />
                         </div>
                         <div>

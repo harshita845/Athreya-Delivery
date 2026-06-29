@@ -171,6 +171,25 @@ const INDEX_DEFINITIONS = {
     // each field individually but not the `(orderId, action)` compound.
     { keys: { orderId: 1, action: 1, createdAt: -1 }, options: { name: "idx_orderId_action_created", background: true } },
   ],
+
+  returnrequests: [
+    { keys: { order_id: 1 }, options: { name: "idx_return_requests_order_id", background: true } },
+    { keys: { customer_id: 1, status: 1 }, options: { name: "idx_return_requests_customer_id_status", background: true } },
+    { keys: { seller_id: 1, status: 1 }, options: { name: "idx_return_requests_seller_id_status", background: true } },
+    { keys: { delivery_boy_id: 1 }, options: { name: "idx_return_requests_delivery_boy_id", background: true } },
+  ],
+
+  cancellationrequests: [
+    { keys: { order_id: 1 }, options: { name: "idx_cancellation_requests_order_id", background: true } },
+    { keys: { customer_id: 1, status: 1 }, options: { name: "idx_cancellation_requests_customer_id_status", background: true } },
+    { keys: { seller_id: 1, status: 1 }, options: { name: "idx_cancellation_requests_seller_id_status", background: true } },
+    { keys: { delivery_boy_id: 1 }, options: { name: "idx_cancellation_requests_delivery_boy_id", background: true } },
+  ],
+
+  deliveryboys: [
+    { keys: { current_location: "2dsphere" }, options: { name: "idx_delivery_boys_current_location", background: true } },
+    { keys: { seller_id: 1, is_active: 1, is_available: 1 }, options: { name: "idx_delivery_boys_seller_status", background: true } },
+  ],
 };
 
 /**

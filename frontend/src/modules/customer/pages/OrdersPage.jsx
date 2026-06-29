@@ -45,8 +45,8 @@ const OrdersPage = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white shadow-sm border border-slate-100">
-                    <Loader2 className="animate-spin text-brand-600" size={22} />
+                <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border border-[#1a6e2e]/20 border border-slate-100">
+                    <Loader2 className="animate-spin text-[#1a6e2e]" size={22} />
                     <span className="text-sm font-medium text-slate-600">Loading your orders…</span>
                 </div>
             </div>
@@ -54,8 +54,10 @@ const OrdersPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-[#fbf9ff] via-[#f5f1ff] to-[#fbf9ff] pb-24">
-            <div className="sticky top-0 z-30 bg-[#fbf9ff]/95 backdrop-blur-sm px-4 pt-4 pb-3 border-b border-purple-100/40 mb-4 flex items-center justify-between gap-2">
+        <div className="min-h-screen bg-white pb-24">
+
+            <div className="sticky top-0 z-30 bg-white px-4 pt-4 pb-3 border-b border-[#1a6e2e]/20 mb-4 flex items-center justify-between gap-2">
+
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => navigate(-1)}
@@ -86,7 +88,7 @@ const OrdersPage = () => {
                         <p className="text-slate-500 text-sm mb-6 max-w-[260px]">
                             When you place an order, it will appear here so you can track it easily.
                         </p>
-                        <Link to="/" className="bg-primary hover:bg-[#0a6d19] text-white px-7 py-2.5 rounded-full font-semibold text-sm shadow-sm transition-colors">
+                        <Link to="/" className="bg-[#1a6e2e] hover:bg-[#1a6e2e]/90 text-white px-7 py-2.5 rounded-full font-semibold text-sm transition-colors">
                             Start Shopping
                         </Link>
                     </div>
@@ -97,7 +99,7 @@ const OrdersPage = () => {
                             <Link
                                 to={`/orders/${order.orderId}`}
                                 key={order._id}
-                                className="block bg-white rounded-2xl px-4 py-3.5 shadow-[0_8px_24px_rgba(15,23,42,0.06)] border border-slate-100/80 active:scale-[0.985] transition-transform cursor-pointer hover:shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
+                                className="block bg-white rounded-2xl px-4 py-3.5 border border-[#1a6e2e]/20 active:scale-[0.985] transition-transform cursor-pointer"
                             >
                                 <div className="flex justify-between items-start gap-3 mb-3.5">
                                     <div className="flex gap-3.5 flex-1 min-w-0">
@@ -132,22 +134,12 @@ const OrdersPage = () => {
                                     </div>
                                     <div className="flex flex-col items-end gap-1 shrink-0 text-right">
                                         <span
-                                            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] ${legacy === 'delivered'
-                                                    ? 'bg-brand-50 text-brand-700 border-brand-100'
-                                                    : legacy === 'cancelled'
-                                                        ? 'bg-rose-50 text-rose-700 border-rose-100'
-                                                        : 'bg-brand-50 text-brand-700 border-brand-100'
-                                                }`}
+                                            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] bg-[#1a6e2e]/10 text-[#1a6e2e] border-[#1a6e2e]/20`}
                                         >
                                             <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/80">
                                                 <CheckCircle
                                                     size={9}
-                                                    className={`${legacy === 'delivered'
-                                                            ? 'text-brand-600'
-                                                            : legacy === 'cancelled'
-                                                                ? 'text-rose-500'
-                                                                : 'text-brand-500'
-                                                        }`}
+                                                    className="text-[#1a6e2e]"
                                                 />
                                             </span>
                                             <span>{getOrderStatusLabel(order).toUpperCase()}</span>
@@ -159,7 +151,7 @@ const OrdersPage = () => {
                                     </div>
                                 </div>
 
-                                <div className="border-t border-slate-100 pt-3 flex justify-between items-center gap-3">
+                                <div className="border-t border-[#1a6e2e]/10 pt-3 flex justify-between items-center gap-3">
                                     <div className="text-[11px] text-slate-500 font-medium truncate max-w-[230px]">
                                         {order.items.map((i) => i.name).join(', ')}
                                     </div>

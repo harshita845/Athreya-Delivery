@@ -86,12 +86,12 @@ const ShopByStorePage = () => {
       {/* Header */}
       <div className="mb-8 md:mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <p className="text-xs md:text-sm font-black uppercase tracking-[0.25em] text-primary/80 mb-2">
+          <p className="text-xs md:text-sm font-black uppercase tracking-[0.25em] text-[#1a6e2e] mb-2">
             Shop by store
           </p>
           <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 mb-3">
             Curated Aisles,{" "}
-            <span className="text-primary">Just for You</span>
+            <span className="text-[#1a6e2e]">Just for You</span>
           </h1>
           <p className="text-slate-500 text-sm md:text-lg font-medium max-w-2xl">
             Jump straight into themed collections – from{" "}
@@ -101,7 +101,7 @@ const ShopByStorePage = () => {
           </p>
         </div>
         {activeStore && (
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/15 text-xs md:text-sm font-bold text-primary">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1a6e2e]/10 border border-[#1a6e2e]/20 text-xs md:text-sm font-bold text-[#1a6e2e]">
             <Tag size={16} />
             <span className="truncate max-w-[180px] md:max-w-xs">
               Currently exploring: {activeStore.title}
@@ -128,14 +128,14 @@ const ShopByStorePage = () => {
                 <button
                   key={store._id}
                   onClick={() => setActiveStoreId(store._id)}
-                  className={`flex items-center gap-3 rounded-2xl border-2 min-w-[210px] md:min-w-[260px] pr-4 transition-all shadow-sm hover:shadow-lg ${
+                  className={`flex items-center gap-3 rounded-2xl border min-w-[210px] md:min-w-[260px] pr-4 transition-all ${
                     isActive
-                      ? "border-primary bg-white"
-                      : "border-slate-100 bg-slate-50/60"
+                      ? "border-[#1a6e2e] bg-white"
+                      : "border-[#1a6e2e]/20 bg-white"
                   }`}
                 >
                   <div
-                    className="h-16 w-20 rounded-2xl overflow-hidden flex-shrink-0 shadow-inner"
+                    className="h-16 w-20 rounded-2xl overflow-hidden flex-shrink-0"
                     style={{ backgroundColor: bgColor }}
                   >
                     <img
@@ -156,7 +156,7 @@ const ShopByStorePage = () => {
                   <ChevronRight
                     size={18}
                     className={`${
-                      isActive ? "text-primary" : "text-slate-400"
+                      isActive ? "text-[#1a6e2e]" : "text-slate-400"
                     }`}
                   />
                 </button>
@@ -170,10 +170,10 @@ const ShopByStorePage = () => {
         <section className="mb-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Left: big summer–style hero */}
           <div className="lg:col-span-5">
-            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-brand-100 via-amber-50 to-rose-50 border border-slate-100 shadow-xl h-full flex flex-col">
+            <div className="relative overflow-hidden rounded-[2rem] bg-white border border-[#1a6e2e]/20 h-full flex flex-col">
               <div className="p-6 md:p-8 flex-1 flex flex-col justify-between relative z-10">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.3em] text-brand-500 mb-2">
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-[#1a6e2e] mb-2">
                     {activeStore.categoryIds?.length || 0}+ categories
                   </p>
                   <h2 className="text-2xl md:text-3xl font-[1000] text-slate-900 leading-tight mb-2">
@@ -185,12 +185,11 @@ const ShopByStorePage = () => {
                   </p>
                 </div>
                 <div className="mt-4 flex items-center gap-2 text-xs font-bold text-slate-700">
-                  <Sparkles size={16} className="text-amber-500" />
+                  <Sparkles size={16} className="text-[#1a6e2e]" />
                   <span>Tap a block on the right to see products instantly</span>
                 </div>
               </div>
-              <div className="absolute -right-10 bottom-0 w-40 h-40 md:w-52 md:h-52 bg-brand-300/40 rounded-full blur-3xl" />
-              <div className="absolute -left-10 -top-10 w-40 h-40 md:w-52 md:h-52 bg-amber-200/40 rounded-full blur-3xl" />
+
             </div>
           </div>
 
@@ -210,11 +209,11 @@ const ShopByStorePage = () => {
                 return (
                   <div
                     key={key}
-                    className="relative rounded-[1.5rem] bg-gradient-to-b from-brand-50 to-amber-100 shadow-md border border-amber-100 overflow-hidden cursor-pointer group hover:-translate-y-1 transition-all"
+                    className="relative rounded-[1.5rem] bg-white border border-[#1a6e2e]/20 overflow-hidden cursor-pointer group hover:-translate-y-1 transition-all"
                   >
-                    <div className="absolute inset-x-0 top-0 h-16 bg-brand-200/40" />
+                    <div className="absolute inset-x-0 top-0 h-16 bg-[#1a6e2e]/10" />
                     <div className="relative p-3 flex flex-col items-center text-center gap-2">
-                      <div className="h-16 w-full rounded-2xl overflow-hidden bg-white shadow-inner">
+                      <div className="h-16 w-full rounded-2xl overflow-hidden bg-white">
                         <img
                           src={applyCloudinaryTransform(sampleImage)}
                           alt={name}
@@ -237,7 +236,7 @@ const ShopByStorePage = () => {
       )}
 
       {/* Product carousel for active store */}
-      <section className="bg-white rounded-[2rem] border border-slate-100 shadow-[0_18px_40px_rgba(15,23,42,0.06)] p-5 md:p-7">
+      <section className="bg-white rounded-[2rem] border border-[#1a6e2e]/20 p-5 md:p-7">
         <div className="flex items-center justify-between mb-4 md:mb-6 gap-3">
           <div>
             <h3 className="text-lg md:text-2xl font-[1000] text-slate-900 tracking-tight">
@@ -268,7 +267,7 @@ const ShopByStorePage = () => {
 	              >
 	                <ProductCard
 	                  product={product}
-                  className="bg-white border border-slate-100 shadow-sm hover:shadow-md"
+                  className="bg-white border border-slate-100 border border-[#1a6e2e]/20 hover:border border-[#1a6e2e]/20"
                   compact
                 />
               </div>

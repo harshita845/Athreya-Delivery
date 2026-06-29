@@ -20,11 +20,11 @@ const CheckoutCartSummary = React.memo(function CheckoutCartSummary({
   onMoveToWishlist,
 }) {
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 space-y-4">
+    <div className="bg-white rounded-2xl p-4 border border-[#1a6e2e]/20 space-y-4">
       {cart.map((item) => (
         <div
           key={`${item.id}::${String(item.variantSku || "").trim()}`}
-          className="flex items-start gap-3 pb-4 border-b border-slate-100 last:border-0 last:pb-0">
+          className="flex items-start gap-3 pb-4 border-b border-[#1a6e2e]/20 last:border-0 last:pb-0">
           <div className="h-20 w-20 rounded-xl overflow-hidden bg-slate-50 flex-shrink-0">
             <img
               src={applyCloudinaryTransform(item.image)}
@@ -42,12 +42,12 @@ const CheckoutCartSummary = React.memo(function CheckoutCartSummary({
             )}
             <button
               onClick={() => onMoveToWishlist(item)}
-              className="text-xs text-slate-500 underline hover:text-primary transition-colors">
+              className="text-xs text-slate-500 underline hover:text-[#1a6e2e] transition-colors">
               Move to wishlist
             </button>
           </div>
           <div className="flex flex-col items-end gap-2">
-            <div className="flex items-center gap-2 bg-primary rounded-lg px-2 py-1">
+            <div className="flex items-center gap-2 bg-[#1a6e2e] rounded-lg px-2 py-1">
               <button
                 onClick={() =>
                   item.quantity > 1

@@ -37,9 +37,9 @@ const CheckoutPricingBreakdown = React.memo(function CheckoutPricingBreakdown({
   return (
     <>
       {/* Tip for Partner */}
-      <motion.div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 border border-pink-100">
+      <motion.div className="bg-white rounded-2xl p-4 border border-[#1a6e2e]/20">
         <div className="flex items-center gap-2 mb-3">
-          <Heart size={18} className="text-pink-500 fill-pink-500" />
+          <Heart size={18} className="text-[#1a6e2e] fill-[#1a6e2e]" />
           <h3 className="font-black text-slate-800">Tip your delivery partner</h3>
         </div>
         <p className="text-xs text-slate-600 mb-3">100% of the tip goes to them</p>
@@ -50,8 +50,8 @@ const CheckoutPricingBreakdown = React.memo(function CheckoutPricingBreakdown({
               onClick={() => onSelectTip(tip.value)}
               className={`py-2 rounded-xl border-2 transition-all font-bold text-sm ${
                 selectedTip === tip.value
-                  ? "border-pink-500 bg-pink-100 text-pink-700"
-                  : "border-pink-200 bg-white text-slate-700 hover:border-pink-300"
+                  ? "border-[#1a6e2e] bg-[#1a6e2e]/10 text-[#1a6e2e]"
+                  : "border-[#1a6e2e]/20 bg-white text-slate-700 hover:border-[#1a6e2e]/40"
               }`}>
               {tip.label}
             </button>
@@ -60,10 +60,10 @@ const CheckoutPricingBreakdown = React.memo(function CheckoutPricingBreakdown({
       </motion.div>
 
       {/* Bill Details */}
-      <motion.div className="bg-white rounded-[2rem] p-6 shadow-xl shadow-gray-200/50 border border-slate-100">
+      <motion.div className="bg-white rounded-[2rem] p-6 border border-[#1a6e2e]/20">
         <div className="flex items-center gap-2 mb-6">
-          <div className="h-10 w-10 rounded-2xl bg-brand-50 flex items-center justify-center">
-            <Clipboard size={20} className="text-primary" />
+          <div className="h-10 w-10 rounded-2xl bg-[#1a6e2e]/10 flex items-center justify-center">
+            <Clipboard size={20} className="text-[#1a6e2e]" />
           </div>
           <h3 className="font-[1000] text-slate-800 text-xl tracking-tight uppercase">
             Order Summary
@@ -119,22 +119,22 @@ const CheckoutPricingBreakdown = React.memo(function CheckoutPricingBreakdown({
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex justify-between items-center px-3 py-2 bg-brand-50 rounded-xl border border-brand-100">
-              <span className="text-primary font-black text-xs flex items-center gap-2 uppercase tracking-wider">
+              className="flex justify-between items-center px-3 py-2 bg-white rounded-xl border border-[#1a6e2e]/20">
+              <span className="text-[#1a6e2e] font-black text-xs flex items-center gap-2 uppercase tracking-wider">
                 <Tag size={14} />
                 Coupon Reserved
               </span>
-              <span className="font-black text-primary">-₹{discountAmount}</span>
+              <span className="font-black text-[#1a6e2e]">-₹{discountAmount}</span>
             </motion.div>
           )}
 
           {tipAmount > 0 && (
-            <div className="flex justify-between items-center px-3 py-2 bg-pink-50 rounded-xl border border-pink-100 italic">
-              <span className="text-pink-600 font-bold text-xs flex items-center gap-2">
-                <Heart size={14} className="fill-pink-500" />
+            <div className="flex justify-between items-center px-3 py-2 bg-white rounded-xl border border-[#1a6e2e]/20 italic">
+              <span className="text-[#1a6e2e] font-bold text-xs flex items-center gap-2">
+                <Heart size={14} className="fill-[#1a6e2e]" />
                 Partner Support
               </span>
-              <span className="font-black text-pink-600">₹{tipAmount}</span>
+              <span className="font-black text-[#1a6e2e]">₹{tipAmount}</span>
             </div>
           )}
 
@@ -142,12 +142,12 @@ const CheckoutPricingBreakdown = React.memo(function CheckoutPricingBreakdown({
             <motion.div
               initial={{ opacity: 0, x: -5 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex justify-between items-center px-3 py-2 bg-brand-50 rounded-xl border border-brand-100 mb-2">
-              <span className="text-primary font-black text-[11px] flex items-center gap-2 uppercase tracking-tight">
+              className="flex justify-between items-center px-3 py-2 bg-white rounded-xl border border-[#1a6e2e]/20 mb-2">
+              <span className="text-[#1a6e2e] font-black text-[11px] flex items-center gap-2 uppercase tracking-tight">
                 <Wallet size={14} />
                 Wallet Applied
               </span>
-              <span className="font-black text-primary">-₹{walletAmountToUse}</span>
+              <span className="font-black text-[#1a6e2e]">-₹{walletAmountToUse}</span>
             </motion.div>
           )}
 
@@ -161,7 +161,7 @@ const CheckoutPricingBreakdown = React.memo(function CheckoutPricingBreakdown({
                   {finalAmountToPay === 0 ? "Paid via Wallet" : "Safe & Secure Payment"}
                 </span>
               </div>
-              <span className="font-[1000] text-primary text-3xl tracking-tighter italic">
+              <span className="font-[1000] text-[#1a6e2e] text-3xl tracking-tighter italic">
                 {isPreviewLoading ? "Calculating..." : `₹${Math.ceil(finalAmountToPay)}`}
               </span>
             </div>

@@ -21,14 +21,14 @@ const ActiveOrderPill = ({ order }) => {
                     className="w-full max-w-[240px] pointer-events-auto"
                 >
                     <div
-                        className="flex items-center gap-2 bg-slate-900 text-white py-1.5 px-2 pr-1.5 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.3)] border border-white/20 relative overflow-hidden"
+                        className="flex items-center gap-2 bg-slate-900 text-white py-1.5 px-2 pr-1.5 rounded-full  border border-white/20 relative overflow-hidden"
                     >
                         {/* Status Shimmer */}
                         <motion.div
                             initial={{ x: '-100%' }}
                             animate={{ x: '200%' }}
                             transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-20deg]"
+                            className="absolute inset-0  skew-x-[-20deg]"
                         />
 
                         {/* Product Avatars Stack */}
@@ -36,7 +36,7 @@ const ActiveOrderPill = ({ order }) => {
                             {displayItems.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="h-8 w-8 rounded-full border-2 border-slate-900 bg-white overflow-hidden shadow-sm"
+                                    className="h-8 w-8 rounded-full border-2 border-slate-900 bg-white overflow-hidden border border-[#1a6e2e]/20"
                                     style={{ zIndex: 10 - index }}
                                 >
                                     <img
@@ -48,7 +48,7 @@ const ActiveOrderPill = ({ order }) => {
                                 </div>
                             ))}
                             {order.items.length > 2 && (
-                                <div className="h-8 w-8 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-[9px] font-bold z-0 text-white shadow-inner">
+                                <div className="h-8 w-8 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-[9px] font-bold z-0 text-white ">
                                     +{order.items.length - 2}
                                 </div>
                             )}

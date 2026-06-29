@@ -59,10 +59,10 @@ const FeaturedProducts = () => {
             <div className="container w-full max-w-[1920px] mx-auto px-4 md:px-[50px]">
                 <div className="flex flex-row items-end justify-between mb-8 gap-4 text-left">
                     <div className="space-y-1">
-                        <span className="text-brand-600 font-semibold tracking-wide uppercase text-sm">Best Seller</span>
+                        <span className="text-[#1a6e2e] font-semibold tracking-wide uppercase text-sm">Best Seller</span>
                         <h2 className="text-3xl font-bold tracking-tight text-slate-900">Featured Products</h2>
                     </div>
-                    <Link to="/categories" className="hidden md:inline-flex text-brand-600 font-medium hover:text-brand-700 hover:underline">
+                    <Link to="/categories" className="hidden md:inline-flex text-[#1a6e2e] font-medium hover:text-[#1a6e2e] hover:underline">
                         View All Products &rarr;
                     </Link>
                 </div>
@@ -74,7 +74,7 @@ const FeaturedProducts = () => {
                 </div>
 
                 <div className="mt-8 text-center md:hidden">
-                    <Link to="/categories" className="inline-flex text-brand-600 font-medium hover:text-brand-700 hover:underline">
+                    <Link to="/categories" className="inline-flex text-[#1a6e2e] font-medium hover:text-[#1a6e2e] hover:underline">
                         View All Products &rarr;
                     </Link>
                 </div>

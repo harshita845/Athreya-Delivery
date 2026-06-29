@@ -5,17 +5,15 @@ const SettingsPage = () => {
     return (
         <div className="min-h-screen bg-slate-50 pb-24 font-sans">
             {/* Header */}
-            <div className="bg-gradient-to-br from-primary to-[#149d29] px-5 pt-10 pb-20 relative z-10 rounded-b-[2.5rem] shadow-lg overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-16 -mt-32 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/5 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
+            <div className="bg-[#1a6e2e] px-5 pt-10 pb-20 relative z-10 rounded-b-[2.5rem] overflow-hidden border-b border-transparent">
                 <h1 className="text-3xl font-black text-white tracking-tight relative z-10">Settings</h1>
-                <p className="text-brand-50 text-sm font-medium mt-1 relative z-10">Configure your app preferences</p>
+                <p className="text-white/80 text-sm font-medium mt-1 relative z-10">Configure your app preferences</p>
             </div>
 
             <div className="max-w-2xl mx-auto px-4 -mt-10 relative z-20 space-y-6">
 
                 {/* General Section */}
-                <div className="bg-white rounded-3xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <div className="bg-white rounded-3xl overflow-hidden border border-[#1a6e2e]/20">
                     <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-100">
                         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">General</h3>
                     </div>
@@ -27,7 +25,7 @@ const SettingsPage = () => {
                 </div>
 
                 {/* Security Section */}
-                <div className="bg-white rounded-3xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <div className="bg-white rounded-3xl overflow-hidden border border-[#1a6e2e]/20">
                     <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-100">
                         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Security</h3>
                     </div>
@@ -38,7 +36,7 @@ const SettingsPage = () => {
                 </div>
 
                 {/* Danger Zone */}
-                <div className="bg-white rounded-3xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <div className="bg-white rounded-3xl overflow-hidden border border-[#1a6e2e]/20">
                     <div className="p-4">
                         <button className="w-full py-4 text-red-600 font-bold bg-red-50 rounded-2xl flex items-center justify-center gap-2 hover:bg-red-100 transition-colors">
                             <LogOut size={20} /> Delete Account
@@ -63,7 +61,7 @@ const SettingItem = ({ icon: Icon, label, value, hasToggle }) => (
         <div className="flex items-center gap-2">
             {value && <span className="text-slate-400 text-sm font-medium">{value}</span>}
             {hasToggle ? (
-                <ToggleRight size={32} className="text-primary fill-current" />
+                <ToggleRight size={32} className="text-[#1a6e2e] fill-current" />
             ) : (
                 <ChevronRight size={20} className="text-slate-300" />
             )}

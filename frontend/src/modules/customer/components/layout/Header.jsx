@@ -86,7 +86,7 @@ const Header = () => {
                         }}
                         className="flex items-center gap-3 cursor-pointer active:scale-95 transition-transform border-0 bg-transparent p-0 text-left"
                     >
-                        <div className="h-10 w-10 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30 shadow-sm">
+                        <div className="h-10 w-10 bg-white/20  rounded-2xl flex items-center justify-center border border-white/30 border border-[#1a6e2e]/20">
                             <MapPin size={22} className="text-white fill-current" />
                         </div>
                         <div className="flex flex-col leading-tight">
@@ -102,7 +102,7 @@ const Header = () => {
                 </div>
 
                 {/* Main Header Capsule */}
-                <div className="px-4 md:px-8 h-18 bg-white/95 backdrop-blur-sm rounded-full shadow-2xl flex items-center justify-between border border-white/20">
+                <div className="px-4 md:px-8 h-18 bg-white/95  rounded-full border border-[#1a6e2e]/20 flex items-center justify-between border border-white/20">
                     {/* Logo */}
                     <div className="flex items-center gap-6 mr-4 md:mr-12">
                         <Link to="/" className="flex items-center gap-0 group">
@@ -110,7 +110,7 @@ const Header = () => {
                                 src={logoUrl}
                                 alt="Athreya Delivery Logo"
                                 loading="lazy"
-                                className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105 -mr-2 md:-mr-3"
+                                className="h-14 md:h-20 w-auto object-contain transition-transform group-hover:scale-105 -mr-2 md:-mr-3 scale-[1.2]"
                             />
                             <span className="text-base md:text-lg font-black tracking-tight flex gap-1 text-slate-800">
                                 <span className="text-[#3a2a83]">ATHREYA</span>
@@ -130,10 +130,10 @@ const Header = () => {
                             className="hidden md:flex items-center gap-2 pl-6 border-l border-slate-200 cursor-pointer active:scale-95 transition-transform border-0 bg-transparent p-0"
                         >
                             <div className="flex flex-col items-start leading-none group">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5 group-hover:text-[var(--primary)] transition-colors">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5 group-hover:text-[#1a6e2e] transition-colors">
                                     Delivery in {currentLocation.time}
                                 </span>
-                                <div className="flex items-center gap-1 font-bold text-slate-700 text-sm group-hover:text-[var(--primary)] transition-colors">
+                                <div className="flex items-center gap-1 font-bold text-slate-700 text-sm group-hover:text-[#1a6e2e] transition-colors">
                                     <span className="max-w-[150px] truncate">{currentLocation.name}</span> <MapPin size={14} className="fill-current" />
                                 </div>
                             </div>
@@ -142,10 +142,10 @@ const Header = () => {
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center gap-6">
-                        <Link to="/" className="text-sm font-medium transition-colors hover:text-[var(--primary)]">Home</Link>
+                        <Link to="/" className="text-sm font-medium transition-colors hover:text-[#1a6e2e]">Home</Link>
 
-                        <Link to="/categories" className="text-sm font-medium transition-colors hover:text-[var(--primary)]">Categories</Link>
-                        <Link to="/offers" className="text-sm font-medium transition-colors hover:text-[var(--primary)]">Offers</Link>
+                        <Link to="/categories" className="text-sm font-medium transition-colors hover:text-[#1a6e2e]">Categories</Link>
+                        <Link to="/offers" className="text-sm font-medium transition-colors hover:text-[#1a6e2e]">Offers</Link>
                     </nav>
 
                     {/* Search Bar - Hidden on checkout page */}
@@ -165,25 +165,25 @@ const Header = () => {
                     {/* Desktop Right Icons */}
                     <div className="hidden md:flex items-center gap-4">
                         <Link to="/wishlist" className="relative flex items-center justify-center p-2 hover:bg-slate-50 rounded-full transition-colors group">
-                            <Heart className="h-6 w-6 text-slate-600 group-hover:text-[var(--primary)] transition-colors" />
+                            <Heart className="h-6 w-6 text-slate-600 group-hover:text-[#1a6e2e] transition-colors" />
                             {wishlistCount > 0 && (
-                                <span className="absolute top-0 right-0 h-5 w-5 rounded-full bg-primary text-[10px] font-bold text-white flex items-center justify-center border-2 border-white shadow-sm animate-in zoom-in duration-300">
+                                <span className="absolute top-0 right-0 h-5 w-5 rounded-full bg-[#1a6e2e] text-[10px] font-bold text-white flex items-center justify-center border-2 border-white border border-[#1a6e2e]/20 animate-in zoom-in duration-300">
                                     {wishlistCount}
                                 </span>
                             )}
                         </Link>
 
                         <Link to="/checkout" id="header-cart-icon" className="relative flex items-center justify-center p-2 hover:bg-slate-50 rounded-full transition-colors group">
-                            <ShoppingCart className="h-6 w-6 text-slate-600 group-hover:text-[var(--primary)] transition-colors" />
+                            <ShoppingCart className="h-6 w-6 text-slate-600 group-hover:text-[#1a6e2e] transition-colors" />
                             {cartCount > 0 && (
-                                <span className="absolute top-0 right-0 h-5 w-5 rounded-full bg-primary text-[10px] font-bold text-white flex items-center justify-center border-2 border-white shadow-sm animate-in zoom-in duration-300">
+                                <span className="absolute top-0 right-0 h-5 w-5 rounded-full bg-[#1a6e2e] text-[10px] font-bold text-white flex items-center justify-center border-2 border-white border border-[#1a6e2e]/20 animate-in zoom-in duration-300">
                                     {cartCount}
                                 </span>
                             )}
                         </Link>
 
                         <Link to="/profile" className="flex items-center justify-center">
-                            <User className="h-6 w-6 text-slate-600 hover:text-[var(--primary)] transition-colors" />
+                            <User className="h-6 w-6 text-slate-600 hover:text-[#1a6e2e] transition-colors" />
                         </Link>
                     </div>
                 </div>

@@ -26,41 +26,41 @@ const CATEGORIES = [
     {
         title: "Grocery",
         icon: <ShoppingBasket size={28} />,
-        color: "#ecfeff",
-        ring: "var(--primary)",
-        text: "var(--brand-500)",
-        theme: "var(--primary)",
-        shadow: "rgba(97, 218, 251, 0.3)",
+        color: "#ffffff",
+        ring: "#1a6e2e",
+        text: "#1a6e2e",
+        theme: "#1a6e2e",
+        shadow: "transparent",
         img: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600"
     },
     {
         title: "Store",
         icon: <Smartphone size={28} />,
-        color: "#f0f9ff",
-        ring: "var(--brand-400)",
-        text: "#0369a1",
-        theme: "var(--brand-500)",
-        shadow: "rgba(14, 165, 233, 0.3)",
+        color: "#ffffff",
+        ring: "#1a6e2e",
+        text: "#1a6e2e",
+        theme: "#1a6e2e",
+        shadow: "transparent",
         img: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=600"
     },
     {
         title: "Food",
         icon: <Utensils size={28} />,
-        color: "#f0fdfa",
-        ring: "#22d3ee",
-        text: "#0e7490",
-        theme: "var(--brand-500)",
-        shadow: "rgba(14, 165, 233, 0.3)",
+        color: "#ffffff",
+        ring: "#1a6e2e",
+        text: "#1a6e2e",
+        theme: "#1a6e2e",
+        shadow: "transparent",
         img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=600"
     },
     {
         title: "Health",
         icon: <ShieldCheck size={28} />,
-        color: "#eff6ff",
-        ring: "#60a5fa",
-        text: "#1d4ed8",
-        theme: "#3b82f6",
-        shadow: "rgba(59, 130, 246, 0.3)",
+        color: "#ffffff",
+        ring: "#1a6e2e",
+        text: "#1a6e2e",
+        theme: "#1a6e2e",
+        shadow: "transparent",
         img: "https://images.unsplash.com/photo-1512678080530-7760d81faba6?q=80&w=1200&auto=format&fit=crop"
     },
 ];
@@ -145,7 +145,7 @@ const CustomerAuth = () => {
     };
 
     return (
-        <div className="min-h-screen w-full relative flex items-center justify-center font-['Outfit',_sans-serif] overflow-hidden">
+        <div className="customer-panel min-h-screen w-full relative flex items-center justify-center font-['Outfit',_sans-serif] overflow-hidden">
 
             {/* Dynamic Atmospheric Background */}
             <div 
@@ -155,7 +155,7 @@ const CustomerAuth = () => {
                 <motion.div
                     animate={{ backgroundColor: activeCategory.color }}
                     transition={{ duration: 1.5 }}
-                    className="absolute inset-0 opacity-80 backdrop-blur-sm"
+                    className="absolute inset-0 opacity-80 "
                 />
             </div>
 
@@ -194,7 +194,7 @@ const CustomerAuth = () => {
             </div>
 
             {/* Premium Centered Card Container */}
-            <div className="w-[92%] max-w-[400px] h-[85vh] max-h-[780px] bg-white relative z-10 overflow-hidden rounded-[40px] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border border-white/40 flex flex-col transition-colors duration-1000">
+            <div className="w-[92%] max-w-[400px] h-[85vh] max-h-[780px] bg-white relative z-10 overflow-hidden rounded-[40px] border border-[#1a6e2e]/20 flex flex-col transition-colors duration-1000">
 
                 {/* Scrollable Content Container */}
                 <div className="h-full overflow-y-auto no-scrollbar pb-20">
@@ -220,14 +220,14 @@ const CustomerAuth = () => {
                                     loading="lazy"
                                     alt="banner"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-transparent opacity-60" style={{ backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.1), ${activeCategory.theme})` }} />
+                                <div className="absolute inset-0 bg-[#1a6e2e]/20" />
                             </motion.div>
                         </AnimatePresence>
 
                         {/* Top Branding Bar */}
                         <div className="absolute top-8 left-0 w-full px-6 flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <div className="w-10 h-10 bg-white/20 backdrop-blur-xl rounded-xl flex items-center justify-center border border-white/30">
+                                <div className="w-10 h-10 bg-white/20  rounded-xl flex items-center justify-center border border-white/30">
                                     <ShoppingBag size={20} className="text-white" />
                                 </div>
                                 <span className="text-white font-black tracking-tighter text-xl">{appName.toUpperCase()}</span>
@@ -260,7 +260,7 @@ const CustomerAuth = () => {
 
                     {/* Rectangular Brand Logo Carousel Control */}
                     <div className="relative -mt-10 flex justify-center z-20">
-                        <div className="w-36 h-24 rounded-2xl bg-white border-4 border-white shadow-[0_15px_40px_rgba(97,218,251,0.2)] flex items-center justify-center overflow-hidden transition-shadow duration-1000" style={{ boxShadow: `0 15px 40px ${activeCategory.shadow}` }}>
+                        <div className="w-36 h-24 rounded-2xl bg-white border border-[#1a6e2e]/20 flex items-center justify-center overflow-hidden transition-shadow duration-1000">
                             <AnimatePresence mode="wait">
                                     <motion.div
                                         key={carouselIndex}
@@ -303,14 +303,14 @@ const CustomerAuth = () => {
                                     <div className="flex bg-gray-50 rounded-2xl p-1.5 border border-gray-100">
                                         <button
                                             onClick={() => setIsLogin(true)}
-                                            className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${isLogin ? 'bg-white shadow-sm' : 'text-gray-400'}`}
+                                            className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${isLogin ? 'bg-white border border-[#1a6e2e]/20' : 'text-gray-400'}`}
                                             style={{ color: isLogin ? activeCategory.theme : undefined }}
                                         >
                                             Login
                                         </button>
                                         <button
                                             onClick={() => setIsLogin(false)}
-                                            className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${!isLogin ? 'bg-white shadow-sm' : 'text-gray-400'}`}
+                                            className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${!isLogin ? 'bg-white border border-[#1a6e2e]/20' : 'text-gray-400'}`}
                                             style={{ color: !isLogin ? activeCategory.theme : undefined }}
                                         >
                                             Sign Up
@@ -367,7 +367,7 @@ const CustomerAuth = () => {
                                             type="submit"
                                             disabled={isLoading}
                                             className="w-full text-white py-5 rounded-[24px] text-xs font-black tracking-[4px] flex items-center justify-center gap-3 active:scale-95 transition-all uppercase"
-                                            style={{ backgroundColor: activeCategory.theme, boxShadow: `0 20px 40px ${activeCategory.shadow}` }}
+                                            style={{ backgroundColor: activeCategory.theme }}
                                         >
                                             {isLoading ? 'Verifying...' : 'Continue'}
                                             <ChevronRight size={18} />
@@ -425,7 +425,7 @@ const CustomerAuth = () => {
                                                     key={i}
                                                     type="tel"
                                                     maxLength={1}
-                                                    className="w-14 h-16 bg-white border-2 border-gray-200 rounded-3xl text-center text-2xl font-black outline-none shadow-[0_18px_45px_rgba(15,23,42,0.35)] focus:bg-white focus:border-[var(--theme-color)] focus:shadow-[0_24px_65px_rgba(15,23,42,0.55)] transition-all"
+                                                    className="w-14 h-16 bg-white border-2 border-[#1a6e2e]/20 rounded-3xl text-center text-2xl font-black outline-none focus:bg-white focus:border-[var(--theme-color)] transition-all"
                                                     style={{ color: activeCategory.theme }}
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Backspace' && !e.target.value && i > 0) {
@@ -449,7 +449,7 @@ const CustomerAuth = () => {
                                             <button
                                                 type="submit"
                                                 disabled={isLoading}
-                                                className="w-full bg-gray-900 text-white py-5 rounded-[24px] text-xs font-black tracking-[4px] shadow-2xl flex items-center justify-center gap-3 uppercase active:scale-95 transition-all"
+                                                className="w-full bg-gray-900 text-white py-5 rounded-[24px] text-xs font-black tracking-[4px] flex items-center justify-center gap-3 uppercase active:scale-95 transition-all"
                                             >
                                                 {isLoading ? 'Authenticating...' : `Enter ${appName}`}
                                             </button>

@@ -44,6 +44,24 @@ export const sellerApi = {
     rejectReturn: (orderId, data) => axiosInstance.put(`/orders/returns/${orderId}/reject`, data),
     assignReturnDelivery: (orderId, data) => axiosInstance.put(`/orders/returns/${orderId}/assign-delivery`, data),
 
+    // Return Requests (New System)
+    getSellerReturnRequests: (params) => axiosInstance.get('/seller/return-requests', { params }),
+    getSellerReturnRequestDetail: (returnRequestId) => axiosInstance.get(`/seller/return-requests/${returnRequestId}`),
+    approveSellerReturnRequest: (returnRequestId, data) => axiosInstance.post(`/seller/return-requests/${returnRequestId}/approve`, data),
+    rejectSellerReturnRequest: (returnRequestId, data) => axiosInstance.post(`/seller/return-requests/${returnRequestId}/reject`, data),
+    getAvailableDeliveryBoys: (params) => axiosInstance.get('/seller/delivery-boys/available', { params }),
+    assignDeliveryBoy: (returnRequestId, data) => axiosInstance.post(`/seller/return-requests/${returnRequestId}/assign-delivery-boy`, data),
+    reassignDeliveryBoy: (returnRequestId, data) => axiosInstance.put(`/seller/return-requests/${returnRequestId}/reassign-delivery-boy`, data),
+
+    // Cancellation Requests
+    getSellerCancellationRequests: (params) => axiosInstance.get('/seller/cancellation-requests', { params }),
+    getSellerCancellationRequestDetail: (cancellationRequestId) => axiosInstance.get(`/seller/cancellation-requests/${cancellationRequestId}`),
+    approveSellerCancellationRequest: (cancellationRequestId, data) => axiosInstance.post(`/seller/cancellation-requests/${cancellationRequestId}/approve`, data),
+    rejectSellerCancellationRequest: (cancellationRequestId, data) => axiosInstance.post(`/seller/cancellation-requests/${cancellationRequestId}/reject`, data),
+    getAvailableCancellationDeliveryBoys: (params) => axiosInstance.get('/seller/cancellation-requests/delivery-boys/available', { params }),
+    assignCancellationDeliveryBoy: (cancellationRequestId, data) => axiosInstance.post(`/seller/cancellation-requests/${cancellationRequestId}/assign-delivery-boy`, data),
+    reassignCancellationDeliveryBoy: (cancellationRequestId, data) => axiosInstance.put(`/seller/cancellation-requests/${cancellationRequestId}/reassign-delivery-boy`, data),
+
     // Media
     uploadMedia: (formData) => axiosInstance.post('/media/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }

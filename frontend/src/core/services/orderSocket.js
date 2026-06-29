@@ -262,3 +262,32 @@ export function onDeliveryOtpValidated(getToken, handler) {
     s.off("delivery:otp:validated", wrappedHandler);
   };
 }
+
+export function onCancellationPickupOtp(getToken, handler) {
+  const s = getOrderSocket(getToken);
+  if (!s || typeof handler !== "function") return () => {};
+  s.on("cancellation:pickup:otp", handler);
+  return () => s.off("cancellation:pickup:otp", handler);
+}
+
+export function onCancellationDropOtp(getToken, handler) {
+  const s = getOrderSocket(getToken);
+  if (!s || typeof handler !== "function") return () => {};
+  s.on("cancellation:drop:otp", handler);
+  return () => s.off("cancellation:drop:otp", handler);
+}
+
+export function onCancellationStatusUpdate(getToken, handler) {
+  const s = getOrderSocket(getToken);
+  if (!s || typeof handler !== "function") return () => {};
+  s.on("cancellation:approved", handler);
+  s.on("cancellation:rejected", handler);
+  s.on("cancellation:pickup:scheduled", handler);
+  s.on("cancellation:task:accepted", handler);
+  return () => {
+    s.off("cancellation:approved", handler);
+    s.off("cancellation:rejected", handler);
+    s.off("cancellation:pickup:scheduled", handler);
+    s.off("cancellation:task:accepted", handler);
+  };
+}

@@ -76,7 +76,7 @@ const OrderProgressTracker = ({
   }
 
   return (
-    <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+    <div className="bg-white rounded-3xl p-6 border border-[#1a6e2e]/20">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -97,7 +97,7 @@ const OrderProgressTracker = ({
                 <div
                   className={`relative z-10 h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0 ${
                     isCompleted
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                      ? "bg-[#1a6e2e] text-white border border-[#1a6e2e]/20"
                       : isActive
                       ? "bg-amber-100 text-amber-600 border-2 border-amber-400"
                       : "bg-slate-100 text-slate-400"
@@ -136,8 +136,8 @@ const OrderProgressTracker = ({
 
                 {/* Status Indicator */}
                 {isCompleted && (
-                  <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center transition-opacity duration-200">
-                    <CheckCircle size={14} className="text-primary" />
+                  <div className="h-6 w-6 rounded-full bg-[#1a6e2e]/10 flex items-center justify-center transition-opacity duration-200">
+                    <CheckCircle size={14} className="text-[#1a6e2e]" />
                   </div>
                 )}
               </div>
@@ -147,7 +147,7 @@ const OrderProgressTracker = ({
                 <div className="absolute left-6 top-12 bottom-0 w-0.5 -mb-4">
                   <div
                     className={`h-full w-full ${
-                      isCompleted ? "bg-primary" : "bg-slate-200"
+                      isCompleted ? "bg-[#1a6e2e]" : "bg-slate-200"
                     }`}
                   />
                 </div>

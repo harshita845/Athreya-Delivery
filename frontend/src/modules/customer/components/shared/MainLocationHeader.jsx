@@ -87,8 +87,7 @@ function CategoryNavColumn({
       }}
       className="category-column relative z-[2] flex min-w-[64px] shrink-0 cursor-pointer flex-col items-center gap-1 border-b-2 px-0.5 pb-1 pt-1 snap-start md:min-w-[84px]">
       <div
-        style={{ borderColor: isActive ? activeColor : "#e2e8f0" }}
-        className="category-icon-circle relative z-10 flex h-12 w-12 items-center justify-center md:h-13 md:w-13 rounded-full bg-slate-50 border-2 shadow-sm transition-all overflow-hidden"
+        className="category-icon-circle relative z-10 flex h-12 w-12 items-center justify-center md:h-13 md:w-13 rounded-full bg-white border-2 transition-all overflow-hidden"
       >
         {typeof cat.icon === "function" ||
           (typeof cat.icon === "object" && cat.icon.$$typeof) ? (
@@ -286,7 +285,7 @@ const MainLocationHeader = ({
     value > 150 ? "none" : "block",
   );
 
-  const baseHeaderColor = activeCategory?.headerColor || "var(--primary)";
+  const baseHeaderColor = activeCategory?.headerColor || "#1a6e2e";
   const headerFontColor = "#1f2937";
   const headerIconColor = "#4b5563";
 
@@ -318,11 +317,10 @@ const MainLocationHeader = ({
             borderBottomLeftRadius: headerRoundness,
             borderBottomRightRadius: headerRoundness,
             opacity: bgOpacity,
-            backgroundColor: "#f5f3ff",
+            backgroundColor: "#ffffff",
+
           }}
-          className="px-4 shadow-[0_4px_20px_rgba(0,0,0,0.15)] overflow-hidden transform-gpu will-change-transform">
-          {/* Subtle Glow Overlay */}
-          <div className="absolute inset-0 bg-white/8 pointer-events-none" />
+          className="px-4 overflow-hidden transform-gpu will-change-transform">
 
           {/* Corner Lottie */}
           <motion.button
@@ -342,7 +340,7 @@ const MainLocationHeader = ({
               <Lottie
                 animationData={cartAnimData}
                 loop
-                className="w-full h-full pointer-events-none drop-shadow-[0_8px_18px_rgba(0,0,0,0.14)]"
+                className="w-full h-full pointer-events-none"
               />
             ) : (
               <div className="w-full h-full" />
@@ -361,7 +359,7 @@ const MainLocationHeader = ({
                     src={logoUrl}
                     alt="Athreya Delivery Logo"
                     loading="lazy"
-                    className="h-12 w-auto object-contain"
+                    className="h-16 w-auto md:h-20 object-contain scale-[1.2]"
                   />
                 </div>
               </div>
@@ -400,7 +398,7 @@ const MainLocationHeader = ({
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
                 style={{ backgroundColor: searchBarBg }}
-                className="rounded-full px-4 h-11 shadow-md flex items-center border border-white/50 transition-all duration-200 focus-within:ring-2 focus-within:ring-brand-400/60 cursor-pointer">
+                className="rounded-full px-4 h-11 border border-[#1a6e2e]/20 flex items-center border border-white/50 transition-all duration-200 focus-within:ring-2 focus-within:ring-brand-400/60 cursor-pointer">
                 <SearchIcon sx={{ color: "#000000", fontSize: 20 }} />
                 <input
                   type="text"
@@ -434,7 +432,7 @@ const MainLocationHeader = ({
                 style={{ color: headerFontColor }}
               >
                 <ShoppingCartOutlinedIcon sx={{ fontSize: 24 }} />
-                <span className="absolute -top-1.5 -right-1.5 bg-yellow-400 text-brand-900 text-[9px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-brand-800 shadow-sm transition-transform group-hover:-translate-y-0.5">
+                <span className="absolute -top-1.5 -right-1.5 bg-yellow-400 text-[#1a6e2e] text-[9px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-[#1a6e2e]/20 border border-[#1a6e2e]/20 transition-transform group-hover:-translate-y-0.5">
                   0
                 </span>
               </motion.button>
@@ -467,7 +465,7 @@ const MainLocationHeader = ({
                   src={logoUrl}
                   alt="Athreya Delivery Logo"
                   loading="lazy"
-                  className="h-10 w-auto object-contain"
+                  className="h-14 w-auto sm:h-16 object-contain scale-[1.2]"
                 />
               </div>
               <div className="flex justify-between items-start">
@@ -481,7 +479,7 @@ const MainLocationHeader = ({
                       setIsLocationOpen(true);
                     }}
                     className="flex items-center gap-1 text-slate-800 cursor-pointer group active:scale-95 transition-transform border-0 bg-transparent p-0 text-left">
-                    <LocationOnIcon sx={{ fontSize: 14, color: headerFontColor }} />
+                    <LocationOnIcon sx={{ fontSize: 14, color: "#1a6e2e" }} />
                     <div
                       className="text-[10px] font-medium leading-tight max-w-[280px] truncate"
                       style={{ color: headerFontColor }}
@@ -505,16 +503,16 @@ const MainLocationHeader = ({
               onClick={handleSearchClick}
               whileTap={{ scale: 0.98 }}
               style={{ backgroundColor: searchBarBg }}
-              className="flex-1 rounded-[10px] px-3 h-10 shadow-md flex items-center border border-white/50 transition-all duration-200 focus-within:ring-2 focus-within:ring-brand-400/60 cursor-pointer">
-              <SearchIcon sx={{ color: "#000000", fontSize: 18 }} />
+              className="flex-1 rounded-[10px] px-3 h-10 flex items-center border border-[#1a6e2e] transition-all duration-200 focus-within:ring-2 focus-within:ring-[#1a6e2e] cursor-pointer">
+              <SearchIcon sx={{ color: "#1a6e2e", fontSize: 18 }} />
               <input
                 type="text"
                 placeholder={searchPlaceholder || "Search Products..."}
                 readOnly
                 className="flex-1 bg-transparent border-none outline-none pl-2 text-slate-800 font-semibold placeholder:text-black text-[14px] cursor-pointer"
               />
-              <div className="flex items-center gap-2 border-l border-slate-100 pl-2.5">
-                <MicIcon sx={{ color: "#000000", fontSize: 18 }} />
+              <div className="flex items-center gap-2 border-l border-[#1a6e2e] pl-2.5">
+                <MicIcon sx={{ color: "#1a6e2e", fontSize: 18 }} />
               </div>
             </motion.div>
           </div>
@@ -538,7 +536,7 @@ const MainLocationHeader = ({
                 display: displayNav,
                 overflowY: "hidden",
               }}
-              className="relative flex items-end md:justify-center gap-0 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 z-10 snap-x pt-1 min-h-[100px] md:min-h-[96px] pb-1 bg-[#f5f3ff] border-t border-purple-100/40 shadow-inner">
+              className="relative flex items-end md:justify-center gap-0 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 z-10 snap-x pt-1 min-h-[100px] md:min-h-[96px] pb-1 bg-white border-t border-[#1a6e2e]">
               {categories.slice(0, 10).map((cat) => {
                 const isActive = activeCategory?.id === cat.id;
                 return (

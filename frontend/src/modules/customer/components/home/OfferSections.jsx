@@ -38,22 +38,19 @@ const OfferSections = ({ sections, noServiceData }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.4 }}
-              className="mb-6 rounded-none md:rounded-[2rem] overflow-hidden shadow-[0_18px_35px_rgba(15,23,42,0.08)] bg-white border border-slate-100/70">
+              className="mb-6 rounded-none md:rounded-[2rem] overflow-hidden bg-white border border-[#1a6e2e]/20">
               <div
                 className="relative flex items-center justify-between px-5 md:px-8 py-5 md:py-6 text-black"
                 style={{
-                  backgroundColor: "#f5f3ff",
-                  backgroundImage: "linear-gradient(to right, #fbf9ff, #f5f1ff, #fbf9ff)",
+                  backgroundColor: "#ffffff",
+                  backgroundImage: "none",
+
                 }}>
-                <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                  <div className="absolute -top-10 -left-10 w-40 h-40 md:w-56 md:h-56 bg-white/20 rounded-full blur-3xl" />
-                  <div className="absolute -bottom-10 right-0 w-44 h-44 bg-white/10 rounded-full blur-3xl" />
-                </div>
                 <div className="flex-1 pr-4">
                   <p className="text-[10px] md:text-[11px] font-bold uppercase tracking-wider text-black/60 mb-1">
                     Trending right now
                   </p>
-                  <h3 className="text-xl md:text-2xl font-bold tracking-tight leading-tight drop-shadow-sm">
+                  <h3 className="text-xl md:text-2xl font-bold tracking-tight leading-tight drop-border border-[#1a6e2e]/20">
                     {section.title}
                   </h3>
                   {((section.categoryIds || [])
@@ -70,7 +67,6 @@ const OfferSections = ({ sections, noServiceData }) => {
                 </div>
                 <motion.div
                   animate={{
-                    boxShadow: ["0 4px 12px rgba(251,191,36,0.15)", "0 10px 28px rgba(251,191,36,0.5)", "0 4px 12px rgba(251,191,36,0.15)"],
                     scale: [1, 1.02, 1]
                   }}
                   transition={{
@@ -88,11 +84,10 @@ const OfferSections = ({ sections, noServiceData }) => {
                         loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover scale-110"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-black/20 to-transparent" />
-                      <div className="absolute -bottom-6 -right-6 w-16 h-16 rounded-full bg-amber-400/60 blur-xl mix-blend-screen" />
+                      <div className="absolute inset-0 bg-black/10" />
                     </>
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500" />
+                    <div className="absolute inset-0 bg-white border border-[#1a6e2e]/20" />
                   )}
 
                   {sectionProducts.length > 0 && (
@@ -115,7 +110,7 @@ const OfferSections = ({ sections, noServiceData }) => {
                       }}
                     >
                       <Sparkles
-                        className="text-amber-200 drop-shadow-[0_0_12px_rgba(251,191,36,0.95)]"
+                        className="text-amber-500"
                         size={30}
                       />
                     </motion.div>
@@ -142,7 +137,7 @@ const OfferSections = ({ sections, noServiceData }) => {
                       <div key={product.id} className="w-[126px] sm:w-[136px] md:w-[148px] flex-shrink-0 snap-start">
                         <ProductCard
                           product={product}
-                          className="bg-white border border-slate-100 shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
+                          className="bg-white border border-[#1a6e2e]/20"
                           compact
                         />
                       </div>

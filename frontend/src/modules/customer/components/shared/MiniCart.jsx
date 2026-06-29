@@ -44,17 +44,10 @@ const MiniCart = () => {
                     >
                         <Link
                             to="/checkout"
-                            style={{
-                                backgroundColor: "var(--customer-mini-cart-color, var(--primary))",
-                            }}
-                            className="flex items-center gap-2 text-white py-1.5 px-2.5 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.22)] hover:scale-[1.02] active:scale-95 transition-all group border border-white/10 relative overflow-hidden"
+                            className="flex items-center gap-2 text-white bg-[#1a6e2e] py-1.5 px-2.5 rounded-full hover:scale-[1.02] active:scale-95 transition-all group relative overflow-hidden border border-transparent"
                         >
-                            <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
-                                <div className="mini-cart-shimmer absolute inset-y-0 left-[-40%] w-[40%] bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg]" />
-                            </div>
-
                             {/* Single Product Image Icon */}
-                            <div className="h-7 w-7 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden">
+                            <div className="h-7 w-7 rounded-full bg-white flex items-center justify-center flex-shrink-0 overflow-hidden border border-[#1a6e2e]/20">
                                 {cart.length > 0 && (
                                     <img
                                         src={applyCloudinaryTransform(cart[0].image)}
@@ -79,24 +72,7 @@ const MiniCart = () => {
                     </motion.div>
                 </div>
             )}
-            <style dangerouslySetInnerHTML={{
-                __html: `
-                @keyframes mini-cart-shimmer {
-                    0% { transform: translateX(-140%); }
-                    100% { transform: translateX(320%); }
-                }
-                .mini-cart-shimmer {
-                    animation: mini-cart-shimmer 2.8s ease-in-out infinite;
-                }
-                @keyframes gradient-move {
-                    0% { background-position: 0% 50%; }
-                    50% { background-position: 100% 50%; }
-                    100% { background-position: 0% 50%; }
-                }
-                .animate-gradient {
-                    animation: gradient-move 3s ease infinite;
-                }
-            `}} />
+
         </AnimatePresence>
     );
 };

@@ -7,6 +7,7 @@ import LiveTrackingMap from "../components/order/LiveTrackingMap";
 import DeliveryOtpDisplay from "../components/DeliveryOtpDisplay";
 import OrderProgressTracker from "../components/order/OrderProgressTracker";
 import ReturnProgressTracker from "../components/order/ReturnProgressTracker";
+import CancellationProgressTracker from "../components/order/CancellationProgressTracker";
 import { applyCloudinaryTransform } from "@/core/utils/imageUtils";
 import {
   ChevronLeft,
@@ -43,6 +44,8 @@ import {
   onCustomerOtp,
   onReturnPickupOtp,
   onReturnDropOtp,
+  onCancellationPickupOtp,
+  onCancellationStatusUpdate,
 } from "@/core/services/orderSocket";
 import { getLegacyStatusFromOrder } from "@/shared/utils/orderStatus";
 import { createSocketTokenReader } from "@core/utils/authStorage";
@@ -148,9 +151,58 @@ const OrderDetailPage = () => {
   const [returnReason, setReturnReason] = useState("");
   const [returnReasonDetail, setReturnReasonDetail] = useState("");
   const [returnConditionAssurance, setReturnConditionAssurance] = useState(false);
-  const [returnImages, setReturnImages] = useState([]);
+  const [returnImageFiles, setReturnImageFiles] = useState([]);
+  const [returnImagePreviews, setReturnImagePreviews] = useState([]);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [returnEligibility, setReturnEligibility] = useState({ eligible: false });
   const fileInputRef = useRef(null);
+
+  const [cancellationDetails, setCancellationDetails] = useState(null);
+  const [showCancellationModal, setShowCancellationModal] = useState(false);
+  const [requestingCancellation, setRequestingCancellation] = useState(false);
+  const [cancellationReason, setCancellationReason] = useState("");
+  const [cancellationReasonDetail, setCancellationReasonDetail] = useState("");
+
+  const fetchCancellationData = async (ord) => {
+    if (!ord) return;
+    try {
+      const res = await customerApi.getCancellationRequestByOrderId(ord.orderId);
+      const data = res.data.result || res.data;
+      setCancellationDetails(data);
+      if (data?.pickup_otp) {
+        setHandoffOtp(data.pickup_otp);
+      }
+    } catch (err) {
+      setCancellationDetails(null);
+    }
+  };
+
+  const fetchReturnData = async (ord) => {
+    if (!ord) return;
+    try {
+      const eligRes = await customerApi.getReturnEligibility(ord.orderId);
+      setReturnEligibility(eligRes.data.result || eligRes.data);
+    } catch (err) {
+      console.error("Failed to fetch return eligibility", err);
+    }
+
+    const returnReqId = ord.return_request_id;
+    if (returnReqId) {
+      try {
+        const retRes = await customerApi.getReturnRequestStatus(returnReqId);
+        const ret = retRes.data.result || retRes.data;
+        setReturnDetails(ret);
+        if (ret?.pickup_otp) {
+          setHandoffOtp(ret.pickup_otp);
+        }
+      } catch (err) {
+        console.error("Failed to fetch return request status", err);
+        setReturnDetails(null);
+      }
+    } else {
+      setReturnDetails(null);
+    }
+  };
   const [liveLocation, setLiveLocation] = useState(null);
   const [trail, setTrail] = useState([]);
   const [routePolyline, setRoutePolyline] = useState(null);
@@ -220,17 +272,8 @@ const OrderDetailPage = () => {
         const response = await customerApi.getOrderDetails(orderId);
         const ord = response.data.result;
         setOrder(ord);
-
-        try {
-          const retRes = await customerApi.getReturnDetails(resolveOrderLookupId(ord));
-          const ret = retRes.data.result;
-          setReturnDetails(ret);
-          if (ret?.returnPickupOtp) {
-            setHandoffOtp(ret.returnPickupOtp);
-          }
-        } catch {
-          setReturnDetails(null);
-        }
+        await fetchReturnData(ord);
+        await fetchCancellationData(ord);
       } catch (error) {
         console.error("Failed to fetch order details:", error);
         toast.error("Failed to load order details");
@@ -267,12 +310,8 @@ const OrderDetailPage = () => {
         .then(async (r) => {
           const ord = r.data.result;
           setOrder(ord);
-          try {
-            const retRes = await customerApi.getReturnDetails(resolveOrderLookupId(ord));
-            setReturnDetails(retRes.data.result);
-          } catch {
-            setReturnDetails(null);
-          }
+          await fetchReturnData(ord);
+          await fetchCancellationData(ord);
         })
         .catch(() => { })
         .finally(() => {
@@ -311,11 +350,22 @@ const OrderDetailPage = () => {
         toast.info("Return pickup OTP received — share with rider.");
       }
     });
+    const offCancellationOtp = onCancellationPickupOtp(getToken, (payload) => {
+      if (matchesOrderIdentifier(payload?.orderId, identifiersRef.current) && payload?.otp) {
+        setHandoffOtp(payload.otp);
+        toast.info("Cancellation pickup OTP received — share with rider.");
+      }
+    });
+    const offCancellationStatus = onCancellationStatusUpdate(getToken, (payload) => {
+      refresh();
+    });
 
     return () => {
       offStatus();
       offOtp();
       offReturnOtp();
+      offCancellationOtp();
+      offCancellationStatus();
       leaveOrderRoom(orderId, getToken);
     };
   }, [orderId]);
@@ -383,20 +433,16 @@ const OrderDetailPage = () => {
   }, []);
 
   useEffect(() => {
-    if (!order) {
+    const deadlineStr = returnEligibility?.return_deadline || order?.return_eligible_until;
+    if (!deadlineStr || order?.status !== "delivered") {
       setReturnCountdown(null);
       return;
     }
 
     const calculateCountdown = () => {
-      if (order.status !== "delivered") {
-        setReturnCountdown(null);
-        return;
-      }
-      const windowStart = new Date(order.deliveredAt || order.createdAt).getTime();
+      const deadline = new Date(deadlineStr).getTime();
       const now = Date.now();
-      const windowMs = returnWindowMinutes * 60 * 1000;
-      const remaining = Math.max(0, (windowStart + windowMs) - now);
+      const remaining = Math.max(0, deadline - now);
 
       if (remaining <= 0) {
         setReturnCountdown(0);
@@ -411,7 +457,7 @@ const OrderDetailPage = () => {
     calculateCountdown();
     const iv = setInterval(calculateCountdown, 1000);
     return () => clearInterval(iv);
-  }, [order, returnWindowMinutes]);
+  }, [returnEligibility, order]);
 
   const handleOpenInMaps = () => {
     const loc = order?.address?.location;
@@ -583,8 +629,8 @@ const OrderDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white">
-        <Loader2 className="animate-spin text-brand-600" size={32} />
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="animate-spin text-[#1a6e2e]" size={32} />
       </div>
     );
   }
@@ -595,17 +641,79 @@ const OrderDetailPage = () => {
     if (order.status !== "delivered") return false;
     if (
       returnDetails &&
-      returnDetails.returnStatus &&
-      returnDetails.returnStatus !== "none" &&
-      returnDetails.returnStatus !== null
+      returnDetails.status &&
+      returnDetails.status !== "NONE" &&
+      returnDetails.status !== "CANCELLED"
     ) {
       return false;
     }
+    return !!returnEligibility?.eligible;
+  };
 
-    const windowStart = new Date(order.deliveredAt || order.createdAt).getTime();
-    const now = Date.now();
-    const windowMs = returnWindowMinutes * 60 * 1000;
-    return now - windowStart <= windowMs;
+  const canCancelDirectly = () => {
+    return order && order.status === "pending";
+  };
+
+  const canRequestCancellation = () => {
+    if (!order) return false;
+    if (order.status === "pending" || order.status === "cancelled" || order.status === "delivered") return false;
+    if (cancellationDetails && cancellationDetails.status !== "CANCELLED" && cancellationDetails.status !== "SELLER_REJECTED") {
+      return false;
+    }
+    return true;
+  };
+
+  const handleCancelDirectly = async (reason) => {
+    try {
+      setRequestingCancellation(true);
+      await customerApi.cancelOrder(order.orderId, { reason });
+      toast.success("Order cancelled successfully");
+      setShowCancellationModal(false);
+      setCancellationReason("");
+      setCancellationReasonDetail("");
+      
+      const orderRes = await customerApi.getOrderDetails(orderId);
+      const updatedOrd = orderRes.data.result;
+      setOrder(updatedOrd);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to cancel order");
+    } finally {
+      setRequestingCancellation(false);
+    }
+  };
+
+  const handleCancellationSubmit = async () => {
+    if (!cancellationReason.trim()) {
+      toast.error("Please provide a reason for cancellation");
+      return;
+    }
+
+    const finalReason = cancellationReasonDetail.trim()
+      ? `${cancellationReason}: ${cancellationReasonDetail.trim()}`
+      : cancellationReason;
+
+    if (canCancelDirectly()) {
+      await handleCancelDirectly(finalReason);
+      return;
+    }
+
+    try {
+      setRequestingCancellation(true);
+      await customerApi.submitCancellationRequest(order.orderId, { reason: finalReason });
+      toast.success("Cancellation request submitted successfully");
+      setShowCancellationModal(false);
+      setCancellationReason("");
+      setCancellationReasonDetail("");
+
+      const orderRes = await customerApi.getOrderDetails(orderId);
+      const updatedOrd = orderRes.data.result;
+      setOrder(updatedOrd);
+      await fetchCancellationData(updatedOrd);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to submit cancellation request");
+    } finally {
+      setRequestingCancellation(false);
+    }
   };
 
   const toggleItemSelection = (index) => {
@@ -622,10 +730,6 @@ const OrderDetailPage = () => {
 
   const handleReturnSubmit = async () => {
     if (!order) return;
-    if (!Object.keys(selectedReturnItems).length) {
-      toast.error("Please select at least one item to return.");
-      return;
-    }
     if (!returnReason.trim()) {
       toast.error("Please provide a reason for return.");
       return;
@@ -634,39 +738,35 @@ const OrderDetailPage = () => {
       toast.error("Please confirm that the product is in good condition with accessories.");
       return;
     }
-    if (returnImages.length === 0) {
+    if (returnImageFiles.length === 0) {
       toast.error("Please upload at least 1 image of the product.");
       return;
     }
 
-    const payload = {
-      items: Object.entries(selectedReturnItems).map(([idx, val]) => ({
-        itemIndex: Number(idx),
-        quantity: val.quantity,
-      })),
-      reason: returnReason,
-      reasonDetail: returnReasonDetail,
-      conditionAssurance: returnConditionAssurance,
-      images: returnImages,
-    };
+    const formData = new FormData();
+    formData.append("reason", returnReason);
+    formData.append("reason_description", returnReasonDetail);
+    returnImageFiles.forEach((file) => {
+      formData.append("images", file);
+    });
 
     try {
       setRequestingReturn(true);
-      await customerApi.requestReturn(order.orderId, payload);
-      toast.success("Return request submitted");
+      await customerApi.submitReturn(order.orderId, formData);
+      toast.success("Return request submitted successfully");
       setShowReturnModal(false);
       setSelectedReturnItems({});
       setReturnReason("");
       setReturnReasonDetail("");
       setReturnConditionAssurance(false);
-      setReturnImages([]);
+      returnImagePreviews.forEach(url => URL.revokeObjectURL(url));
+      setReturnImageFiles([]);
+      setReturnImagePreviews([]);
 
-      const [orderRes, retRes] = await Promise.all([
-        customerApi.getOrderDetails(orderId),
-        customerApi.getReturnDetails(resolveOrderLookupId(order)),
-      ]);
-      setOrder(orderRes.data.result);
-      setReturnDetails(retRes.data.result);
+      const orderRes = await customerApi.getOrderDetails(orderId);
+      const updatedOrd = orderRes.data.result;
+      setOrder(updatedOrd);
+      await fetchReturnData(updatedOrd);
     } catch (error) {
       console.error("Failed to submit return request", error);
       toast.error(
@@ -677,50 +777,30 @@ const OrderDetailPage = () => {
     }
   };
 
-  const handleImageSelect = async (e) => {
+  const handleImageSelect = (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    const remaining = 5 - returnImages.length;
+    const remaining = 5 - returnImageFiles.length;
     const toProcess = files.slice(0, remaining);
 
-    setIsUploadingImage(true);
-    const newImages = [];
+    const newFiles = [...returnImageFiles, ...toProcess].slice(0, 5);
+    setReturnImageFiles(newFiles);
 
-    for (const file of toProcess) {
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
-        let url;
-        try {
-          const { default: axiosInstance } = await import("@core/api/axios");
-          const uploadRes = await axiosInstance.post("/media/upload", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-          url =
-            uploadRes.data?.result?.url ||
-            uploadRes.data?.data?.url ||
-            uploadRes.data?.url;
-        } catch {
-          url = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target.result);
-            reader.readAsDataURL(file);
-          });
-        }
-        if (url) newImages.push(url);
-      } catch (err) {
-        toast.error("Failed to process image.");
-      }
-    }
+    const previews = newFiles.map(file => URL.createObjectURL(file));
+    setReturnImagePreviews(previews);
 
-    setReturnImages((prev) => [...prev, ...newImages].slice(0, 5));
-    setIsUploadingImage(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const removeImage = (index) => {
-    setReturnImages((prev) => prev.filter((_, i) => i !== index));
+    if (returnImagePreviews[index]) {
+      URL.revokeObjectURL(returnImagePreviews[index]);
+    }
+    const nextFiles = returnImageFiles.filter((_, i) => i !== index);
+    const nextPreviews = returnImagePreviews.filter((_, i) => i !== index);
+    setReturnImageFiles(nextFiles);
+    setReturnImagePreviews(nextPreviews);
   };
 
   const handleRetryPayment = async () => {
@@ -750,10 +830,10 @@ const OrderDetailPage = () => {
 
   if (!order) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-white">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white">
         <Package size={64} className="text-slate-300 mb-4" />
         <h3 className="text-lg font-bold text-slate-800">Order not found</h3>
-        <Link to="/orders" className="text-brand-600 font-bold mt-4 hover:text-brand-700">
+        <Link to="/orders" className="text-[#1a6e2e] font-bold mt-4 hover:opacity-80">
           Back to my orders
         </Link>
       </div>
@@ -761,9 +841,9 @@ const OrderDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-24 font-sans">
+    <div className="min-h-screen bg-white pb-24 font-sans">
       {/* Minimal Header */}
-      <div className="bg-white/80 backdrop-blur-md sticky top-0 z-30 px-4 py-3 flex items-center justify-between border-b border-slate-100">
+      <div className="bg-white/80  sticky top-0 z-30 px-4 py-3 flex items-center justify-between border-b border-slate-100">
         <button
           type="button"
           onClick={handleBack}
@@ -784,24 +864,24 @@ const OrderDetailPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-brand-50 rounded-3xl p-5 shadow-sm border border-brand-100 relative overflow-hidden"
+            className="bg-white rounded-3xl p-5 border border-[#1a6e2e]/20 relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 p-4 opacity-10">
-              <CreditCard size={64} className="text-brand-600" />
+              <CreditCard size={64} className="text-[#1a6e2e]" />
             </div>
             <div className="relative z-10 flex items-center justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
-                  <h3 className="text-sm font-black text-brand-900 uppercase tracking-tight">Payment Required</h3>
+                  <span className="w-2 h-2 rounded-full bg-[#1a6e2e] animate-pulse" />
+                  <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">Payment Required</h3>
                 </div>
-                <p className="text-xs text-brand-700 font-medium leading-relaxed">
+                <p className="text-xs text-slate-500 font-medium leading-relaxed">
                   Complete your payment of <span className="font-bold">₹{order.pricing.total}</span> to proceed with this order.
                 </p>
               </div>
               <button
                 onClick={handleRetryPayment}
-                className="bg-black  hover:bg-brand-700 text-primary-foreground px-5 py-2.5 rounded-xl text-xs font-black shadow-lg shadow-brand-200 transition-all active:scale-95 flex items-center gap-2 uppercase tracking-wide shrink-0"
+                className="bg-[#1a6e2e] hover:bg-[#1a6e2e]/90 text-white px-5 py-2.5 rounded-xl text-xs font-black border border-transparent transition-all active:scale-95 flex items-center gap-2 uppercase tracking-wide shrink-0"
               >
                 Pay Now <ArrowRight size={14} />
               </button>
@@ -814,7 +894,7 @@ const OrderDetailPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-3xl overflow-hidden shadow-lg border border-slate-200/50"
+            className="rounded-3xl overflow-hidden border border-[#1a6e2e]/20"
           >
             <LiveTrackingMap
               status={order.workflowStatus || order.status}
@@ -856,18 +936,18 @@ const OrderDetailPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-gradient-to-br from-brand-500 to-brand-600 rounded-3xl p-5 shadow-lg text-white"
+            className="bg-white rounded-3xl p-5 border border-[#1a6e2e]/20 text-slate-800"
           >
             <div className="flex items-center gap-4">
               <div className="relative">
-                <div className="h-14 w-14 rounded-full bg-white/20 backdrop-blur-sm overflow-hidden border-2 border-white/40 shadow-lg">
+                <div className="h-14 w-14 rounded-full bg-[#1a6e2e]/10 overflow-hidden border-2 border-[#1a6e2e]/20">
                   <img
                     src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&auto=format&fit=crop&q=60"
                     alt="Rider"
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="absolute -bottom-1 -right-1 bg-white text-brand-600 text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-md">
+                <div className="absolute -bottom-1 -right-1 bg-white text-[#1a6e2e] text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 border border-[#1a6e2e]/20">
                   4.8 ★
                 </div>
               </div>
@@ -877,10 +957,10 @@ const OrderDetailPage = () => {
                 <p className="text-xs text-white/90 mt-0.5">On the way to you</p>
               </div>
               <div className="flex items-center gap-2">
-                <button className="h-11 w-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors border border-white/30">
+                <button className="h-11 w-11 rounded-full bg-white/20  flex items-center justify-center hover:bg-white/30 transition-colors border border-white/30">
                   <MessageSquare size={20} className="text-white" />
                 </button>
-                <button className="h-11 w-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors border border-white/30">
+                <button className="h-11 w-11 rounded-full bg-white/20  flex items-center justify-center hover:bg-white/30 transition-colors border border-white/30">
                   <Phone size={20} className="text-white" />
                 </button>
               </div>
@@ -893,7 +973,7 @@ const OrderDetailPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100"
+          className="bg-white rounded-3xl p-5 border border-[#1a6e2e]/20"
         >
           <div className="flex items-start gap-4">
             <div className="h-12 w-12 rounded-2xl bg-orange-50 flex items-center justify-center flex-shrink-0">
@@ -922,16 +1002,16 @@ const OrderDetailPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100"
+          className="bg-white rounded-3xl p-5 border border-[#1a6e2e]/20"
         >
           <div className="flex items-start gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-brand-50 flex items-center justify-center flex-shrink-0">
-              <MapPin size={24} className="text-brand-600" />
+            <div className="h-12 w-12 rounded-2xl bg-[#1a6e2e]/10 flex items-center justify-center flex-shrink-0">
+              <MapPin size={24} className="text-[#1a6e2e]" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <p className="text-xs font-bold text-brand-600 uppercase tracking-wider">Delivery Address</p>
-                <span className="bg-brand-50 text-brand-700 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                <p className="text-xs font-bold text-[#1a6e2e] uppercase tracking-wider">Delivery Address</p>
+                <span className="bg-[#1a6e2e]/10 text-[#1a6e2e] text-[10px] px-2 py-0.5 rounded-full font-bold">
                   {order.address.type}
                 </span>
               </div>
@@ -942,8 +1022,8 @@ const OrderDetailPage = () => {
               {order.address?.location &&
                 typeof order.address.location.lat === "number" &&
                 typeof order.address.location.lng === "number" && (
-                  <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 bg-brand-50 px-2 py-1 rounded-lg">
-                    <CheckCircle size={14} className="text-brand-600" />
+                  <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[#1a6e2e] bg-[#1a6e2e]/10 px-2 py-1 rounded-lg">
+                    <CheckCircle size={14} className="text-[#1a6e2e]" />
                     Precise location confirmed
                   </p>
                 )}
@@ -960,7 +1040,7 @@ const OrderDetailPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100"
+          className="bg-white rounded-3xl p-5 border border-[#1a6e2e]/20"
         >
           <h3 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
             <Package size={18} className="text-slate-400" />
@@ -1002,7 +1082,7 @@ const OrderDetailPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100"
+          className="bg-white rounded-3xl p-5 border border-[#1a6e2e]/20"
         >
           <h3 className="text-base font-bold text-slate-800 mb-4">Bill Summary</h3>
           <div className="space-y-2.5 text-sm">
@@ -1014,7 +1094,7 @@ const OrderDetailPage = () => {
               <span>Delivery Fee</span>
               <span
                 className={
-                  order.pricing.deliveryFee === 0 ? "text-brand-600 font-bold" : "font-semibold"
+                  order.pricing.deliveryFee === 0 ? "text-[#1a6e2e] font-bold" : "font-semibold"
                 }>
                 {order.pricing.deliveryFee === 0
                   ? "FREE"
@@ -1031,7 +1111,7 @@ const OrderDetailPage = () => {
               <span className="text-base font-bold text-slate-900">
                 Total Amount
               </span>
-              <span className="text-xl font-black text-brand-600">
+              <span className="text-xl font-black text-[#1a6e2e]">
                 ₹{order.pricing.total}
               </span>
             </div>
@@ -1040,7 +1120,7 @@ const OrderDetailPage = () => {
           {/* Payment Method */}
           <div className="mt-4 bg-slate-50 rounded-2xl p-3.5 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 bg-white rounded-xl flex items-center justify-center shadow-sm">
+              <div className="h-9 w-9 bg-white rounded-xl flex items-center justify-center border border-[#1a6e2e]/20">
                 <CreditCard size={18} className="text-slate-700" />
               </div>
               <div>
@@ -1066,23 +1146,102 @@ const OrderDetailPage = () => {
         >
           <button
             onClick={() => setShowInvoice(true)}
-            className="py-3.5 rounded-2xl bg-white border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm hover:shadow-md active:scale-[0.98]">
+            className="py-3.5 rounded-2xl bg-white border-2 border-[#1a6e2e]/20 text-[#1a6e2e] font-bold hover:bg-[#1a6e2e]/10 transition-all flex items-center justify-center gap-2 text-sm active:scale-[0.98]">
             <Download size={18} /> Invoice
           </button>
           <button
             onClick={() => setShowHelp(true)}
-            className="py-3.5 rounded-2xl bg-white border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm hover:shadow-md active:scale-[0.98]">
+            className="py-3.5 rounded-2xl bg-white border-2 border-[#1a6e2e]/20 text-[#1a6e2e] font-bold hover:bg-[#1a6e2e]/10 transition-all flex items-center justify-center gap-2 text-sm active:scale-[0.98]">
             <HelpCircle size={18} /> Help
           </button>
         </motion.div>
 
+        {/* Cancellation Section - Only if applicable */}
+        {(canCancelDirectly() || canRequestCancellation() || (cancellationDetails && cancellationDetails.status && cancellationDetails.status !== "NONE")) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.38 }}
+            className="bg-white rounded-3xl p-5 border border-[#1a6e2e]/20"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base font-bold text-slate-800">
+                Order Cancellation
+              </h3>
+            </div>
+
+            {cancellationDetails && cancellationDetails.status && cancellationDetails.status !== "NONE" ? (
+              <div className="space-y-4 text-sm">
+                <CancellationProgressTracker status={cancellationDetails.status} history={cancellationDetails.status_history} />
+
+                {/* OTP Display for Customer if pickup scheduled */}
+                {cancellationDetails.status === "PICKUP_SCHEDULED" && (
+                  <div className="bg-[#1a6e2e]/10 rounded-2xl p-4 border border-[#1a6e2e]/20">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="h-8 w-8 rounded-full bg-[#1a6e2e]/20 flex items-center justify-center">
+                        <Truck size={16} className="text-[#1a6e2e]" />
+                      </div>
+                      <p className="text-sm font-bold text-slate-800">Cancellation Pickup Assigned</p>
+                    </div>
+                    <p className="text-xs text-[#1a6e2e] mb-3 ml-11">
+                      A delivery partner is coming to collect your items for cancellation. Please share this OTP when they arrive:
+                    </p>
+                    <div className="ml-11 flex items-center gap-2">
+                      {handoffOtp ? (
+                        <div className="flex gap-2">
+                          {handoffOtp.split('').map((digit, i) => (
+                            <div key={i} className="h-10 w-8 bg-white border border-[#1a6e2e]/20 rounded-lg flex items-center justify-center text-lg font-black text-[#1a6e2e]">
+                              {digit}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs font-bold text-slate-400 italic">Waiting for rider to request OTP...</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {cancellationDetails.status === "SELLER_REJECTED" && (
+                  <p className="text-sm text-rose-600 font-medium bg-rose-50 p-3 rounded-xl border border-rose-100">
+                    Cancellation request rejected:{" "}
+                    {cancellationDetails.seller_note || "No reason provided"}
+                  </p>
+                )}
+                {cancellationDetails.status === "CANCELLED" && (
+                  <div className="bg-[#1a6e2e]/10 p-4 rounded-2xl border border-[#1a6e2e]/20">
+                    <p className="text-xs font-bold text-[#1a6e2e] uppercase tracking-wider mb-1">Cancellation Completed</p>
+                    <p className="text-sm text-slate-700 font-medium">
+                      Your order has been successfully cancelled and ₹{order.pricing.total} has been refunded to your {order.paymentMethod === 'cod' ? 'hand (Cash)' : 'wallet'}.
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="text-sm text-slate-500 mb-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                {canCancelDirectly()
+                  ? "You can cancel this order directly before it is processed."
+                  : "You can request an order cancellation. This will require seller approval and rider pickup."}
+              </p>
+            )}
+
+            {(canCancelDirectly() || canRequestCancellation()) && (
+              <button
+                onClick={() => setShowCancellationModal(true)}
+                className="w-full py-4 rounded-2xl bg-rose-600 text-white text-sm font-bold border border-transparent hover:bg-rose-500 transition-all active:scale-[0.98]">
+                {canCancelDirectly() ? "Cancel Order" : "Request Cancellation"}
+              </button>
+            )}
+          </motion.div>
+        )}
+
         {/* Return Section - Only if applicable */}
-        {(canRequestReturn() || (returnDetails && returnDetails.returnStatus && returnDetails.returnStatus !== "none")) && (
+        {(canRequestReturn() || (returnDetails && returnDetails.status && returnDetails.status !== "NONE" && returnDetails.status !== "CANCELLED")) && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100"
+            className="bg-white rounded-3xl p-5 border border-[#1a6e2e]/20"
           >
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-base font-bold text-slate-800">
@@ -1097,28 +1256,29 @@ const OrderDetailPage = () => {
             </div>
 
             {returnDetails &&
-              returnDetails.returnStatus &&
-              returnDetails.returnStatus !== "none" ? (
+              returnDetails.status &&
+              returnDetails.status !== "NONE" &&
+              returnDetails.status !== "CANCELLED" ? (
               <div className="space-y-4 text-sm">
-                <ReturnProgressTracker returnStatus={returnDetails.returnStatus} />
+                <ReturnProgressTracker returnStatus={returnDetails.status} history={returnDetails.status_history} />
 
                 {/* Return OTP Display for Customer if pickup is assigned */}
-                {returnDetails.returnStatus === "return_pickup_assigned" && (
-                  <div className="bg-brand-50 rounded-2xl p-4 border border-brand-100">
+                {returnDetails.status === "PICKUP_SCHEDULED" && (
+                  <div className="bg-[#1a6e2e]/10 rounded-2xl p-4 border border-[#1a6e2e]/20">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center">
-                        <Truck size={16} className="text-brand-600" />
+                      <div className="h-8 w-8 rounded-full bg-[#1a6e2e]/20 flex items-center justify-center">
+                        <Truck size={16} className="text-[#1a6e2e]" />
                       </div>
-                      <p className="text-sm font-bold text-brand-900">Return Pickup Assigned</p>
+                      <p className="text-sm font-bold text-slate-800">Return Pickup Assigned</p>
                     </div>
-                    <p className="text-xs text-brand-700 mb-3 ml-11">
+                    <p className="text-xs text-[#1a6e2e] mb-3 ml-11">
                       A delivery partner is coming to collect your return. Please share this OTP when they arrive:
                     </p>
                     <div className="ml-11 flex items-center gap-2">
                       {handoffOtp ? (
                         <div className="flex gap-2">
                           {handoffOtp.split('').map((digit, i) => (
-                            <div key={i} className="h-10 w-8 bg-white border-2 border-brand-200 rounded-lg flex items-center justify-center text-lg font-black text-brand-700 shadow-sm">
+                            <div key={i} className="h-10 w-8 bg-white border border-[#1a6e2e]/20 rounded-lg flex items-center justify-center text-lg font-black text-[#1a6e2e]">
                               {digit}
                             </div>
                           ))}
@@ -1130,32 +1290,32 @@ const OrderDetailPage = () => {
                   </div>
                 )}
 
-                {returnDetails.returnStatus === "return_rejected" && (
+                {returnDetails.status === "SELLER_REJECTED" && (
                   <p className="text-sm text-rose-600 font-medium bg-rose-50 p-3 rounded-xl border border-rose-100">
                     Return request rejected:{" "}
-                    {returnDetails.returnRejectedReason || "No reason provided"}
+                    {returnDetails.seller_note || "No reason provided"}
                   </p>
                 )}
-                {returnDetails.returnRefundAmount > 0 &&
-                  returnDetails.returnStatus === "refund_completed" && (
-                    <div className="bg-brand-50 p-4 rounded-2xl border border-brand-100">
-                      <p className="text-xs font-bold text-brand-800 uppercase tracking-wider mb-1">Refund Successful</p>
-                      <p className="text-sm text-brand-700 font-medium">
-                        ₹{returnDetails.returnRefundAmount} has been credited to your {order.paymentMethod === 'cod' ? 'hand (Cash)' : 'wallet'}.
+                {returnDetails.refund_amount > 0 &&
+                  returnDetails.status === "REFUND_COMPLETED" && (
+                    <div className="bg-[#1a6e2e]/10 p-4 rounded-2xl border border-[#1a6e2e]/20">
+                      <p className="text-xs font-bold text-[#1a6e2e] uppercase tracking-wider mb-1">Refund Successful</p>
+                      <p className="text-sm text-[#1a6e2e] font-medium">
+                        ₹{returnDetails.refund_amount} has been credited to your {order.paymentMethod === 'cod' ? 'hand (Cash)' : 'wallet'}.
                       </p>
                     </div>
                   )}
               </div>
             ) : (
               <p className="text-sm text-slate-500 mb-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                You can request a return within the first {returnWindowMinutes} minutes after delivery.
+                You can request a return within the return eligibility window (2 hours) after delivery.
               </p>
             )}
 
             {canRequestReturn() && (
               <button
                 onClick={() => setShowReturnModal(true)}
-                className="w-full py-4 rounded-2xl bg-slate-900 text-white text-sm font-bold shadow-lg shadow-slate-900/10 hover:bg-slate-800 transition-all active:scale-[0.98]">
+                className="w-full py-4 rounded-2xl bg-slate-900 text-white text-sm font-bold border border-transparent hover:bg-slate-800 transition-all active:scale-[0.98]">
                 Request Return
               </button>
             )}
@@ -1177,13 +1337,13 @@ const OrderDetailPage = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/40"
             onClick={() => !requestingReturn && setShowReturnModal(false)}
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative z-10 w-full max-w-md bg-white rounded-3xl shadow-2xl p-6 space-y-4"
+            className="relative z-10 w-full max-w-md bg-white rounded-3xl border border-[#1a6e2e]/20 p-6 space-y-4"
           >
             <h3 className="text-lg font-black text-slate-900">
               Request Return
@@ -1228,11 +1388,12 @@ const OrderDetailPage = () => {
                   className="w-full rounded-2xl border border-slate-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-900/10"
                 >
                   <option value="" disabled>Select a reason...</option>
-                  <option value="Defective product">Defective product</option>
-                  <option value="Wrong item delivered">Wrong item delivered</option>
-                  <option value="Not as expected">Not as expected</option>
-                  <option value="Size issue">Size issue</option>
-                  <option value="Other">Other</option>
+                  <option value="damaged_product">Damaged Product</option>
+                  <option value="wrong_item">Wrong Item Delivered</option>
+                  <option value="missing_items">Missing Items</option>
+                  <option value="quality_issue">Quality Issue</option>
+                  <option value="changed_mind">Changed Mind</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
 
@@ -1251,10 +1412,10 @@ const OrderDetailPage = () => {
 
               <div className="space-y-2">
                 <p className="text-xs font-bold text-slate-600 uppercase">
-                  Photos ({returnImages.length}/5) *
+                  Photos ({returnImageFiles.length}/5) *
                 </p>
                 <div className="flex gap-2 overflow-x-auto pb-2">
-                  {returnImages.map((img, index) => (
+                  {returnImagePreviews.map((img, index) => (
                     <div key={index} className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 shrink-0">
                       <img src={img} alt="proof" className="w-full h-full object-cover" />
                       <button
@@ -1266,7 +1427,7 @@ const OrderDetailPage = () => {
                       </button>
                     </div>
                   ))}
-                  {returnImages.length < 5 && (
+                  {returnImageFiles.length < 5 && (
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
@@ -1316,6 +1477,80 @@ const OrderDetailPage = () => {
                 className="px-4 py-2 rounded-xl text-sm font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-70 transition-all"
                 disabled={requestingReturn}>
                 {requestingReturn ? "Submitting..." : "Submit Request"}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Cancellation Request Modal */}
+      {showCancellationModal && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center px-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute inset-0 bg-black/40"
+            onClick={() => !requestingCancellation && setShowCancellationModal(false)}
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative z-10 w-full max-w-md bg-white rounded-3xl border border-[#1a6e2e]/20 p-6 space-y-4 font-sans"
+          >
+            <h3 className="text-lg font-black text-slate-900">
+              {canCancelDirectly() ? "Cancel Order" : "Request Cancellation"}
+            </h3>
+            <p className="text-xs text-slate-500 font-medium">
+              {canCancelDirectly()
+                ? "Please tell us why you want to cancel this order."
+                : "Cancellation requires approval from the seller and items collection. Please specify the reason."}
+            </p>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600">
+                  Reason for cancellation
+                </label>
+                <select
+                  value={cancellationReason}
+                  onChange={(e) => setCancellationReason(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-900/10 font-medium"
+                >
+                  <option value="" disabled>Select a reason...</option>
+                  <option value="Changed my mind">Changed my mind</option>
+                  <option value="Expected delivery is too late">Expected delivery is too late</option>
+                  <option value="Incorrect delivery address">Incorrect delivery address</option>
+                  <option value="Ordered incorrect products">Ordered incorrect products</option>
+                  <option value="Other">Other reason</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600">
+                  Detailed Issue / Comment (Optional)
+                </label>
+                <textarea
+                  rows={3}
+                  value={cancellationReasonDetail}
+                  onChange={(e) => setCancellationReasonDetail(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-900/10 font-medium"
+                  placeholder="Tell us more about your cancellation reason..."
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                onClick={() => !requestingCancellation && setShowCancellationModal(false)}
+                className="px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors"
+                disabled={requestingCancellation}>
+                Cancel
+              </button>
+              <button
+                onClick={handleCancellationSubmit}
+                className="px-4 py-2 rounded-xl text-sm font-bold text-white bg-rose-600 hover:bg-rose-500 disabled:opacity-70 transition-all border border-transparent"
+                disabled={requestingCancellation}>
+                {requestingCancellation ? "Submitting..." : "Confirm"}
               </button>
             </div>
           </motion.div>

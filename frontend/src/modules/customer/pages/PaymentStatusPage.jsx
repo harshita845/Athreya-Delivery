@@ -109,7 +109,7 @@ const PaymentStatusPage = () => {
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="max-w-md w-full bg-white rounded-[2.5rem] p-8 shadow-2xl shadow-slate-200 border border-slate-100 text-center relative overflow-hidden"
+                className="max-w-md w-full bg-white rounded-[2.5rem] p-8 border border-[#1a6e2e]/20 text-center relative overflow-hidden"
             >
                 {/* Status-specific background elements */}
                 <AnimatePresence mode="wait">
@@ -140,7 +140,7 @@ const PaymentStatusPage = () => {
                                     animate={{ scale: 1, rotate: 360 }}
                                     exit={{ scale: 0.5, opacity: 0 }}
                                     transition={{ rotate: { duration: 2, repeat: Infinity, ease: "linear" } }}
-                                    className="w-20 h-20 bg-brand-50 text-brand-500 rounded-full flex items-center justify-center shadow-inner"
+                                    className="w-20 h-20 bg-[#1a6e2e]/10 text-[#1a6e2e] rounded-full flex items-center justify-center border border-[#1a6e2e]/20"
                                 >
                                     <Loader2 size={40} />
                                 </motion.div>
@@ -152,7 +152,7 @@ const PaymentStatusPage = () => {
                                     initial={{ scale: 0.5, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
                                     transition={{ type: "spring", damping: 12 }}
-                                    className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-emerald-100/50"
+                                    className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center border border-[#1a6e2e]/20"
                                 >
                                     <Check size={40} strokeWidth={3} />
                                 </motion.div>
@@ -163,7 +163,7 @@ const PaymentStatusPage = () => {
                                     key="failure"
                                     initial={{ scale: 0.5, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
-                                    className="w-20 h-20 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center shadow-lg shadow-rose-100/50"
+                                    className="w-20 h-20 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center border border-[#1a6e2e]/20"
                                 >
                                     <X size={40} strokeWidth={3} />
                                 </motion.div>
@@ -174,7 +174,7 @@ const PaymentStatusPage = () => {
                                     key="timeout"
                                     initial={{ scale: 0.5, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
-                                    className="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center shadow-lg shadow-amber-100/50"
+                                    className="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center border border-[#1a6e2e]/20"
                                 >
                                     <AlertTriangle size={40} strokeWidth={3} />
                                 </motion.div>
@@ -194,7 +194,7 @@ const PaymentStatusPage = () => {
                                             key={i}
                                             animate={{ opacity: [0.3, 1, 0.3] }}
                                             transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
-                                            className="w-2 h-2 bg-brand-400 rounded-full"
+                                            className="w-2 h-2 bg-[#1a6e2e] rounded-full"
                                         />
                                     ))}
                                 </div>
@@ -279,7 +279,7 @@ const PaymentStatusPage = () => {
                 {status === "verifying" && (
                     <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-100">
                         <motion.div 
-                            className="h-full bg-brand-500"
+                            className="h-full bg-[#1a6e2e]"
                             initial={{ width: 0 }}
                             animate={{ width: `${(retryCount / maxRetries) * 100}%` }}
                         />

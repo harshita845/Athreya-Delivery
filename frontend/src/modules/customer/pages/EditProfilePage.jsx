@@ -41,9 +41,11 @@ const EditProfilePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-[#fbf9ff] via-[#f5f1ff] to-[#fbf9ff] font-sans pb-10">
+        <div className="min-h-screen bg-white font-sans pb-10">
+
             {/* Header */}
-            <div className="bg-[#fbf9ff]/95 backdrop-blur-sm sticky top-0 z-30 px-4 py-3 flex items-center gap-3 border-b border-purple-100/40 shadow-sm">
+            <div className="bg-white/95  sticky top-0 z-30 px-4 py-3 flex items-center gap-3 border-b border-[#1a6e2e]/20 border border-[#1a6e2e]/20">
+
                 <Link to="/profile" className="p-2 -ml-2 rounded-full hover:bg-slate-100 transition-colors">
                     <ArrowLeft size={24} className="text-slate-600" />
                 </Link>
@@ -55,19 +57,19 @@ const EditProfilePage = () => {
                 {/* Profile Picture Upload */}
                 <div className="flex flex-col items-center mb-8">
                     <div className="relative">
-                        <div className="h-28 w-28 rounded-full bg-slate-200 border-4 border-white shadow-md flex items-center justify-center overflow-hidden">
+                        <div className="h-28 w-28 rounded-full bg-slate-200 border-4 border-white border border-[#1a6e2e]/20 flex items-center justify-center overflow-hidden">
                             <User size={48} className="text-slate-400" />
                         </div>
-                        <button className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full border-2 border-white shadow-sm hover:bg-[#0a701a] transition-colors">
+                        <button className="absolute bottom-0 right-0 p-2 bg-[#1a6e2e] text-[#1a6e2e]-foreground rounded-full border-2 border-white border border-[#1a6e2e]/20 hover:bg-[#0a701a] transition-colors">
                             <Camera size={18} />
                         </button>
                     </div>
-                    <p className="mt-3 text-sm font-bold text-primary">Change Photo</p>
+                    <p className="mt-3 text-sm font-bold text-[#1a6e2e]">Change Photo</p>
                 </div>
 
                 {/* Edit Form */}
                 <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 space-y-5">
+                    <div className="bg-white p-6 rounded-3xl border border-[#1a6e2e]/20 border border-slate-100 space-y-5">
                         <div>
                             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Full Name</label>
                             <div className="flex items-center gap-3 bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all">
@@ -129,7 +131,7 @@ const EditProfilePage = () => {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-2xl shadow-lg shadow-brand-200 hover:bg-[#0a701a] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="w-full py-4 bg-[#1a6e2e] text-[#1a6e2e]-foreground font-bold rounded-2xl border border-[#1a6e2e]/20 shadow-brand-200 hover:bg-[#0a701a] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                         {isLoading ? (
                             <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

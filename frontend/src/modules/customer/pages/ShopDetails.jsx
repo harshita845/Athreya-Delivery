@@ -128,13 +128,55 @@ const ShopDetails = () => {
 
   // Derived arrays
   const filteredProducts = useMemo(() => {
+    // Temporary console logs for diagnosis
+    console.log("All products:", products);
+    console.log("Selected category:", selectedCategory);
+    console.log("Filtered:", products.filter(p => p.category === selectedCategory));
+
     return products.filter(p => {
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
       
-      const matchesCategory = selectedCategory === "All" || 
-        (p.category && p.category.toLowerCase() === selectedCategory.toLowerCase()) ||
-        (p.categoryId?.name && p.categoryId.name.toLowerCase() === selectedCategory.toLowerCase()) ||
-        (p.subcategoryId?.name && p.subcategoryId.name.toLowerCase() === selectedCategory.toLowerCase());
+      const matchesCategory = selectedCategory === "All" || (() => {
+        const selLower = selectedCategory.toLowerCase();
+        const prodCategory = (p.category || "").toLowerCase();
+        const prodCatName = (p.categoryId?.name || "").toLowerCase();
+        const prodSubcatName = (p.subcategoryId?.name || "").toLowerCase();
+        const prodHeaderName = (p.headerId?.name || "").toLowerCase();
+        const prodTags = Array.isArray(p.tags) ? p.tags.map(t => String(t).toLowerCase()) : [];
+
+        // Direct exact / substring matches
+        if (prodCategory.includes(selLower) || (prodCategory && selLower.includes(prodCategory))) return true;
+        if (prodCatName.includes(selLower) || (prodCatName && selLower.includes(prodCatName))) return true;
+        if (prodSubcatName.includes(selLower) || (prodSubcatName && selLower.includes(prodSubcatName))) return true;
+        if (prodHeaderName.includes(selLower) || (prodHeaderName && selLower.includes(prodHeaderName))) return true;
+        if (prodTags.some(t => t.includes(selLower) || selLower.includes(t))) return true;
+
+        // Semantic word translations for standard SHOP_CATEGORIES
+        const categoryKeywords = {
+          "groceries": ["grocery", "groceries", "masala", "spices", "oil", "flour", "atta", "dal", "pulses", "grains", "rice", "salt", "sugar", "jaggery"],
+          "fruits & vegetables": ["fruits and veg", "fruits & vegetables", "fresh fruits", "fresh vegetables", "fruit", "veg", "banana", "apple", "guava", "tomato"],
+          "dairy & milk": ["dairy & milk", "dairy & breads", "milk", "ghee", "butter", "cheese", "curd", "yogurt", "whitener", "cream"],
+          "bakery": ["bakery", "breads", "bread", "cookies", "wafers", "cakes", "rolls", "rusks"],
+          "snacks": ["snacks", "chips", "crisps", "bhujia", "mixtures", "popcorn", "chocolates", "candies", "gum", "sweets"],
+          "beverages": ["beverages", "beverage", "drinks", "juice", "soda", "mixers", "tea", "coffee", "syrup"],
+          "personal care": ["personal care", "personal", "care", "hygiene", "bathing", "skin", "hair", "oral", "nasal", "body", "body care", "skincare", "groming"],
+          "pet supplies": ["pet supplies", "pet", "dog", "cat", "animal"],
+          "baby care": ["baby care", "baby", "kids", "diapers", "nursing"],
+          "electronics": ["electronics", "headphones", "gadgets", "watch", "mobile", "phone", "tv"],
+          "medicines": ["medicines", "medicine", "pharmacy", "cold", "tablet", "cough"],
+          "health devices": ["health devices", "pharmacy", "thermometer", "bp monitor"],
+          "household": ["household", "cleaning", "cookware", "pan", "tiffin", "bottle"],
+        };
+
+        const keywords = categoryKeywords[selLower] || [];
+        return keywords.some(kw => {
+          return prodCategory.includes(kw) || 
+                 prodCatName.includes(kw) || 
+                 prodSubcatName.includes(kw) || 
+                 prodHeaderName.includes(kw) ||
+                 prodTags.some(t => t.includes(kw));
+        });
+      })();
 
       const matchesTypeFilter = selectedFilters.types.length === 0 ||
         selectedFilters.types.includes(p.subcategoryId?.name || p.categoryId?.name || p.category);
@@ -226,7 +268,7 @@ const ShopDetails = () => {
         <AlertCircle size={64} className="text-red-500 mb-4" />
         <h2 className="text-2xl font-black text-slate-800 mb-2">Shop Not Found</h2>
         <p className="text-slate-500 mb-6 max-w-sm">The shop you are trying to view does not exist or may have been deactivated.</p>
-        <button onClick={() => navigate("/")} className="bg-primary hover:bg-[#0b721b] text-white px-8 py-3 rounded-full font-bold shadow-md transition-all active:scale-95">
+        <button onClick={() => navigate("/")} className="bg-[#1a6e2e] text-white px-8 py-3 rounded-full font-bold transition-all active:scale-95 border border-transparent">
           Go Back Home
         </button>
       </div>
@@ -234,15 +276,17 @@ const ShopDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#fbf9ff] pb-32 font-sans">
+    <div className="min-h-screen bg-white pb-32 font-sans">
+
       
       {/* 1. Header Banner Area */}
       <div className="relative w-full h-48 md:h-72 overflow-hidden bg-slate-900">
         <img src={applyCloudinaryTransform(getShopBanner(), "f_auto,q_auto,w_1200,h_400,c_fill")} alt={shop.shopName} className="w-full h-full object-cover opacity-80" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#fbf9ff] via-transparent to-black/30 pointer-events-none" />
+        <div className="absolute inset-0 bg-[#1a6e2e]/20 pointer-events-none" />
+
         
         {/* Back Button */}
-        <button onClick={() => navigate(-1)} className="absolute top-4 left-4 z-20 w-10 h-10 flex items-center justify-center bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:bg-white transition-all active:scale-95">
+        <button onClick={() => navigate(-1)} className="absolute top-4 left-4 z-20 w-10 h-10 flex items-center justify-center bg-white/90  rounded-full border border-[#1a6e2e]/20 hover:bg-white transition-all active:scale-95">
           <ChevronLeft size={22} className="text-slate-800" />
         </button>
       </div>
@@ -251,16 +295,16 @@ const ShopDetails = () => {
       <div className="max-w-6xl mx-auto px-4 md:px-8 relative -mt-16 z-10">
         
         {/* 2. Shop Info Card */}
-        <div className="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-slate-100 mb-6 relative overflow-hidden">
+        <div className="bg-white rounded-3xl p-6 border border-[#1a6e2e]/20 mb-6 relative overflow-hidden">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             
             {/* Logo and Core details */}
             <div className="flex items-center gap-4.5">
-              <div className="h-20 w-20 rounded-2xl overflow-hidden bg-purple-50 border border-purple-100 flex items-center justify-center flex-shrink-0 shadow-inner">
+              <div className="h-20 w-20 rounded-2xl overflow-hidden bg-[#1a6e2e]/10 border border-[#1a6e2e]/20 flex items-center justify-center flex-shrink-0">
                 {shop.shopLogo ? (
                   <img src={applyCloudinaryTransform(shop.shopLogo, "f_auto,q_auto,w_200,h_200,c_fill")} alt={shop.shopName} className="h-full w-full object-cover" />
                 ) : (
-                  <span className="text-2xl font-black text-[#3a2a83]">{getInitials(shop.shopName)}</span>
+                  <span className="text-2xl font-black text-[#1a6e2e]">{getInitials(shop.shopName)}</span>
                 )}
               </div>
               <div>
@@ -312,15 +356,15 @@ const ShopDetails = () => {
           {/* Dynamic Badges & Specs Bar */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 border-t border-slate-100 pt-5 mt-5 text-[11px] md:text-xs font-semibold text-slate-600">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 bg-purple-50 text-[#3a2a83] rounded-lg"><Clock size={14} /></span>
+              <span className="p-1.5 bg-[#1a6e2e]/10 text-[#1a6e2e] rounded-lg"><Clock size={14} /></span>
               <span>Radius: {shop.deliveryRadius || shop.serviceRadius || 5} km</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="p-1.5 bg-purple-50 text-[#3a2a83] rounded-lg"><Tag size={14} /></span>
+              <span className="p-1.5 bg-[#1a6e2e]/10 text-[#1a6e2e] rounded-lg"><Tag size={14} /></span>
               <span>Min. Order: ₹{shop.minimumOrderAmount || 0}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="p-1.5 bg-purple-50 text-[#3a2a83] rounded-lg"><Tag size={14} /></span>
+              <span className="p-1.5 bg-[#1a6e2e]/10 text-[#1a6e2e] rounded-lg"><Tag size={14} /></span>
               <span>Delivery Fee: ₹{shop.deliveryFee || 30}</span>
             </div>
             {shop.freeDeliveryAbove > 0 && (
@@ -333,14 +377,15 @@ const ShopDetails = () => {
         </div>
 
         {/* 3. Top Filter Panel & Category Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar sticky top-[0px] bg-[#fbf9ff] pt-3 z-20 border-b border-slate-100/80">
+        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar sticky top-[0px] bg-white pt-3 z-20 border-b border-slate-100/80">
+
           {/* Filter Button */}
           <button 
             onClick={() => {
               setActiveFilterTab("Type");
               setIsFilterModalOpen(true);
             }}
-            className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-all active:scale-95 cursor-pointer"
+            className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-white border border-[#1a6e2e]/20 rounded-xl hover:bg-[#1a6e2e]/10 transition-all active:scale-95 cursor-pointer"
           >
             <SlidersHorizontal size={16} className="text-slate-700" />
           </button>
@@ -353,7 +398,7 @@ const ShopDetails = () => {
             }}
             className={`flex-shrink-0 px-3.5 py-2 border rounded-xl flex items-center gap-1 text-xs font-bold transition-all active:scale-95 cursor-pointer ${
               selectedFilters.types.length > 0
-                ? "bg-purple-50 text-[#3a2a83] border-[#3a2a83]"
+                ? "bg-[#1a6e2e]/10 text-[#1a6e2e] border-[#1a6e2e]"
                 : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
             }`}
           >
@@ -369,7 +414,7 @@ const ShopDetails = () => {
             }}
             className={`flex-shrink-0 px-3.5 py-2 border rounded-xl flex items-center gap-1 text-xs font-bold transition-all active:scale-95 cursor-pointer ${
               selectedFilters.brands.length > 0
-                ? "bg-purple-50 text-[#3a2a83] border-[#3a2a83]"
+                ? "bg-[#1a6e2e]/10 text-[#1a6e2e] border-[#1a6e2e]"
                 : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
             }`}
           >
@@ -385,7 +430,7 @@ const ShopDetails = () => {
             }}
             className={`flex-shrink-0 px-3.5 py-2 border rounded-xl flex items-center gap-1 text-xs font-bold transition-all active:scale-95 cursor-pointer ${
               selectedFilters.priceRange
-                ? "bg-purple-50 text-[#3a2a83] border-[#3a2a83]"
+                ? "bg-[#1a6e2e]/10 text-[#1a6e2e] border-[#1a6e2e]"
                 : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
             }`}
           >
@@ -405,7 +450,7 @@ const ShopDetails = () => {
                 onClick={() => setSelectedCategory(cat)}
                 className={`flex-shrink-0 px-4 py-2 rounded-xl border flex items-center gap-1.5 text-xs font-bold transition-all active:scale-95 cursor-pointer ${
                   isCatActive
-                    ? "bg-[#3a2a83] text-white border-[#3a2a83] shadow-sm font-black"
+                    ? "bg-[#1a6e2e] text-white border-[#1a6e2e] font-black"
                     : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
                 }`}
               >
@@ -426,7 +471,7 @@ const ShopDetails = () => {
               placeholder="Search products in this shop..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border border-slate-200 pl-11 pr-4 py-3 rounded-2xl text-xs font-bold focus:ring-2 focus:ring-[#3a2a83] transition-all outline-none shadow-sm"
+              className="w-full bg-white border border-[#1a6e2e]/20 pl-11 pr-4 py-3 rounded-2xl text-xs font-bold focus:ring-2 focus:ring-[#1a6e2e] transition-all outline-none"
             />
           </div>
 
@@ -473,7 +518,7 @@ const ShopDetails = () => {
             📸 Shop Gallery
           </h2>
           
-          <div className="relative w-full aspect-[4/3] md:aspect-[21/9] rounded-3xl overflow-hidden shadow-md border border-slate-100 bg-slate-50 group">
+          <div className="relative w-full aspect-[4/3] md:aspect-[21/9] rounded-3xl overflow-hidden border border-[#1a6e2e]/20 bg-slate-50 group">
             {allGalleryImages.map((img, idx) => (
               <div
                 key={idx}
@@ -494,13 +539,13 @@ const ShopDetails = () => {
               <>
                 <button
                   onClick={() => setGallerySlideIndex((prev) => (prev === 0 ? allGalleryImages.length - 1 : prev - 1))}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white shadow-md flex items-center justify-center text-slate-850 hover:text-primary transition-all active:scale-90 opacity-0 group-hover:opacity-100 z-10"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white border border-[#1a6e2e]/20 flex items-center justify-center text-slate-850 hover:text-[#1a6e2e] transition-all active:scale-90 opacity-0 group-hover:opacity-100 z-10"
                 >
                   <ChevronLeft size={20} />
                 </button>
                 <button
                   onClick={() => setGallerySlideIndex((prev) => (prev + 1) % allGalleryImages.length)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white shadow-md flex items-center justify-center text-slate-850 hover:text-primary transition-all active:scale-90 opacity-0 group-hover:opacity-100 z-10"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white border border-[#1a6e2e]/20 flex items-center justify-center text-slate-850 hover:text-[#1a6e2e] transition-all active:scale-90 opacity-0 group-hover:opacity-100 z-10"
                 >
                   <ChevronRight size={20} />
                 </button>
@@ -509,7 +554,7 @@ const ShopDetails = () => {
 
             {/* Slider Dots */}
             {allGalleryImages.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/25 backdrop-blur-xs px-2.5 py-1.5 rounded-full z-10">
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/25  px-2.5 py-1.5 rounded-full z-10">
                 {allGalleryImages.map((_, idx) => (
                   <button
                     key={idx}
@@ -525,7 +570,7 @@ const ShopDetails = () => {
         </div>
 
         {/* 7. Reviews Section */}
-        <div className="mt-12 bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-slate-100">
+        <div className="mt-12 bg-white rounded-3xl p-6 border border-[#1a6e2e]/20">
           <h2 className="text-base md:text-lg font-black text-slate-800 tracking-tight uppercase mb-6 flex items-center gap-1.5">
             ⭐ Customer Reviews
           </h2>
@@ -535,7 +580,7 @@ const ShopDetails = () => {
               <div key={r._id} className="py-4 first:pt-0 last:pb-0">
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-black text-[#3a2a83] overflow-hidden">
+                    <div className="h-8 w-8 rounded-full bg-slate-100 border border-[#1a6e2e]/20 flex items-center justify-center text-xs font-black text-[#1a6e2e] overflow-hidden">
                       {r.userId?.profileImage ? (
                         <img src={r.userId.profileImage} alt={r.userId.name} className="h-full w-full object-cover" />
                       ) : (
@@ -568,22 +613,22 @@ const ShopDetails = () => {
                 <Link
                   to={`/shops/${s._id}`}
                   key={s._id}
-                  className="w-60 bg-white border border-slate-100 rounded-3xl p-3 shadow-sm hover:shadow-md transition-all shrink-0 flex flex-col gap-2 group"
+                  className="w-60 bg-white border border-[#1a6e2e]/20 rounded-3xl p-3 hover:border-[#1a6e2e]/50 transition-all shrink-0 flex flex-col gap-2 group"
                 >
-                  <div className="aspect-[4/3] rounded-2xl bg-purple-50 overflow-hidden relative border border-slate-100">
+                  <div className="aspect-[4/3] rounded-2xl bg-[#1a6e2e]/10 overflow-hidden relative border border-slate-100">
                     {s.shopLogo ? (
                       <img src={applyCloudinaryTransform(s.shopLogo, "f_auto,q_auto,w_400,h_300,c_fill")} alt={s.shopName} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center font-black text-purple-700 text-lg">
+                      <div className="w-full h-full flex items-center justify-center font-black text-[#1a6e2e] text-lg">
                         {getInitials(s.shopName)}
                       </div>
                     )}
-                    <span className="absolute top-2 right-2 bg-white/95 px-2 py-0.5 rounded-full text-[9px] font-black text-slate-800 shadow-sm">
+                    <span className="absolute top-2 right-2 bg-white/95 px-2 py-0.5 rounded-full text-[9px] font-black text-slate-800 border border-[#1a6e2e]/20">
                       ⭐ {s.rating || "4.5"}
                     </span>
                   </div>
                   <div>
-                    <h4 className="font-extrabold text-slate-800 text-sm line-clamp-1 group-hover:text-primary transition-colors">{s.shopName}</h4>
+                    <h4 className="font-extrabold text-slate-800 text-sm line-clamp-1 group-hover:text-[#1a6e2e] transition-colors">{s.shopName}</h4>
                     <p className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-wide">{s.category || "General Store"}</p>
                     {s.distance !== undefined && (
                       <p className="text-[10px] text-slate-400 font-semibold mt-1">
@@ -601,9 +646,9 @@ const ShopDetails = () => {
 
       {/* 9. Mobile Sticky Bottom Cart Bar */}
       {cartCount > 0 && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-4.5 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] z-50 rounded-t-[2rem] flex items-center justify-between">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#1a6e2e]/20 px-4 py-4.5 z-50 rounded-t-[2rem] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-11 w-11 bg-purple-100 text-[#3a2a83] rounded-2xl flex items-center justify-center">
+            <div className="h-11 w-11 bg-[#1a6e2e]/10 text-[#1a6e2e] rounded-2xl flex items-center justify-center">
               <ShoppingCart size={20} className="fill-current" />
             </div>
             <div className="flex flex-col leading-none">
@@ -611,7 +656,7 @@ const ShopDetails = () => {
               <span className="text-base font-black text-slate-800 mt-1">₹{cartTotal}</span>
             </div>
           </div>
-          <button onClick={() => navigate("/checkout")} className="bg-[#3a2a83] hover:bg-[#2b1f62] text-white px-7 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-[#3a2a83]/20 active:scale-95 transition-transform">
+          <button onClick={() => navigate("/checkout")} className="bg-[#1a6e2e] hover:bg-[#1a6e2e]/90 text-white px-7 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 active:scale-95 transition-transform border border-transparent">
             View Cart <ChevronRight size={14} />
           </button>
         </div>
@@ -627,7 +672,7 @@ const ShopDetails = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsFilterModalOpen(false)}
-              className="fixed inset-0 bg-black/60 z-50 backdrop-blur-xs"
+              className="fixed inset-0 bg-black/60 z-50 "
             />
 
             {/* Bottom Drawer */}
@@ -636,7 +681,7 @@ const ShopDetails = () => {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 250 }}
-              className="fixed bottom-0 left-0 right-0 max-h-[85vh] md:max-h-[75vh] bg-white rounded-t-[2rem] md:max-w-2xl md:mx-auto md:bottom-[5vh] md:rounded-[2rem] shadow-[0_-20px_50px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden z-50 border border-slate-100"
+              className="fixed bottom-0 left-0 right-0 max-h-[85vh] md:max-h-[75vh] bg-white rounded-t-[2rem] md:max-w-2xl md:mx-auto md:bottom-[5vh] md:rounded-[2rem] border border-[#1a6e2e]/20 flex flex-col overflow-hidden z-50"
             >
               {/* Header */}
               <div className="relative p-5 border-b border-slate-100 flex items-center justify-between">
@@ -666,13 +711,13 @@ const ShopDetails = () => {
                       onClick={() => setActiveFilterTab(tab.id)}
                       className={`w-full py-4.5 px-4 text-left font-bold text-xs md:text-sm transition-all border-l-4 relative flex items-center justify-between ${
                         activeFilterTab === tab.id
-                          ? "bg-white text-[#3a2a83] border-[#3a2a83]"
+                          ? "bg-[#1a6e2e]/10 text-[#1a6e2e] border-[#1a6e2e]"
                           : "bg-transparent text-slate-600 border-transparent hover:bg-slate-100/50"
                       }`}
                     >
                       <span>{tab.label}</span>
                       {tab.count > 0 && (
-                        <span className="bg-[#3a2a83] text-white text-[9px] font-black h-4 px-1.5 rounded-full flex items-center justify-center">
+                        <span className="bg-[#1a6e2e] text-white text-[9px] font-black h-4 px-1.5 rounded-full flex items-center justify-center">
                           {tab.count}
                         </span>
                       )}
@@ -702,11 +747,11 @@ const ShopDetails = () => {
                               }}
                               className="flex items-center justify-between py-2.5 px-1 cursor-pointer group rounded-lg hover:bg-slate-50 transition-all"
                             >
-                              <span className={`text-xs md:text-sm font-bold text-slate-700 transition-colors group-hover:text-[#3a2a83] ${isChecked ? "text-[#3a2a83]" : ""}`}>
+                              <span className={`text-xs md:text-sm font-bold text-slate-700 transition-colors group-hover:text-[#1a6e2e] ${isChecked ? "text-[#1a6e2e]" : ""}`}>
                                 {type}
                               </span>
                               <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                                isChecked ? "border-[#3a2a83] bg-[#3a2a83]" : "border-slate-300"
+                                isChecked ? "border-[#1a6e2e] bg-[#1a6e2e]" : "border-slate-300"
                               }`}>
                                 {isChecked && <div className="w-2 h-2 rounded-full bg-white" />}
                               </div>
@@ -737,11 +782,11 @@ const ShopDetails = () => {
                               }}
                               className="flex items-center justify-between py-2.5 px-1 cursor-pointer group rounded-lg hover:bg-slate-50 transition-all"
                             >
-                              <span className={`text-xs md:text-sm font-bold text-slate-700 transition-colors group-hover:text-[#3a2a83] ${isChecked ? "text-[#3a2a83]" : ""}`}>
+                              <span className={`text-xs md:text-sm font-bold text-slate-700 transition-colors group-hover:text-[#1a6e2e] ${isChecked ? "text-[#1a6e2e]" : ""}`}>
                                 {brand}
                               </span>
                               <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                                isChecked ? "border-[#3a2a83] bg-[#3a2a83]" : "border-slate-300"
+                                isChecked ? "border-[#1a6e2e] bg-[#1a6e2e]" : "border-slate-300"
                               }`}>
                                 {isChecked && <div className="w-2 h-2 rounded-full bg-white" />}
                               </div>
@@ -767,11 +812,11 @@ const ShopDetails = () => {
                             }}
                             className="flex items-center justify-between py-2.5 px-1 cursor-pointer group rounded-lg hover:bg-slate-50 transition-all"
                           >
-                            <span className={`text-xs md:text-sm font-bold text-slate-700 transition-colors group-hover:text-[#3a2a83] ${isChecked ? "text-[#3a2a83]" : ""}`}>
+                            <span className={`text-xs md:text-sm font-bold text-slate-700 transition-colors group-hover:text-[#1a6e2e] ${isChecked ? "text-[#1a6e2e]" : ""}`}>
                               {range.label}
                             </span>
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                              isChecked ? "border-[#3a2a83] bg-[#3a2a83]" : "border-slate-300"
+                              isChecked ? "border-[#1a6e2e] bg-[#1a6e2e]" : "border-slate-300"
                             }`}>
                               {isChecked && <div className="w-2 h-2 rounded-full bg-white" />}
                             </div>
@@ -795,7 +840,7 @@ const ShopDetails = () => {
                 </button>
                 <button
                   onClick={() => setIsFilterModalOpen(false)}
-                  className="w-1/2 py-3.5 bg-[#3a2a83] hover:bg-[#2c1e64] text-white rounded-xl font-bold text-xs md:text-sm shadow-md transition-all active:scale-95 text-center"
+                  className="w-1/2 py-3.5 bg-[#1a6e2e] hover:bg-[#1a6e2e]/90 text-white rounded-xl font-bold text-xs md:text-sm transition-all active:scale-95 text-center border border-transparent"
                 >
                   Show {filteredProducts.length} products
                 </button>

@@ -96,6 +96,26 @@ export const customerApi = {
     axiosInstance.post(`/orders/${orderId}/returns`, data),
   getReturnDetails: (orderId) =>
     axiosInstance.get(`/orders/${encodeURIComponent(String(orderId ?? "").trim())}/returns`),
+  getReturnEligibility: (orderId) =>
+    axiosInstance.get(`/orders/${orderId}/return-eligibility`),
+  submitReturn: (orderId, formData) =>
+    axiosInstance.post(`/orders/${orderId}/return`, formData, {
+      headers: { "Content-Type": "multipart/form-data" }
+    }),
+  getReturnRequestStatus: (returnRequestId) =>
+    axiosInstance.get(`/return-requests/${returnRequestId}`),
+  cancelReturnRequest: (returnRequestId) =>
+    axiosInstance.delete(`/return-requests/${returnRequestId}`),
+
+  // Cancellation Requests
+  submitCancellationRequest: (orderId, data) =>
+    axiosInstance.post(`/orders/${orderId}/cancellation`, data),
+  getCancellationRequestByOrderId: (orderId) =>
+    axiosInstance.get(`/orders/${orderId}/cancellation`),
+  getCancellationRequestDetail: (cancellationRequestId) =>
+    axiosInstance.get(`/cancellation-requests/${cancellationRequestId}`),
+  cancelCancellationRequest: (cancellationRequestId) =>
+    axiosInstance.delete(`/cancellation-requests/${cancellationRequestId}`),
 
   // Payments
   createPaymentOrder: (data) =>

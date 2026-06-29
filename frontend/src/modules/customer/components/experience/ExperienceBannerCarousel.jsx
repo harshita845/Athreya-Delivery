@@ -8,6 +8,8 @@ import {
 } from "@/core/utils/imageUtils";
 
 import { isMobileOrWebView } from "@/core/utils/deviceUtils";
+import newBanner from "@/assets/banner_new.png";
+
 
 const BANNER_CHUNK_SIZE = 20;
 
@@ -72,9 +74,11 @@ const ExperienceBannerCarousel = ({ section, items, fullWidth = false, slideGap 
 
   const getBannerOptimizedSrc = React.useCallback((url) => {
     if (!url) return url;
+    if (url.includes("d2rmrcv7ku9jedetdano")) return newBanner;
     if (!isCloudinaryUrl(url)) return url;
     return applyCloudinaryTransform(url, "f_auto,q_auto,c_fill,g_auto,w_824,h_440");
   }, []);
+
 
   return (
     <div className={cn("overflow-hidden touch-pan-y", fullWidth && "w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] md:w-full md:static md:ml-0 md:mr-0 md:max-w-6xl md:mx-auto md:rounded-[2rem]")}>
@@ -127,7 +131,7 @@ const ExperienceBannerCarousel = ({ section, items, fullWidth = false, slideGap 
                 <img
                   src={getBannerOptimizedSrc(banner.imageUrl)}
                   srcSet={
-                    isCloudinaryUrl(banner.imageUrl)
+                    isCloudinaryUrl(banner.imageUrl) && !banner.imageUrl.includes("d2rmrcv7ku9jedetdano")
                       ? buildCloudinarySrcSet(banner.imageUrl, [
                           { w: 412, h: 220 },
                           { w: 824, h: 440 },
@@ -146,7 +150,7 @@ const ExperienceBannerCarousel = ({ section, items, fullWidth = false, slideGap 
                 />
               )
             ) : (
-              <div className="h-full w-full max-w-[560px] overflow-hidden rounded-3xl bg-slate-100 shadow-[0_12px_30px_rgba(15,23,42,0.08)] relative">
+              <div className="h-full w-full max-w-[560px] overflow-hidden rounded-3xl bg-slate-100  relative">
                 {isVideoUrl(banner.imageUrl) ? (
                   <>
                     <video
@@ -175,7 +179,7 @@ const ExperienceBannerCarousel = ({ section, items, fullWidth = false, slideGap 
                   <img
                     src={getBannerOptimizedSrc(banner.imageUrl)}
                     srcSet={
-                      isCloudinaryUrl(banner.imageUrl)
+                      isCloudinaryUrl(banner.imageUrl) && !banner.imageUrl.includes("d2rmrcv7ku9jedetdano")
                         ? buildCloudinarySrcSet(banner.imageUrl, [
                             { w: 560, h: 220 },
                             { w: 1120, h: 440 },

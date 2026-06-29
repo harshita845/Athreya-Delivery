@@ -39,6 +39,10 @@ import {
   verifyReturnPickupOtp,
   requestReturnDropOtp,
   verifyReturnDropOtp,
+  requestCancellationPickupOtp,
+  verifyCancellationPickupOtp,
+  requestCancellationDropOtp,
+  verifyCancellationDropOtp,
   getOrderRoute,
 } from "../controller/orderWorkflowController.js";
 import {
@@ -247,6 +251,34 @@ router.post(
   verifyToken,
   allowRoles("delivery", "admin"),
   verifyReturnDropOtp,
+);
+
+// Workflow routes — cancellation pickup OTP (customer)
+router.post(
+  "/workflow/:orderId/cancellation-otp/request",
+  verifyToken,
+  allowRoles("delivery", "delivery_boy", "admin"),
+  requestCancellationPickupOtp,
+);
+router.post(
+  "/workflow/:orderId/cancellation-otp/verify",
+  verifyToken,
+  allowRoles("delivery", "delivery_boy", "admin"),
+  verifyCancellationPickupOtp,
+);
+
+// Workflow routes — cancellation drop OTP (seller)
+router.post(
+  "/workflow/:orderId/cancellation-drop-otp/request",
+  verifyToken,
+  allowRoles("delivery", "delivery_boy", "admin"),
+  requestCancellationDropOtp,
+);
+router.post(
+  "/workflow/:orderId/cancellation-drop-otp/verify",
+  verifyToken,
+  allowRoles("delivery", "delivery_boy", "admin"),
+  verifyCancellationDropOtp,
 );
 
 // Return pickup proof (images + condition)

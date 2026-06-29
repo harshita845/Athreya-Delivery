@@ -16,7 +16,7 @@ const CheckoutRecommendedProducts = React.memo(function CheckoutRecommendedProdu
   if (!products || products.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+    <div className="bg-white rounded-2xl p-4 border border-[#1a6e2e]/20">
       <h3 className="font-black text-slate-800 text-lg mb-4">
         You might also like
       </h3>

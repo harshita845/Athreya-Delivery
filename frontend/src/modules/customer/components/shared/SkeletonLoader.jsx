@@ -12,7 +12,7 @@ export const Skeleton = ({ className, ...props }) => {
 
 export const ProductCardSkeleton = ({ compact = false }) => {
   return (
-    <div className="bg-white rounded-2xl p-3 border border-slate-100 shadow-sm flex flex-col gap-3 h-full">
+    <div className="bg-white rounded-2xl p-3 border border-slate-100 border border-[#1a6e2e]/20 flex flex-col gap-3 h-full">
       {/* Image Skeleton */}
       <Skeleton className="w-full aspect-[4/3] rounded-xl" />
       
@@ -36,7 +36,7 @@ export const ProductCardSkeleton = ({ compact = false }) => {
 
 export const ShopCardSkeleton = () => {
   return (
-    <div className="bg-white rounded-2xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100/80 flex flex-col gap-2.5">
+    <div className="bg-white rounded-2xl p-3  border border-slate-100/80 flex flex-col gap-2.5">
       {/* Shop Image Skeleton */}
       <Skeleton className="w-full aspect-[4/3] rounded-xl" />
       
@@ -57,12 +57,13 @@ export const ShopHeaderSkeleton = () => {
     <div className="w-full">
       {/* Banner Skeleton */}
       <div className="relative w-full h-48 md:h-72 bg-slate-200 animate-pulse rounded-b-3xl">
-        <div className="absolute inset-0 bg-gradient-to-t from-[#fbf9ff] to-transparent" />
+        <div className="absolute inset-0 " />
+
       </div>
       
       {/* Shop Info Card Skeleton */}
       <div className="max-w-6xl mx-auto px-4 md:px-8 relative -mt-16 z-10">
-        <div className="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-slate-100 mb-6">
+        <div className="bg-white rounded-3xl p-6  border border-slate-100 mb-6">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div className="flex items-center gap-4.5">
               {/* Logo */}

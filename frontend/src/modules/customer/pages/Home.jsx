@@ -34,6 +34,8 @@ import Lottie from "lottie-react";
 import { applyCloudinaryTransform } from "@/core/utils/imageUtils";
 import { getJSON, remove as removeStorage, STORAGE_KEYS } from "@core/utils/storage";
 import SkeletonLoader from "../components/shared/SkeletonLoader";
+import LogoImage from "@/assets/Logo.png";
+
 
 import {
   MARQUEE_MESSAGES,
@@ -43,6 +45,46 @@ import {
 
 import LowestPriceSection from "../components/home/LowestPriceSection";
 import OfferSections from "../components/home/OfferSections";
+
+const DAILY_NEEDS = [
+  {
+    name: "Fruits",
+    path: "/category/fruits",
+    bgColor: "bg-red-50/80 border-red-100/50 hover:bg-red-100/50",
+    iconColor: "text-red-500",
+    icon: (
+      <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=400&q=80" alt="Fruits" className="w-full h-full object-cover rounded-[14px]" />
+    ),
+  },
+  {
+    name: "Vegetables",
+    path: "/category/vegetables",
+    bgColor: "bg-green-50/80 border-green-100/50 hover:bg-green-100/50",
+    iconColor: "text-green-600",
+    icon: (
+      <img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=400&q=80" alt="Vegetables" className="w-full h-full object-cover rounded-[14px]" />
+    ),
+  },
+  {
+    name: "Chicken",
+    path: "/category/chicken",
+    bgColor: "bg-orange-50/80 border-orange-100/50 hover:bg-orange-100/50",
+    iconColor: "text-orange-600",
+    icon: (
+      <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=400&q=80" alt="Chicken" className="w-full h-full object-cover rounded-[14px]" />
+    ),
+  },
+  {
+    name: "Mutton",
+    path: "/category/mutton",
+    bgColor: "bg-red-50/80 border-red-100/50 hover:bg-red-100/50",
+    iconColor: "text-rose-700",
+    icon: (
+      <img src="https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=400&q=80" alt="Mutton" className="w-full h-full object-cover rounded-[14px]" />
+    ),
+  },
+
+];
 const getShopImage = (category, shopName, shopLogo) => {
   if (shopLogo) {
     return applyCloudinaryTransform(shopLogo, "f_auto,q_auto,w_400,h_300,c_fill");
@@ -69,9 +111,9 @@ const DEFAULT_SHOPS = [
 ];
 
 const DEFAULT_CATEGORY_THEME = {
-  gradient: "linear-gradient(to bottom, var(--primary), var(--brand-400))",
-  shadow: "shadow-brand-500/20",
-  accent: "text-[#1A1A1A]",
+  gradient: "#ffffff",
+  shadow: "border border-[#1a6e2e]/20",
+  accent: "text-[#1a6e2e]",
 };
 
 const CATEGORY_METADATA = {
@@ -87,9 +129,9 @@ const CATEGORY_METADATA = {
   Grocery: {
     icon: LocalGroceryStoreIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #FF9F1C, #FFBF69)",
-      shadow: "shadow-orange-500/20",
-      accent: "text-orange-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: {
       title: "SUPERSAVER",
@@ -100,9 +142,9 @@ const CATEGORY_METADATA = {
   GROCERY: {
     icon: LocalGroceryStoreIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #FF9F1C, #FFBF69)",
-      shadow: "shadow-orange-500/20",
-      accent: "text-orange-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: {
       title: "SUPERSAVER",
@@ -113,45 +155,45 @@ const CATEGORY_METADATA = {
   Wedding: {
     icon: CardGiftcardIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #FF4D6D, #FF8FA3)",
-      shadow: "shadow-rose-500/20",
-      accent: "text-rose-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "WEDDING", subtitle: "BLISS", floatingElements: "hearts" },
   },
   WEDDING: {
     icon: CardGiftcardIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #FF4D6D, #FF8FA3)",
-      shadow: "shadow-rose-500/20",
-      accent: "text-rose-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "WEDDING", subtitle: "BLISS", floatingElements: "hearts" },
   },
   "Home & Kitchen": {
     icon: KitchenIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #BC6C25, #DDA15E)",
-      shadow: "shadow-amber-500/20",
-      accent: "text-amber-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "HOME", subtitle: "KITCHEN", floatingElements: "smoke" },
   },
   "HOME & KITCHEN": {
     icon: KitchenIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #BC6C25, #DDA15E)",
-      shadow: "shadow-amber-500/20",
-      accent: "text-amber-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "HOME", subtitle: "KITCHEN", floatingElements: "smoke" },
   },
   Electronics: {
     icon: DevicesIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #7209B7, #B5179E)",
-      shadow: "shadow-purple-500/20",
-      accent: "text-purple-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: {
       title: "TECH FEST",
@@ -162,9 +204,9 @@ const CATEGORY_METADATA = {
   ELECTRONICS: {
     icon: DevicesIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #7209B7, #B5179E)",
-      shadow: "shadow-purple-500/20",
-      accent: "text-purple-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: {
       title: "TECH FEST",
@@ -175,9 +217,9 @@ const CATEGORY_METADATA = {
   Kids: {
     icon: ChildCareIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #4CC9F0, #A0E7E5)",
-      shadow: "shadow-brand-500/20",
-      accent: "text-brand-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: {
       title: "LITTLE ONE",
@@ -188,9 +230,9 @@ const CATEGORY_METADATA = {
   KIDS: {
     icon: ChildCareIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #4CC9F0, #A0E7E5)",
-      shadow: "shadow-brand-500/20",
-      accent: "text-brand-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: {
       title: "LITTLE ONE",
@@ -201,108 +243,108 @@ const CATEGORY_METADATA = {
   "Pet Supplies": {
     icon: PetsIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #FB8500, #FFB703)",
-      shadow: "shadow-yellow-500/20",
-      accent: "text-yellow-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "PAWSOME", subtitle: "DEALS", floatingElements: "bones" },
   },
   "PET SUPPLIES": {
     icon: PetsIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #FB8500, #FFB703)",
-      shadow: "shadow-yellow-500/20",
-      accent: "text-yellow-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "PAWSOME", subtitle: "DEALS", floatingElements: "bones" },
   },
   Sports: {
     icon: SportsSoccerIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #4361EE, #4895EF)",
-      shadow: "shadow-brand-500/20",
-      accent: "text-brand-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "SPORTS", subtitle: "GEAR", floatingElements: "confetti" },
   },
   SPORTS: {
     icon: SportsSoccerIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #4361EE, #4895EF)",
-      shadow: "shadow-brand-500/20",
-      accent: "text-brand-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "SPORTS", subtitle: "GEAR", floatingElements: "confetti" },
   },
   Food: {
     icon: RestaurantIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #EF4444, #F87171)",
-      shadow: "shadow-red-500/20",
-      accent: "text-red-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "DELICIOUS", subtitle: "FOODS", floatingElements: "sparkles" },
   },
   FOOD: {
     icon: RestaurantIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #EF4444, #F87171)",
-      shadow: "shadow-red-500/20",
-      accent: "text-red-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "DELICIOUS", subtitle: "FOODS", floatingElements: "sparkles" },
   },
   "Fruits & Vegetables": {
     icon: SpaIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #10B981, #34D399)",
-      shadow: "shadow-emerald-500/20",
-      accent: "text-emerald-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "FRESH", subtitle: "VEGGIES", floatingElements: "leaves" },
   },
   "FRUITS & VEGETABLES": {
     icon: SpaIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #10B981, #34D399)",
-      shadow: "shadow-emerald-500/20",
-      accent: "text-emerald-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "FRESH", subtitle: "VEGGIES", floatingElements: "leaves" },
   },
   "FRUITS AND VEG": {
     icon: SpaIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #10B981, #34D399)",
-      shadow: "shadow-emerald-500/20",
-      accent: "text-emerald-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "FRESH", subtitle: "VEGGIES", floatingElements: "leaves" },
   },
   "Fruits and Veg": {
     icon: SpaIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #10B981, #34D399)",
-      shadow: "shadow-emerald-500/20",
-      accent: "text-emerald-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "FRESH", subtitle: "VEGGIES", floatingElements: "leaves" },
   },
   Pharmacy: {
     icon: LocalPharmacyIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #06B6D4, #22D3EE)",
-      shadow: "shadow-cyan-500/20",
-      accent: "text-cyan-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "PHARMACY", subtitle: "ESSENTIALS", floatingElements: "bubbles" },
   },
   PHARMACY: {
     icon: LocalPharmacyIcon,
     theme: {
-      gradient: "linear-gradient(to bottom, #06B6D4, #22D3EE)",
-      shadow: "shadow-cyan-500/20",
-      accent: "text-cyan-900",
+      gradient: "#ffffff",
+      shadow: "border border-[#1a6e2e]/20",
+      accent: "text-[#1a6e2e]",
     },
     banner: { title: "PHARMACY", subtitle: "PHARMACY", floatingElements: "bubbles" },
   },
@@ -343,6 +385,33 @@ const getHomePageDataCacheKey = (location) => {
 
 const getCachedHomePageData = (location) =>
   homePageDataCache.get(getHomePageDataCacheKey(location)) || null;
+
+const DailyNeedsSection = () => {
+  const navigate = useNavigate();
+  return (
+    <div className="container mx-auto max-w-6xl px-4 md:px-8 py-4 my-2">
+      <h3 className="text-base md:text-xl font-black text-[#1A1A1A] tracking-tight uppercase mb-3">
+        Daily needs
+      </h3>
+      <div className="flex items-center gap-4 overflow-x-auto no-scrollbar pb-2">
+        {DAILY_NEEDS.map((item) => (
+          <div
+            key={item.name}
+            onClick={() => navigate(item.path)}
+            className="flex flex-col items-center gap-2 cursor-pointer group min-w-[76px] md:min-w-[96px]"
+          >
+            <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center border bg-white border-[#1a6e2e]/20 transition-all duration-300 group-hover:-translate-y-0.5 text-[#1a6e2e]`}>
+              {item.icon}
+            </div>
+            <span className="text-[11px] md:text-xs font-bold text-slate-700 group-hover:text-[#1a6e2e] transition-colors">
+              {item.name}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const Home = () => {
   const { scrollY } = useScroll();
@@ -498,16 +567,15 @@ const Home = () => {
       { _id: "cat_food", id: "cat_food", name: "Food", type: "header", image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=120" },
       { _id: "cat_veg", id: "cat_veg", name: "Fruits & Vegetables", type: "header", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&q=80&w=120" },
       { _id: "cat_grocery", id: "cat_grocery", name: "Grocery", type: "header", image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=120" },
-      { _id: "cat_pets", id: "cat_pets", name: "Pet Supplies", type: "header", image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=120" },
       { _id: "cat_pharmacy", id: "cat_pharmacy", name: "Pharmacy", type: "header", image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=120" },
       { _id: "cat_sports", id: "cat_sports", name: "Sports", type: "header", image: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=120" }
     ];
 
     const MOCK_PRODUCTS_DATA = [
-      { _id: "p1", name: "Fresh Milk 1L", mainImage: "https://images.unsplash.com/photo-1528498033373-386cc8224357?auto=format&fit=crop&q=80&w=400", salePrice: 60, price: 65, weight: "1 L", deliveryTime: "8-15 mins" },
-      { _id: "p2", name: "Organic Tomatoes 500g", mainImage: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=400", salePrice: 30, price: 35, weight: "500 g", deliveryTime: "8-15 mins" },
-      { _id: "p3", name: "Fresh Bananas 1 Dozen", mainImage: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&q=80&w=400", salePrice: 50, price: 60, weight: "12 units", deliveryTime: "8-15 mins" },
-      { _id: "p4", name: "Whole Wheat Bread", mainImage: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=400", salePrice: 40, price: 45, weight: "400 g", deliveryTime: "8-15 mins" }
+      { _id: "p1", name: "Fresh Milk 1L", headerId: "cat_food", mainImage: "https://images.unsplash.com/photo-1528498033373-386cc8224357?auto=format&fit=crop&q=80&w=400", salePrice: 60, price: 65, weight: "1 L", deliveryTime: "8-15 mins" },
+      { _id: "p2", name: "Organic Tomatoes 500g", headerId: "cat_veg", mainImage: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=400", salePrice: 30, price: 35, weight: "500 g", deliveryTime: "8-15 mins" },
+      { _id: "p3", name: "Fresh Bananas 1 Dozen", headerId: "cat_veg", mainImage: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&q=80&w=400", salePrice: 50, price: 60, weight: "12 units", deliveryTime: "8-15 mins" },
+      { _id: "p4", name: "Whole Wheat Bread", headerId: "cat_grocery", mainImage: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=400", salePrice: 40, price: 45, weight: "400 g", deliveryTime: "8-15 mins" }
     ];
 
     try {
@@ -657,6 +725,25 @@ const Home = () => {
   const handleBannerTransitionEnd = () => { if (mobileBannerIndex === 2) { setIsInstantBannerJump(true); setMobileBannerIndex(0); } };
   useEffect(() => { if (!isInstantBannerJump) return; const id = requestAnimationFrame(() => setIsInstantBannerJump(false)); return () => cancelAnimationFrame(id); }, [isInstantBannerJump]);
 
+  const productsSectionRef = useRef(null);
+
+  const filteredCategoryProducts = useMemo(() => {
+    if (!activeCategory || activeCategory._id === "all") return null;
+    return products.filter((p) => {
+      const hId = typeof p.headerId === 'object' ? p.headerId?._id : p.headerId;
+      const cId = typeof p.categoryId === 'object' ? p.categoryId?._id : p.categoryId;
+      return String(hId) === String(activeCategory._id) || String(cId) === String(activeCategory._id);
+    });
+  }, [products, activeCategory]);
+
+  useEffect(() => {
+    if (activeCategory && activeCategory._id !== "all" && productsSectionRef.current) {
+      setTimeout(() => {
+        productsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [activeCategory]);
+
   const productsById = useMemo(() => { const map = {}; products.forEach((p) => { map[p._id || p.id] = p; }); return map; }, [products]);
   const effectiveQuickCategories = useMemo(() => {
     const ids = heroConfig.categoryIds || [];
@@ -687,7 +774,8 @@ const Home = () => {
   };
 
   return (
-    <div className={`min-h-screen pt-[215px] md:pt-[245px] ${products.length === 0 && !isLoading ? "bg-white" : "bg-[#F5F7F8]"}`}>
+    <div className={`min-h-screen pt-[215px] md:pt-[245px] ${products.length === 0 && !isLoading ? "bg-white" : "bg-white"}`}>
+
       <div className={cn("contents", isProductDetailOpen && "hidden md:contents")}>
         <MainLocationHeader categories={categories} activeCategory={activeCategory} onCategorySelect={setActiveCategory} />
       </div>
@@ -695,9 +783,9 @@ const Home = () => {
       {products.length === 0 && !isLoading ? (
         <div className="flex flex-col items-center justify-center pt-24 pb-48">
           <div className="w-64 h-64 md:w-96 md:h-96 mb-8">{noServiceData && <Lottie animationData={noServiceData} loop={true} />}</div>
-          <h3 className="text-3xl md:text-5xl font-black text-slate-800 text-center uppercase">Service <span className="text-primary">Unavailable</span></h3>
+          <h3 className="text-3xl md:text-5xl font-black text-slate-800 text-center uppercase">Service <span className="text-[#1a6e2e]">Unavailable</span></h3>
           <p className="text-slate-500 font-bold max-w-md text-center px-10 text-sm md:text-lg opacity-80">Ah! We haven't reached your neighborhood yet.</p>
-          <button onClick={() => window.location.reload()} className="mt-12 px-10 py-4 bg-primary text-white font-black rounded-[24px] uppercase text-[13px] tracking-widest transition-all active:scale-95">Check Again</button>
+          <button onClick={() => window.location.reload()} className="mt-12 px-10 py-4 bg-[#1a6e2e] text-white font-black rounded-[24px] uppercase text-[13px] tracking-widest transition-all active:scale-95">Check Again</button>
         </div>
       ) : (
         <>
@@ -706,14 +794,14 @@ const Home = () => {
               {heroConfig.banners?.items?.length ? (
                 <ExperienceBannerCarousel section={{ title: "" }} items={heroConfig.banners.items} fullWidth edgeToEdge />
               ) : isLoading ? (
-                <div className="w-full h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] bg-slate-100 animate-pulse relative overflow-hidden flex items-center justify-center border-y border-slate-200/50">
+                <div className="w-full h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] bg-white animate-pulse relative overflow-hidden flex items-center justify-center border-y border-[#1a6e2e]/20">
                   <div className="flex flex-col items-center gap-3">
                     <div className="h-6 w-48 bg-slate-200 rounded-lg animate-pulse" />
                     <div className="h-4 w-32 bg-slate-200/80 rounded-lg animate-pulse" />
                   </div>
                 </div>
               ) : (
-                <div className="w-full h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] relative overflow-hidden bg-slate-100 flex items-center justify-center border-y border-slate-200/50">
+                <div className="w-full h-[200px] sm:h-[280px] md:h-[380px] lg:h-[440px] relative overflow-hidden bg-white flex items-center justify-center border-y border-[#1a6e2e]/20">
                   <video
                     src="https://assets.mixkit.co/videos/preview/mixkit-delivery-man-carrying-a-box-41584-large.mp4"
                     className="w-full h-full object-cover object-center pointer-events-none"
@@ -722,6 +810,11 @@ const Home = () => {
                     muted
                     playsInline
                   />
+                  {/* Logo overlay on video */}
+                  <div className="absolute top-4 left-4 z-20 bg-white px-3 py-1.5 rounded-xl border border-[#1a6e2e]/20 flex items-center justify-center max-h-24 pointer-events-none">
+                    <img src={settings?.logoUrl || LogoImage} alt="Logo" className="h-12 sm:h-16 w-auto object-contain scale-[1.2]" />
+                  </div>
+
                   {/* Bottom Scrolling Marquee Overlay */}
                   <div className="absolute bottom-0 left-0 right-0 bg-[#3a2a83]/90 text-white py-1 md:py-1.5 overflow-hidden whitespace-nowrap z-30 font-black border-t border-white/10 uppercase tracking-widest text-[9px] md:text-[11px]">
                       <div className="classic-marquee-track flex w-max items-center gap-8">
@@ -740,14 +833,18 @@ const Home = () => {
             </div>
           </motion.div>
 
+          {/* Daily Needs Section */}
+          <DailyNeedsSection />
+
           {/* All Shops Near You Section */}
-          <div className="container mx-auto max-w-6xl px-4 md:px-8 py-5 my-4 bg-[#f5f3ff]/70 rounded-[2rem] border border-purple-100/50 shadow-[0_8px_32px_rgba(245,243,255,0.6)]">
+          <div className="container mx-auto max-w-6xl px-4 md:px-8 py-5 my-4 bg-white rounded-[2rem] border border-[#1a6e2e]/20">
+
             <h3 className="text-base md:text-xl font-black text-[#1A1A1A] tracking-tight uppercase leading-none">
               All Shops near me
             </h3>
             <div className="flex items-center gap-1.5 md:gap-2 mt-1.5 md:mt-3 mb-6">
-              <div className="h-1.5 w-1.5 bg-primary rounded-full animate-pulse" />
-              <span className="text-[10px] md:text-xs font-bold text-primary uppercase tracking-wide opacity-80">
+              <div className="h-1.5 w-1.5 bg-[#1a6e2e] rounded-full animate-pulse" />
+              <span className="text-[10px] md:text-xs font-bold text-[#1a6e2e] uppercase tracking-wide opacity-80">
                 PARTNER STORES IN YOUR AREA &bull; HYGIENE ASSURED
               </span>
             </div>
@@ -757,19 +854,19 @@ const Home = () => {
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 {dynamicShops.map((shop) => (
-                  <div key={shop._id} onClick={() => navigate(`/shops/${shop._id}`)} className="bg-white rounded-2xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100/80 flex flex-col gap-2.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
-                    <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 relative">
+                  <div key={shop._id} onClick={() => navigate(`/shops/${shop._id}`)} className="bg-white rounded-2xl p-3 border border-[#1a6e2e]/20 flex flex-col gap-2.5 hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer">
+                    <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-white relative">
                       <img
                         src={getShopImage(shop.category, shop.shopName, shop.storeFrontImage || shop.shopLogo || shop.logo || shop.shopImage)}
                         alt={shop.shopName}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <span className="absolute top-2 right-2 bg-white/95 backdrop-blur-sm px-2 py-0.5 rounded-full text-[10px] font-extrabold text-slate-800 shadow-sm flex items-center gap-0.5">
+                      <span className="absolute top-2 right-2 bg-white px-2 py-0.5 rounded-full text-[10px] font-extrabold text-slate-800 border border-[#1a6e2e]/20 flex items-center gap-0.5">
                         ⭐ {shop.rating || "4.6"}
                       </span>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <h4 className="font-extrabold text-slate-850 text-xs md:text-sm lg:text-base line-clamp-1 leading-tight group-hover:text-primary transition-colors">
+                      <h4 className="font-extrabold text-slate-850 text-xs md:text-sm lg:text-base line-clamp-1 leading-tight group-hover:text-[#1a6e2e] transition-colors">
                         {shop.shopName}
                       </h4>
                       <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] font-bold text-slate-500">
@@ -797,16 +894,43 @@ const Home = () => {
               <SkeletonLoader variant="productGrid" count={8} />
             </div>
           ) : (
-            <>
-              <LowestPriceSection products={products} onSeeAll={() => navigate("/category/all")} />
-              <OfferSections sections={offerSections} noServiceData={noServiceData} />
-
-              {sectionsForRenderer.length > 0 && (
-                <div className="container mx-auto max-w-6xl px-4 md:px-8 py-5 md:py-6">
-                  <SectionRenderer sections={sectionsForRenderer} productsById={productsById} categoriesById={categoryMap} subcategoriesById={subcategoryMap} />
+            <div ref={productsSectionRef}>
+              {activeCategory && activeCategory._id !== "all" ? (
+                <div className="container mx-auto max-w-6xl px-4 md:px-8 py-5 md:py-6 min-h-[50vh]">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg md:text-2xl font-black text-[#1A1A1A] tracking-tight uppercase">
+                      {activeCategory.name} <span className="text-[#1a6e2e]">Products</span>
+                    </h3>
+                  </div>
+                  
+                  {filteredCategoryProducts && filteredCategoryProducts.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-6">
+                      {filteredCategoryProducts.map(p => (
+                        <div key={p.id} className="smooth-transform">
+                          <ProductCard product={p} className="bg-white border border-[#1a6e2e]/20" compact={true} />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-16">
+                       <h3 className="text-xl md:text-2xl font-black text-slate-700 tracking-tighter mb-2 uppercase">No products available</h3>
+                       <p className="text-slate-500 font-bold text-sm">Check back later! We are adding new items daily.</p>
+                    </div>
+                  )}
                 </div>
+              ) : (
+                <>
+                  <LowestPriceSection products={products} onSeeAll={() => navigate("/category/all")} />
+                  <OfferSections sections={offerSections} noServiceData={noServiceData} />
+
+                  {sectionsForRenderer.length > 0 && (
+                    <div className="container mx-auto max-w-6xl px-4 md:px-8 py-5 md:py-6">
+                      <SectionRenderer sections={sectionsForRenderer} productsById={productsById} categoriesById={categoryMap} subcategoriesById={subcategoryMap} />
+                    </div>
+                  )}
+                </>
               )}
-            </>
+            </div>
           )}
         </>
       )}

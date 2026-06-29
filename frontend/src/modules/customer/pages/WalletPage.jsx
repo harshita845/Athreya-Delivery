@@ -59,7 +59,7 @@ const WalletPage = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 pb-24 font-sans">
-            <div className="sticky top-0 z-30 bg-slate-50/95 backdrop-blur-sm px-4 pt-4 pb-3 border-b border-slate-200/60 mb-4 flex items-center gap-2">
+            <div className="sticky top-0 z-30 bg-slate-50/95  px-4 pt-4 pb-3 border-b border-slate-200/60 mb-4 flex items-center gap-2">
                 <button
                     onClick={() => navigate(-1)}
                     className="w-10 h-10 flex items-center justify-center hover:bg-slate-200/70 rounded-full transition-colors -ml-1"
@@ -100,7 +100,7 @@ const WalletPage = () => {
                             {transactions.map((tx) => (
                                 <div key={tx._id} className="px-4 py-3.5 flex items-center justify-between hover:bg-slate-50 transition-colors">
                                     <div className="flex items-center gap-3">
-                                        <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${tx.type === 'credit' ? 'bg-brand-50 text-brand-600' : 'bg-slate-100 text-slate-700'}`}>
+                                        <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${tx.type === 'credit' ? 'bg-[#1a6e2e]/10 text-[#1a6e2e]' : 'bg-slate-100 text-slate-700'}`}>
                                             {tx.type === 'credit' ? <ArrowDownLeft size={19} /> : <ArrowUpRight size={19} />}
                                         </div>
                                         <div>
@@ -111,7 +111,7 @@ const WalletPage = () => {
                                             )}
                                         </div>
                                     </div>
-                                    <div className={`text-sm font-semibold ${tx.type === 'credit' ? 'text-brand-600' : 'text-slate-900'}`}>
+                                    <div className={`text-sm font-semibold ${tx.type === 'credit' ? 'text-[#1a6e2e]' : 'text-slate-900'}`}>
                                         {tx.type === 'credit' ? '+' : '-'}₹{(tx.amount || 0).toLocaleString('en-IN')}
                                     </div>
                                 </div>

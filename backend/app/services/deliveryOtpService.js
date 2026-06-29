@@ -1,8 +1,11 @@
 import crypto from 'crypto';
 import Order from '../models/order.js';
+import ReturnRequest from '../models/returnRequest.js';
+import CancellationRequest from '../models/cancellationRequest.js';
 import OrderOtp from '../models/orderOtp.js';
 import { checkProximity } from './proximityService.js';
 import { emitToCustomer, emitOrderStatusUpdate } from './orderSocketEmitter.js';
+import { orderMatchQueryFromRouteParam } from '../utils/orderLookup.js';
 
 function isFiniteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
@@ -316,7 +319,8 @@ export async function validateDeliveryOtp(orderId, enteredOtp) {
  */
 export async function generateReturnPickupOtp(orderId, requester = {}) {
   try {
-    const order = await Order.findOne({ orderId });
+    const orderKey = orderMatchQueryFromRouteParam(orderId);
+    const order = await Order.findOne(orderKey);
     if (!order) {
       return { success: false, error: 'Order not found' };
     }
@@ -359,6 +363,14 @@ export async function generateReturnPickupOtp(orderId, requester = {}) {
       maxAttempts: 3,
       lastGeneratedAt: new Date()
     });
+
+    // Save in the return_requests record as pickup_otp and otp_generated_at
+    const returnReq = await ReturnRequest.findOne({ order_id: order._id }).sort({ createdAt: -1 });
+    if (returnReq) {
+      returnReq.pickup_otp = otp;
+      returnReq.otp_generated_at = new Date();
+      await returnReq.save();
+    }
 
     // Keep payload shape consistent with customer-side listeners.
     if (order.customer) {
@@ -454,7 +466,8 @@ export async function validateReturnPickupOtp(orderId, enteredOtp) {
  */
 export async function generateReturnDropOtp(orderId) {
   try {
-    const order = await Order.findOne({ orderId });
+    const orderKey = orderMatchQueryFromRouteParam(orderId);
+    const order = await Order.findOne(orderKey);
     if (!order) {
       return { success: false, error: 'Order not found' };
     }
@@ -548,6 +561,262 @@ export async function validateReturnDropOtp(orderId, enteredOtp) {
     return { valid: true, message: 'Seller drop OTP validated successfully' };
   } catch (error) {
     console.error('Error validating return drop OTP:', error);
+    return { valid: false, error: 'VALIDATION_FAILED', message: 'Internal error.' };
+  }
+}
+
+/**
+ * Generate OTP for cancellation pickup from customer.
+ * @param {string} orderId
+ * @returns {Promise<Object>}
+ */
+export async function generateCancellationPickupOtp(orderId, requester = {}) {
+  try {
+    const orderKey = orderMatchQueryFromRouteParam(orderId);
+    const order = await Order.findOne(orderKey);
+    if (!order) {
+      return { success: false, error: 'Order not found' };
+    }
+
+    const cancelReq = await CancellationRequest.findOne({ order_id: order._id }).sort({ createdAt: -1 });
+    if (!cancelReq) {
+      return { success: false, error: 'Cancellation request not found.' };
+    }
+
+    if (cancelReq.status !== 'PICKUP_SCHEDULED') {
+      return { success: false, error: 'Cancellation pickup is not scheduled yet.' };
+    }
+
+    const requesterId = requester?.id || requester?._id || null;
+    const requesterRole = String(requester?.role || '').toLowerCase();
+    if (
+      requesterRole === 'delivery' &&
+      requesterId &&
+      cancelReq.delivery_boy_id &&
+      String(cancelReq.delivery_boy_id) !== String(requesterId)
+    ) {
+      return { success: false, error: 'This cancellation pickup is assigned to another delivery partner.' };
+    }
+
+    const otp = String(crypto.randomInt(0, 10000)).padStart(4, '0');
+    const codeHash = OrderOtp.hashCode(otp);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    // Invalidate any previous cancellation pickup OTPs for this order
+    await OrderOtp.updateMany(
+      { orderId, type: 'cancellation_pickup', consumedAt: null },
+      { consumedAt: new Date() }
+    );
+
+    // Create new OTP record
+    await OrderOtp.create({
+      orderId,
+      orderMongoId: order._id,
+      type: 'cancellation_pickup',
+      codeHash,
+      code: otp,
+      expiresAt,
+      attempts: 0,
+      maxAttempts: 3,
+      lastGeneratedAt: new Date()
+    });
+
+    // Save in the cancellation_requests record as pickup_otp and otp_generated_at
+    cancelReq.pickup_otp = otp;
+    cancelReq.otp_generated_at = new Date();
+    await cancelReq.save();
+
+    if (order.customer) {
+      const customerId = String(order.customer);
+      emitToCustomer(customerId, {
+        event: 'order:otp',
+        payload: {
+          orderId,
+          code: otp,
+          expiresAt,
+          type: 'cancellation_pickup',
+        },
+      });
+      emitToCustomer(customerId, {
+        event: 'delivery:otp:generated',
+        payload: {
+          orderId,
+          otp,
+          expiresAt,
+          deliveryPersonNearby: true,
+          type: 'cancellation_pickup',
+        },
+      });
+    }
+
+    return { success: true, otp, expiresAt };
+  } catch (error) {
+    console.error('Error generating cancellation pickup OTP:', error);
+    return { success: false, error: 'Failed to generate OTP.' };
+  }
+}
+
+/**
+ * Validate OTP entered by delivery person for cancellation pickup.
+ * @param {string} orderId
+ * @param {string} enteredOtp
+ * @returns {Promise<Object>}
+ */
+export async function validateCancellationPickupOtp(orderId, enteredOtp) {
+  try {
+    if (!orderId || !enteredOtp) {
+      return { valid: false, error: 'INVALID_FORMAT', message: 'orderId and OTP are required' };
+    }
+
+    // Find the latest cancellation_pickup OTP record
+    const otpRecord = await OrderOtp.findOne({ orderId, type: 'cancellation_pickup' }).sort({
+      lastGeneratedAt: -1,
+      createdAt: -1,
+    });
+
+    if (!otpRecord) {
+      return { valid: false, error: 'OTP_NOT_FOUND', message: 'No cancellation OTP found.' };
+    }
+
+    if (otpRecord.consumedAt) {
+      return { valid: false, error: 'OTP_CONSUMED', message: 'OTP already consumed.' };
+    }
+
+    if (otpRecord.attempts >= otpRecord.maxAttempts) {
+      return { valid: false, error: 'MAX_ATTEMPTS_EXCEEDED', message: 'Max attempts exceeded.' };
+    }
+
+    if (isOtpExpired(otpRecord.expiresAt)) {
+      return { valid: false, error: 'OTP_EXPIRED', message: 'OTP expired.' };
+    }
+
+    const enteredHash = OrderOtp.hashCode(enteredOtp);
+    const isMatch = enteredHash === otpRecord.codeHash;
+
+    if (!isMatch) {
+      otpRecord.attempts += 1;
+      await otpRecord.save();
+      return { valid: false, error: 'OTP_MISMATCH', message: 'Invalid OTP.' };
+    }
+
+    // OTP is valid - mark as consumed
+    otpRecord.consumedAt = new Date();
+    await otpRecord.save();
+
+    return { valid: true, message: 'OTP validated successfully' };
+  } catch (error) {
+    console.error('Error validating cancellation pickup OTP:', error);
+    return { valid: false, error: 'VALIDATION_FAILED', message: 'Internal error.' };
+  }
+}
+
+/**
+ * Generate OTP for cancellation drop-off at seller location.
+ * @param {string} orderId
+ * @returns {Promise<Object>}
+ */
+export async function generateCancellationDropOtp(orderId) {
+  try {
+    const orderKey = orderMatchQueryFromRouteParam(orderId);
+    const order = await Order.findOne(orderKey);
+    if (!order) {
+      return { success: false, error: 'Order not found' };
+    }
+
+    const cancelReq = await CancellationRequest.findOne({ order_id: order._id }).sort({ createdAt: -1 });
+    if (!cancelReq) {
+      return { success: false, error: 'Cancellation request not found.' };
+    }
+
+    const allowedStatuses = ['PICKED_UP'];
+    if (!allowedStatuses.includes(cancelReq.status)) {
+      return {
+        success: false,
+        error: `Cancellation request must be in PICKED_UP status before drop-off. Current status: ${cancelReq.status}`,
+      };
+    }
+
+    const otp = String(crypto.randomInt(0, 10000)).padStart(4, '0');
+    const codeHash = OrderOtp.hashCode(otp);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    await OrderOtp.updateMany(
+      { orderId, type: 'cancellation_drop', consumedAt: null },
+      { consumedAt: new Date() }
+    );
+
+    await OrderOtp.create({
+      orderId,
+      orderMongoId: order._id,
+      type: 'cancellation_drop',
+      codeHash,
+      code: otp,
+      expiresAt,
+      attempts: 0,
+      maxAttempts: 3,
+      lastGeneratedAt: new Date(),
+    });
+
+    return { success: true, otp, expiresAt };
+  } catch (error) {
+    console.error('Error generating cancellation drop OTP:', error);
+    return { success: false, error: 'Failed to generate cancellation drop OTP.' };
+  }
+}
+
+/**
+ * Validate OTP entered by delivery person at cancellation seller drop-off.
+ * @param {string} orderId
+ * @param {string} enteredOtp
+ * @returns {Promise<Object>}
+ */
+export async function validateCancellationDropOtp(orderId, enteredOtp) {
+  try {
+    if (!orderId || !enteredOtp) {
+      return { valid: false, error: 'INVALID_FORMAT', message: 'orderId and OTP are required' };
+    }
+
+    const otpRecord = await OrderOtp.findOne({ orderId, type: 'cancellation_drop' }).sort({
+      lastGeneratedAt: -1,
+      createdAt: -1,
+    });
+
+    if (!otpRecord) {
+      return { valid: false, error: 'OTP_NOT_FOUND', message: 'No seller drop OTP found. Please request a new one.' };
+    }
+
+    if (otpRecord.consumedAt) {
+      return { valid: false, error: 'OTP_CONSUMED', message: 'OTP already consumed.' };
+    }
+
+    if (otpRecord.attempts >= otpRecord.maxAttempts) {
+      return { valid: false, error: 'MAX_ATTEMPTS_EXCEEDED', message: 'Max attempts exceeded.' };
+    }
+
+    if (isOtpExpired(otpRecord.expiresAt)) {
+      return { valid: false, error: 'OTP_EXPIRED', message: 'OTP expired. Please request a new one.' };
+    }
+
+    const enteredHash = OrderOtp.hashCode(enteredOtp);
+    const isMatch = enteredHash === otpRecord.codeHash;
+
+    if (!isMatch) {
+      otpRecord.attempts += 1;
+      await otpRecord.save();
+      return {
+        valid: false,
+        error: 'OTP_MISMATCH',
+        message: 'Invalid OTP.',
+        attemptsRemaining: otpRecord.maxAttempts - otpRecord.attempts,
+      };
+    }
+
+    otpRecord.consumedAt = new Date();
+    await otpRecord.save();
+
+    return { valid: true, message: 'Seller drop OTP validated successfully' };
+  } catch (error) {
+    console.error('Error validating cancellation drop OTP:', error);
     return { valid: false, error: 'VALIDATION_FAILED', message: 'Internal error.' };
   }
 }

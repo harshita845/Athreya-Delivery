@@ -45,31 +45,23 @@ export function mixHexWithWhite(hex, t) {
 
 /** Search field surface: tinted header theme, a bit darker than near-white. */
 export function buildSearchBarBackgroundColor(baseHeaderColor) {
-  const base = baseHeaderColor || DEFAULT_BASE;
-  return mixHexWithWhite(base, 0.7);
+  return "#ffffff";
 }
 
 /**
  * Same gradient as the main location header (category-driven).
  */
 export function buildHeaderGradient(baseHeaderColor) {
-  const base = baseHeaderColor || DEFAULT_BASE;
-  return `linear-gradient(to bottom, ${shiftHex(base, -18)} 0%, ${shiftHex(base, 20)} 54%, ${shiftHex(base, 165)} 100%)`;
+  return "#ffffff";
 }
 
 /** Solid fill for floating cart pill: header mid tone, slightly darker. */
 export function buildMiniCartColor(baseHeaderColor) {
-  const base = baseHeaderColor || DEFAULT_BASE;
-  const mid = shiftHex(base, 20);
-  return shiftHex(mid, -26);
+  return "#1a6e2e";
 }
 
 /** Gradient for floating mini cart pill (same palette as header, horizontal). */
 export function buildMiniCartGradient(baseHeaderColor) {
-  const base = baseHeaderColor || DEFAULT_BASE;
-  const top = shiftHex(base, -12);
-  const mid = shiftHex(base, 20);
-  const deep = shiftHex(mid, -32);
-  return `linear-gradient(135deg, ${top} 0%, ${mid} 48%, ${deep} 100%)`;
+  return "#1a6e2e";
 }
 

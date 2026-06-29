@@ -38,15 +38,15 @@ const CheckoutCouponSection = React.memo(function CheckoutCouponSection({
   return (
     <>
       {/* Inline coupon carousel */}
-      <motion.div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+      <motion.div className="bg-white rounded-2xl p-4 border border-[#1a6e2e]/20">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Tag size={20} className="text-orange-500" />
+            <Tag size={20} className="text-[#1a6e2e]" />
             <h3 className="font-black text-slate-800">Available Coupons</h3>
           </div>
           <button
             onClick={() => onOpenChange(true)}
-            className="text-primary text-sm font-bold hover:underline">
+            className="text-[#1a6e2e] text-sm font-bold hover:underline">
             See All
           </button>
         </div>
@@ -63,20 +63,20 @@ const CheckoutCouponSection = React.memo(function CheckoutCouponSection({
                   key={coupon.code}
                   className={`flex-shrink-0 w-[200px] snap-start rounded-2xl border-2 border-dashed p-3 flex flex-col gap-2 transition-all ${
                     isApplied
-                      ? "border-green-400 bg-green-50"
-                      : "border-orange-200 bg-gradient-to-br from-orange-50 to-yellow-50"
+                      ? "border-[#1a6e2e] bg-[#1a6e2e]/10"
+                      : "border-[#1a6e2e]/20 bg-white"
                   }`}>
                   <div className="flex items-center justify-between">
                     <span
                       className={`text-xs font-black px-2 py-0.5 rounded-lg tracking-widest uppercase ${
                         isApplied
-                          ? "bg-green-100 text-green-700"
-                          : "bg-orange-100 text-orange-600"
+                          ? "bg-[#1a6e2e]/20 text-[#1a6e2e]"
+                          : "bg-[#1a6e2e]/10 text-[#1a6e2e]"
                       }`}>
                       {coupon.code}
                     </span>
                     {isApplied && (
-                      <span className="text-[10px] font-black text-green-600 uppercase tracking-wide">
+                      <span className="text-[10px] font-black text-[#1a6e2e] uppercase tracking-wide">
                         ✓ Applied
                       </span>
                     )}
@@ -99,13 +99,13 @@ const CheckoutCouponSection = React.memo(function CheckoutCouponSection({
                   {isApplied ? (
                     <button
                       onClick={onRemoveCoupon}
-                      className="mt-auto w-full py-1.5 rounded-xl text-xs font-black bg-red-50 text-red-500 hover:bg-red-100 active:scale-95 transition-all">
+                      className="mt-auto w-full py-1.5 rounded-xl text-xs font-black bg-[#1a6e2e]/10 text-[#1a6e2e] hover:bg-[#1a6e2e]/20 active:scale-95 transition-all">
                       Remove
                     </button>
                   ) : (
                     <button
                       onClick={() => onApplyCoupon(coupon)}
-                      className="mt-auto w-full py-1.5 rounded-xl text-xs font-black bg-primary text-primary-foreground hover:bg-[var(--brand-400)] active:scale-95 transition-all">
+                      className="mt-auto w-full py-1.5 rounded-xl text-xs font-black bg-[#1a6e2e] text-white hover:opacity-90 active:scale-95 transition-all">
                       Apply
                     </button>
                   )}
@@ -129,11 +129,11 @@ const CheckoutCouponSection = React.memo(function CheckoutCouponSection({
                 key={coupon.code}
                 className={`p-4 rounded-2xl border-2 transition-all relative overflow-hidden ${
                   selectedCoupon?.code === coupon.code
-                    ? "border-primary bg-brand-50 shadow-sm"
-                    : "border-slate-100 bg-white hover:border-slate-200"
+                    ? "border-[#1a6e2e] bg-[#1a6e2e]/10"
+                    : "border-[#1a6e2e]/20 bg-white hover:border-[#1a6e2e]/40"
                 }`}>
                 {selectedCoupon?.code === coupon.code && (
-                  <div className="absolute top-0 right-0 p-1.5 bg-primary text-primary-foreground rounded-bl-xl">
+                  <div className="absolute top-0 right-0 p-1.5 bg-[#1a6e2e] text-white rounded-bl-xl">
                     <Check size={12} strokeWidth={4} />
                   </div>
                 )}
@@ -141,8 +141,8 @@ const CheckoutCouponSection = React.memo(function CheckoutCouponSection({
                   <div
                     className={`p-3 rounded-2xl ${
                       selectedCoupon?.code === coupon.code
-                        ? "bg-primary/10 text-primary"
-                        : "bg-orange-50 text-orange-500"
+                        ? "bg-[#1a6e2e]/20 text-[#1a6e2e]"
+                        : "bg-[#1a6e2e]/10 text-[#1a6e2e]"
                     }`}>
                     <Tag size={20} />
                   </div>
@@ -158,8 +158,8 @@ const CheckoutCouponSection = React.memo(function CheckoutCouponSection({
                       disabled={selectedCoupon?.code === coupon.code}
                       className={`w-full py-2.5 rounded-xl font-bold text-sm transition-all ${
                         selectedCoupon?.code === coupon.code
-                          ? "bg-white text-primary border-2 border-primary cursor-default"
-                          : "bg-primary text-primary-foreground hover:bg-[#0b721b]"
+                          ? "bg-white text-[#1a6e2e] border-2 border-[#1a6e2e] cursor-default"
+                          : "bg-[#1a6e2e] text-white hover:opacity-90"
                       }`}>
                       {selectedCoupon?.code === coupon.code ? "Applied" : "Apply Now"}
                     </button>
@@ -178,10 +178,10 @@ const CheckoutCouponSection = React.memo(function CheckoutCouponSection({
                 placeholder="Enter coupon code manually"
                 value={manualCode}
                 onChange={(e) => onManualCodeChange(e.target.value.toUpperCase())}
-                className="pl-10 h-12 rounded-xl focus-visible:ring-primary"
+                className="pl-10 h-12 rounded-xl focus-visible:ring-[#1a6e2e]"
               />
               <button
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-primary font-bold text-xs"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1a6e2e] font-bold text-xs"
                 onClick={onApplyManualCode}>
                 CHECK
               </button>

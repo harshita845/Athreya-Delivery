@@ -6,13 +6,13 @@ const FlashDeals = ({ products }) => {
     return (
         <section className="py-12 bg-slate-50 relative overflow-hidden">
             {/* Background Decoration */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[#1a6e2e]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
             <div className="container w-full max-w-[1920px] mx-auto px-4 md:px-[50px] relative z-10">
                 <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-6">
                     <div className="flex items-center gap-6 text-center md:text-left">
-                        <div className="h-16 w-16 bg-orange-500 rounded-3xl flex items-center justify-center text-white shadow-xl shadow-orange-200 animate-pulse">
+                        <div className="h-16 w-16 bg-orange-500 rounded-3xl flex items-center justify-center text-white border border-[#1a6e2e]/20 shadow-orange-200 animate-pulse">
                             <Zap size={32} fill="currentColor" />
                         </div>
                         <div>
@@ -28,7 +28,7 @@ const FlashDeals = ({ products }) => {
                         </div>
                     </div>
 
-                    <button className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-black transition-all hover:shadow-xl active:scale-95 group">
+                    <button className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-black transition-all hover:border border-[#1a6e2e]/20 active:scale-95 group">
                         View All Deals <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                 </div>

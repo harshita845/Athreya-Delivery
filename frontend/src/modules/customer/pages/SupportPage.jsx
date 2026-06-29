@@ -78,7 +78,7 @@ const SupportPage = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 pb-24 font-sans">
-            <div className="sticky top-0 z-30 bg-slate-50/95 backdrop-blur-sm px-4 pt-4 pb-3 border-b border-slate-200/60 mb-4 flex items-center gap-2">
+            <div className="sticky top-0 z-30 bg-slate-50/95  px-4 pt-4 pb-3 border-b border-slate-200/60 mb-4 flex items-center gap-2">
                 <button
                     onClick={() => navigate(-1)}
                     className="w-10 h-10 flex items-center justify-center hover:bg-slate-200/70 rounded-full transition-colors -ml-1"
@@ -115,7 +115,7 @@ const SupportPage = () => {
                                 />
                             ))
                         ) : (
-                            <div className="bg-white rounded-2xl shadow-[0_4px_10px_rgb(0,0,0,0.02)] border border-slate-100 px-5 py-4 text-sm text-slate-400 text-center">
+                            <div className="bg-white rounded-2xl border border-[#1a6e2e]/20 px-5 py-4 text-sm text-slate-400 text-center">
                                 No FAQs available right now.
                             </div>
                         )}
@@ -145,14 +145,14 @@ const SupportPage = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsTicketModalOpen(false)}
-                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                            className="absolute inset-0 bg-black/60 "
                         />
                         <motion.div
                             initial={{ y: "100%" }}
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                            className="relative bg-white w-full max-w-lg rounded-t-[2.5rem] sm:rounded-3xl shadow-2xl overflow-hidden z-10"
+                            className="relative bg-white w-full max-w-lg rounded-t-[2.5rem] sm:rounded-3xl border border-[#1a6e2e]/20 overflow-hidden z-10"
                         >
                             <div className="p-8">
                                 <div className="flex items-center justify-between mb-8">
@@ -177,7 +177,7 @@ const SupportPage = () => {
                                             value={ticketData.subject}
                                             onChange={(e) => setTicketData({ ...ticketData, subject: e.target.value })}
                                             placeholder="What's the issue about?"
-                                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold outline-none ring-1 ring-transparent focus:ring-primary/20 transition-all"
+                                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold outline-none ring-1 ring-transparent focus:ring-[#1a6e2e]/20 transition-all"
                                         />
                                     </div>
 
@@ -190,7 +190,7 @@ const SupportPage = () => {
                                                 className={cn(
                                                     "py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border",
                                                     ticketData.priority === p
-                                                        ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-brand-100"
+                                                        ? "bg-[#1a6e2e] text-white border-[#1a6e2e] border border-transparent"
                                                         : "bg-white text-slate-400 border-slate-100 hover:bg-slate-50"
                                                 )}
                                             >
@@ -206,14 +206,14 @@ const SupportPage = () => {
                                             value={ticketData.description}
                                             onChange={(e) => setTicketData({ ...ticketData, description: e.target.value })}
                                             placeholder="Please explain the issue clearly..."
-                                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold min-h-[150px] outline-none ring-1 ring-transparent focus:ring-primary/20 transition-all"
+                                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold min-h-[150px] outline-none ring-1 ring-transparent focus:ring-[#1a6e2e]/20 transition-all"
                                         />
                                     </div>
 
                                     <Button
                                         type="submit"
                                         disabled={ticketLoading}
-                                        className="w-full h-14 bg-primary hover:bg-[#0b721b] text-white text-lg font-black rounded-2xl shadow-xl shadow-brand-100 transition-all active:scale-95"
+                                        className="w-full h-14 bg-[#1a6e2e] hover:bg-[#1a6e2e]/90 text-white text-lg font-black rounded-2xl border border-transparent transition-all active:scale-95"
                                     >
                                         {ticketLoading ? (
                                             <div className="flex items-center gap-2 text-center w-full justify-center">

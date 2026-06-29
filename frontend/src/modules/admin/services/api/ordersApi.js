@@ -24,6 +24,18 @@ export const adminOrdersApi = {
         axiosInstance.put(`/orders/returns/${orderId}/assign-delivery`, data),
     updateReturnQc: (orderId, data) =>
         axiosInstance.put(`/orders/returns/${orderId}/qc`, data),
+
+    // New Return Requests & Delivery Boys System endpoints
+    getAdminReturnRequests: (params) =>
+        axiosInstance.get('/admin/return-requests', { params }),
+    getAdminReturnRequestDetail: (returnRequestId) =>
+        axiosInstance.get(`/admin/return-requests/${returnRequestId}`),
+    overrideReturnRequest: (returnRequestId, data) =>
+        axiosInstance.post(`/admin/return-requests/${returnRequestId}/override`, data),
+    initiateRefund: (returnRequestId, data) =>
+        axiosInstance.post(`/admin/return-requests/${returnRequestId}/initiate-refund`, data),
+    getAdminReturnStats: () =>
+        axiosInstance.get('/admin/return-requests/stats'),
 };
 
 export default adminOrdersApi;

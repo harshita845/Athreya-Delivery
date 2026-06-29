@@ -405,6 +405,19 @@ const Dashboard = () => {
               exit={{ opacity: 0 }}
               className="space-y-4"
             >
+              <div className="bg-slate-900 text-white rounded-3xl p-4 shadow-md flex items-center justify-between gap-3">
+                <div>
+                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">Assigned Pickups</h4>
+                  <p className="text-xs font-bold text-slate-200 mt-0.5">Check return tasks assigned directly to you.</p>
+                </div>
+                <Button 
+                  onClick={() => navigate("/delivery/return-tasks")}
+                  className="bg-white text-slate-900 hover:bg-slate-100 text-[10px] font-black tracking-widest px-4 py-2.5 rounded-xl uppercase shrink-0"
+                >
+                  View Tasks
+                </Button>
+              </div>
+
               <div className="flex justify-between items-center mb-1">
                 <h3 className="text-sm font-bold text-gray-800 tracking-tight">Available Return Pickups</h3>
                 <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase italic">Open for Acceptance</span>

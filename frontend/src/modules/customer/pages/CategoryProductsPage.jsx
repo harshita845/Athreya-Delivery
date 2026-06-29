@@ -43,6 +43,15 @@ const CategoryProductsPage = () => {
     const fetchData = async () => {
         setIsLoading(true);
         try {
+            const slugMap = {
+                fruits: "6a3fc1728bb6d217bf338f1d",
+                vegetables: "6a3fc1738bb6d217bf338f24",
+                chicken: "6a3fc1748bb6d217bf338f2b",
+                mutton: "6a3fc1748bb6d217bf338f32",
+                eggs: "6a3fc1748bb6d217bf338f39",
+            };
+            const resolvedCatId = slugMap[catId?.toLowerCase()] || catId;
+
             const hasValidLocation =
                 Number.isFinite(currentLocation?.latitude) &&
                 Number.isFinite(currentLocation?.longitude);
@@ -51,7 +60,7 @@ const CategoryProductsPage = () => {
             const [prodRes, catRes] = await Promise.all([
                 hasValidLocation
                     ? customerApi.getProducts({
-                        categoryId: catId,
+                        categoryId: resolvedCatId,
                         lat: currentLocation.latitude,
                         lng: currentLocation.longitude,
                     })
@@ -90,7 +99,7 @@ const CategoryProductsPage = () => {
                 const tree = catRes.data.results || catRes.data.result || [];
                 let currentCat = null;
                 for (const header of tree) {
-                    const found = (header.children || []).find(c => c._id === catId);
+                    const found = (header.children || []).find(c => c._id === resolvedCatId);
                     if (found) {
                         currentCat = found;
                         break;
@@ -134,10 +143,11 @@ const CategoryProductsPage = () => {
     }, [safeProducts]);
 
     return (
-        <div className="flex flex-col min-h-screen bg-linear-to-br from-[#fbf9ff] via-[#f5f1ff] to-[#fbf9ff] max-w-md mx-auto relative font-sans">
+        <div className="flex flex-col min-h-screen bg-white max-w-md mx-auto relative font-sans">
+
             {/* Header */}
             <header className={cn(
-                "sticky top-0 z-50 bg-[#fbf9ff]/95 backdrop-blur-md border-b border-purple-100/40 px-4 py-4 flex items-center justify-between",
+                "sticky top-0 z-50 bg-white border-b border-[#1a6e2e]/20 px-4 py-4 flex items-center justify-between",
                 isProductDetailOpen && "hidden md:flex"
             )}>
                 <div className="flex items-center gap-3">
@@ -156,31 +166,19 @@ const CategoryProductsPage = () => {
 
             <div className="flex flex-1 relative items-start">
                 {(safeProducts.length === 0 && !isLoading) ? (
-                    <div className="w-full flex-1 py-20 px-8 flex flex-col items-center justify-center text-center">
-                        <div className="w-64 h-64 mb-6">
-                            {noServiceData ? (
-                                <Lottie animationData={noServiceData} loop={true} />
-                            ) : (
-                                <div className="w-64 h-64" />
-                            )}
-                        </div>
-                        <h3 className="text-3xl font-[1000] text-slate-800 tracking-tighter mb-4 uppercase">
-                            Service <span className="text-primary">Unavailable</span>
+                    <div className="w-full flex-grow py-20 px-8 flex flex-col items-center justify-center text-center self-center">
+                        <h3 className="text-2xl font-black text-slate-700 tracking-tighter mb-2 uppercase">
+                            No products available
                         </h3>
-                        <p className="text-slate-500 font-bold text-sm max-w-[280px] mb-8 leading-relaxed">
-                            {settings?.appName || 'Our service'} is not available in your area yet. We're expanding fast!
+                        <p className="text-slate-500 font-bold text-sm max-w-[280px]">
+                            Check back later! We are adding new items daily.
                         </p>
-                        <button 
-                            onClick={fetchData}
-                            className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-800 active:scale-95 transition-all shadow-xl shadow-black/10"
-                        >
-                            Try Refreshing
-                        </button>
                     </div>
                 ) : (
                     <>
                         {/* Sidebar */}
-                        <aside className="w-[70px] border-r border-purple-100/40 flex flex-col bg-[#f5f1ff]/50 overflow-y-auto hide-scrollbar sticky top-[60px] h-[calc(100vh-60px)] pb-32 flex-shrink-0">
+                        <aside className="w-[70px] border-r border-[#1a6e2e]/20 flex flex-col bg-white overflow-y-auto hide-scrollbar sticky top-[60px] h-[calc(100vh-60px)] pb-32 flex-shrink-0">
+
                             {subCategories.map((cat) => (
                                 <button
                                     key={cat.id}
@@ -188,7 +186,7 @@ const CategoryProductsPage = () => {
                                     className={cn(
                                         "flex flex-col items-center py-4 px-1 gap-2 transition-all relative border-l-4",
                                         selectedSubCategory === cat.id
-                                            ? "bg-white border-primary"
+                                            ? "bg-white border-[#1a6e2e]"
                                             : "border-transparent hover:bg-white/40"
                                     )}
                                 >
@@ -200,7 +198,7 @@ const CategoryProductsPage = () => {
                                     </div>
                                     <span className={cn(
                                         "text-[10px] text-center font-bold font-sans leading-tight px-1",
-                                        selectedSubCategory === cat.id ? "text-primary" : "text-gray-600"
+                                        selectedSubCategory === cat.id ? "text-[#1a6e2e]" : "text-gray-600"
                                     )}>
                                         {cat.name}
                                     </span>

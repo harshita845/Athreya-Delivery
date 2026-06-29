@@ -864,15 +864,12 @@ const CheckoutPage = () => {
   if (cart.length === 0 && !showSuccess) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 relative overflow-hidden font-sans">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-brand-50/50 via-transparent to-transparent pointer-events-none" />
-        <div className="absolute -top-20 -right-20 w-80 h-80 bg-brand-100/30 rounded-full blur-3xl pointer-events-none animate-pulse" />
-        <div className="absolute top-40 -left-20 w-60 h-60 bg-yellow-100/40 rounded-full blur-3xl pointer-events-none animate-pulse" />
         <div className="relative z-10 flex flex-col items-center text-center max-w-sm mx-auto">
           <div ref={emptyCartAnimRef} className="relative w-56 h-56 md:w-64 md:h-64 mb-8 flex items-center justify-center">
             <motion.div
               animate={emptyCartVisible ? { y: [-8, 8, -8] } : { y: 0 }}
               transition={emptyCartVisible ? { duration: 4, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
-              className="relative z-10 rounded-[2rem] bg-white/90 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-brand-100">
+              className="relative z-10 rounded-[2rem] bg-white/90 p-6  border border-[#1a6e2e]/20">
               {emptyBoxData ? (
                 <Lottie animationData={emptyBoxData} loop className="h-36 w-36 md:h-44 md:w-44" />
               ) : (
@@ -891,8 +888,7 @@ const CheckoutPage = () => {
             Explore our aisles and fill it with goodies.
           </p>
           <Link
-            to="/"
-            className="group relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-primary to-[var(--brand-400)] text-white font-bold rounded-2xl overflow-hidden shadow-xl shadow-brand-600/20 transition-all hover:scale-[1.02] active:scale-95 w-full sm:w-auto">
+            className="group relative inline-flex items-center justify-center px-8 py-4 bg-[#1a6e2e] text-white font-bold rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 w-full sm:w-auto border border-transparent">
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
             <span className="relative flex items-center gap-2 text-lg">
               Start Shopping <ChevronRight size={20} />
@@ -919,20 +915,18 @@ const CheckoutPage = () => {
 
   // ─── Main checkout return ────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#f5f1e8] pb-32 font-sans">
+    <div className="min-h-screen bg-white pb-32 font-sans">
       {/* Order Success Overlay */}
       <CheckoutOrderSuccess orderId={orderId} show={showSuccess} />
 
       {/* Premium Header */}
-      <div className="bg-gradient-to-br from-[var(--brand-700)] via-[var(--brand-600)] to-[var(--brand-400)] pt-6 pb-12 md:pb-24 relative z-10 shadow-lg md:rounded-b-[4rem] rounded-b-[2rem] overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] -mr-32 -mt-64 pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-brand-400/10 rounded-full blur-[80px] pointer-events-none" />
+      <div className="bg-white border-b border-[#1a6e2e]/20 pt-6 pb-12 md:pb-24 relative z-10 md:rounded-b-[4rem] rounded-b-[2rem] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
           <div className="flex items-center justify-between">
             <button
               onClick={() => navigate(-1)}
-              className="w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-2xl transition-all active:scale-95">
-              <ChevronLeft size={28} className="text-white" />
+              className="w-12 h-12 flex items-center justify-center bg-transparent hover:bg-slate-50 rounded-2xl transition-all active:scale-95">
+              <ChevronLeft size={28} className="text-[#1a6e2e]" />
             </button>
             <div className="flex flex-col items-center">
               <div className="flex items-center gap-0 mb-1 cursor-pointer" onClick={() => navigate("/")}>
@@ -941,24 +935,24 @@ const CheckoutPage = () => {
                   alt="Athreya Delivery Logo"
                   className="h-10 md:h-12 w-auto object-contain -mr-1.5 md:-mr-3"
                 />
-                <span className="text-sm md:text-lg font-black tracking-tight text-white flex gap-1">
-                  <span className="text-white">ATHREYA</span>
-                  <span className="text-yellow-400">DELIVERY</span>
+                <span className="text-sm md:text-lg font-black tracking-tight flex gap-1">
+                  <span className="text-[#1a6e2e]">ATHREYA</span>
+                  <span className="text-[#1a6e2e]">DELIVERY</span>
                 </span>
               </div>
-              <h1 className="text-xl md:text-2xl font-black text-white tracking-tight uppercase">Checkout</h1>
+              <h1 className="text-xl md:text-2xl font-black text-[#1a6e2e] tracking-tight uppercase">Checkout</h1>
               <div className="flex items-center gap-2 mt-1">
-                <span className="h-1.5 w-1.5 bg-brand-400 rounded-full animate-pulse" />
-                <p className="text-brand-100/90 text-[10px] md:text-xs font-black tracking-[0.2em] uppercase">
+                <span className="h-1.5 w-1.5 bg-[#1a6e2e] rounded-full animate-pulse" />
+                <p className="text-[#1a6e2e] text-[10px] md:text-xs font-black tracking-[0.2em] uppercase">
                   {cartCount} {cartCount === 1 ? "Item" : "Items"} in cart
                 </p>
               </div>
             </div>
             <button
               onClick={handleShare}
-              className="h-12 px-4 flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-2xl transition-all active:scale-95">
-              <Share2 size={20} className="text-white" />
-              <span className="text-xs font-black text-white uppercase tracking-widest hidden sm:block">Share</span>
+              className="h-12 px-4 flex items-center gap-2 bg-transparent hover:bg-slate-50 rounded-2xl transition-all active:scale-95">
+              <Share2 size={20} className="text-[#1a6e2e]" />
+              <span className="text-xs font-black text-[#1a6e2e] uppercase tracking-widest hidden sm:block">Share</span>
             </button>
           </div>
         </div>
@@ -970,10 +964,10 @@ const CheckoutPage = () => {
           {/* Left Column */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-6 pb-8">
             {/* Delivery Time Banner */}
-            <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mt-3">
+            <div className="bg-white rounded-2xl p-4 border border-[#1a6e2e]/20 border border-slate-100 mt-3">
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-brand-50 flex items-center justify-center flex-shrink-0">
-                  <Clock size={24} className="text-primary" />
+                <div className="h-12 w-12 rounded-full bg-[#1a6e2e]/10 flex items-center justify-center flex-shrink-0">
+                  <Clock size={24} className="text-[#1a6e2e]" />
                 </div>
                 <div>
                   <p className="text-sm text-slate-500">Shipment of {cartCount} items</p>
@@ -1083,7 +1077,7 @@ const CheckoutPage = () => {
       </div>
 
       {/* Sticky Footer — Mobile Only */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-50 rounded-t-3xl">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-4  z-50 rounded-t-3xl">
         <div className="max-w-4xl mx-auto">
           <SlideToPay
             amount={finalAmountToPay}
@@ -1108,11 +1102,11 @@ const CheckoutPage = () => {
                 onClick={() => handleSelectSavedAddress(addr)}
                 disabled={isResolvingAddressCoords}
                 className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${currentAddress.id === addr.id
-                  ? "border-primary bg-brand-50 shadow-sm"
+                  ? "border-primary bg-[#1a6e2e]/10 border border-[#1a6e2e]/20"
                   : "border-slate-100 bg-white hover:border-slate-200"
                   }`}>
                 <div className="flex items-center gap-3 mb-2">
-                  <div className={`p-2 rounded-full ${currentAddress.id === addr.id ? "bg-primary text-primary-foreground" : "bg-slate-100 text-slate-500"}`}>
+                  <div className={`p-2 rounded-full ${currentAddress.id === addr.id ? "bg-[#1a6e2e] text-[#1a6e2e]-foreground" : "bg-slate-100 text-slate-500"}`}>
                     <MapPin size={16} />
                   </div>
                   <span className="font-black text-slate-800 uppercase tracking-widest text-[10px]">{addr.label}</span>
@@ -1128,7 +1122,7 @@ const CheckoutPage = () => {
           <DialogFooter>
             <Button
               variant="outline"
-              className="w-full border-brand-600 text-brand-600 hover:bg-brand-50"
+              className="w-full border-[#1a6e2e]/20 text-[#1a6e2e] hover:bg-[#1a6e2e]/10"
               onClick={() => navigate("/addresses")}>
               <Plus size={16} className="mr-2" /> Add New Address
             </Button>
@@ -1190,7 +1184,7 @@ const CheckoutPage = () => {
               </Button>
               <Button
                 onClick={handleSaveEditedAddress}
-                className="bg-primary hover:bg-[#0b721b] text-white font-bold">
+                className="bg-[#1a6e2e] hover:bg-[#0b721b] text-white font-bold">
                 Save changes
               </Button>
             </DialogFooter>

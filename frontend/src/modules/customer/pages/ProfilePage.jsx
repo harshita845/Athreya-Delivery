@@ -100,16 +100,18 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-[#fbf9ff] via-[#f5f1ff] to-[#fbf9ff] pb-24 md:pb-8 font-sans">
-            <div className="sticky top-0 z-30 bg-[#fbf9ff]/95 backdrop-blur-sm px-4 pt-4 pb-3 border-b border-purple-100/40 mb-4 flex items-center justify-between gap-2">
+        <div className="min-h-screen bg-white pb-24 md:pb-8 font-sans">
+
+            <div className="sticky top-0 z-30 bg-[#1a6e2e] px-4 pt-4 pb-3 border-b border-[#1a6e2e] mb-4 flex items-center justify-between gap-2">
+
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => navigate(-1)}
                         className="w-10 h-10 flex items-center justify-center hover:bg-slate-200/70 rounded-full transition-colors -ml-1"
                     >
-                        <ChevronLeft size={22} className="text-slate-800" />
+                        <ChevronLeft size={22} className="text-white" />
                     </button>
-                    <h1 className="text-xl font-semibold text-slate-900 tracking-tight">My Profile</h1>
+                    <h1 className="text-xl font-semibold text-white tracking-tight">My Profile</h1>
                 </div>
                 <div className="flex items-center gap-4 ml-auto">
                     <div className="hidden md:flex items-center gap-0 cursor-pointer" onClick={() => navigate("/")}>
@@ -119,8 +121,8 @@ const ProfilePage = () => {
                             className="h-10 md:h-12 w-auto object-contain -mr-2 md:-mr-3"
                         />
                         <span className="text-sm md:text-base font-black tracking-tight flex gap-1">
-                            <span className="text-[#3a2a83]">ATHREYA</span>
-                            <span className="text-[#f15a24]">DELIVERY</span>
+                            <span className="text-white">ATHREYA</span>
+                            <span className="text-white">DELIVERY</span>
                         </span>
                     </div>
                     <button
@@ -128,9 +130,9 @@ const ProfilePage = () => {
                         onClick={handleTestPush}
                         disabled={isTestingPush}
                         title="Test push notification"
-                        className="w-10 h-10 flex items-center justify-center rounded-full transition-colors border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="w-10 h-10 flex items-center justify-center rounded-full transition-colors bg-transparent border-none disabled:opacity-60 disabled:cursor-not-allowed text-white"
                     >
-                        <Bell size={18} className={isTestingPush ? "text-slate-400" : "text-slate-700"} />
+                        <Bell size={18} className={isTestingPush ? "opacity-50" : "text-white"} />
                     </button>
                 </div>
             </div>
@@ -138,7 +140,7 @@ const ProfilePage = () => {
             <div className="max-w-2xl mx-auto px-4 pt-1 relative z-20 space-y-4">
 
                 {/* User Identity Card */}
-                <div className="bg-white rounded-xl p-4 border border-slate-200 flex items-center justify-between">
+                <div className="bg-white p-4 border border-[#1a6e2e]/20 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="h-14 w-14 rounded-xl bg-slate-100 flex items-center justify-center p-1 border border-slate-200">
                             <div className="h-full w-full rounded-lg bg-white flex items-center justify-center overflow-hidden">
@@ -160,8 +162,8 @@ const ProfilePage = () => {
                 {/* Menu Sections */}
                 <div className="space-y-4">
                     {/* Account Section */}
-                    <div className="bg-white rounded-xl overflow-hidden border border-slate-200">
-                        <div className="px-4 py-3 bg-slate-50 border-b border-slate-100">
+                    <div className="bg-white overflow-hidden border border-[#1a6e2e]/20">
+                        <div className="px-4 py-3 bg-white border-b border-[#1a6e2e]/10">
                             <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Personal Account</p>
                         </div>
                         <div className="divide-y divide-slate-100">
@@ -170,47 +172,37 @@ const ProfilePage = () => {
                                 label="Your Orders"
                                 sub="Track, return or buy things again"
                                 path="/orders"
-                                color="var(--primary)"
-                                bg="rgba(16,185,129,0.10)"
                             />
                             <MenuItem
                                 icon={CreditCard}
                                 label="Order Transactions"
                                 sub="View all payments & refunds"
                                 path="/transactions"
-                                color="#f97316"
-                                bg="rgba(249,115,22,0.10)"
                             />
                             <MenuItem
                                 icon={Wallet}
                                 label="Wallet"
                                 sub="Balance & return refunds"
                                 path="/wallet"
-                                color="#10b981"
-                                bg="rgba(16,185,129,0.10)"
                             />
                             <MenuItem
                                 icon={Heart}
                                 label="Your Wishlist"
                                 sub="Your saved items"
                                 path="/wishlist"
-                                color="#fb7185"
-                                bg="rgba(248,113,113,0.08)"
                             />
                             <MenuItem
                                 icon={MapPin}
                                 label="Saved Addresses"
                                 sub="Manage your delivery locations"
                                 path="/addresses"
-                                color="var(--primary)"
-                                bg="rgba(56,189,248,0.10)"
                             />
                         </div>
                     </div>
 
                     {/* Support Section */}
-                    <div className="bg-white rounded-xl overflow-hidden border border-slate-200">
-                        <div className="px-4 py-3 bg-slate-50 border-b border-slate-100">
+                    <div className="bg-white overflow-hidden border border-[#1a6e2e]/20">
+                        <div className="px-4 py-3 bg-white border-b border-[#1a6e2e]/10">
                             <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Help & Settings</p>
                         </div>
                         <div className="divide-y divide-slate-100">
@@ -218,22 +210,16 @@ const ProfilePage = () => {
                                 icon={HelpCircle}
                                 label="Help & Support"
                                 path="/support"
-                                color="#3b82f6"
-                                bg="rgba(59,130,246,0.08)"
                             />
                             <MenuItem
                                 icon={ShieldCheck}
                                 label="Privacy Policy"
                                 path="/privacy"
-                                color="#a855f7"
-                                bg="rgba(168,85,247,0.08)"
                             />
                             <MenuItem
                                 icon={Info}
                                 label="About Us"
                                 path="/about"
-                                color="#14b8a6"
-                                bg="rgba(45,212,191,0.08)"
                             />
                         </div>
                     </div>
@@ -242,7 +228,7 @@ const ProfilePage = () => {
                 {/* Logout Button */}
                 <button
                     onClick={logout}
-                    className="w-full py-3 rounded-lg border border-slate-300 text-slate-700 font-semibold bg-white hover:bg-slate-100 transition-colors flex items-center justify-center gap-2 mt-2"
+                    className="w-full py-3 border-none text-white font-semibold bg-[#1a6e2e] transition-colors flex items-center justify-center gap-2 mt-2"
                 >
                     <LogOut size={20} />
                     Sign out
@@ -257,7 +243,7 @@ const ProfilePage = () => {
     );
 };
 
-const MenuItem = ({ icon: Icon, label, sub, path, color = '#334155', bg = 'rgba(148,163,184,0.12)' }) => (
+const MenuItem = ({ icon: Icon, label, sub, path, color = '#1a6e2e', bg = 'rgba(26,110,46,0.1)' }) => (
     <Link to={path || '#'} className="px-4 py-3.5 flex items-center justify-between hover:bg-slate-50 cursor-pointer transition-colors group">
         <div className="flex items-center gap-3">
             <div

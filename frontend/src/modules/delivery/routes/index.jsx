@@ -21,6 +21,8 @@ import Settings from "../pages/profile/Settings";
 import HelpSupport from "../pages/profile/HelpSupport";
 import Withdrawals from "../pages/profile/Withdrawals";
 import Notifications from "../pages/Notifications";
+import ReturnTasks from "../pages/ReturnTasks";
+import ReturnTaskDetail from "../pages/ReturnTaskDetail";
 
 const DeliveryRoutes = () => {
   useEffect(() => {
@@ -50,6 +52,8 @@ const DeliveryRoutes = () => {
         <Route path="profile/help-support" element={<HelpSupport />} />
         <Route path="profile/withdrawals" element={<Withdrawals />} />
         <Route path="notifications" element={<Notifications />} />
+        <Route path="return-tasks" element={<ReturnTasks />} />
+        <Route path="return-task-details/:returnRequestId" element={<ReturnTaskDetail />} />
         <Route path="/" element={<Navigate to="dashboard" replace />} />
       </Route>
     </Routes>

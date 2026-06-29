@@ -6,7 +6,7 @@ import { useSettings } from '@core/context/SettingsContext';
 const InvoiceModal = ({ isOpen, onClose, order }) => {
     const { settings } = useSettings();
     const appName = settings?.appName || 'App';
-    const primaryColor = settings?.primaryColor || 'var(--primary)';
+    const primaryColor = '#1a6e2e';
     if (!order) return null;
 
     const handlePrint = () => {
@@ -22,7 +22,7 @@ const InvoiceModal = ({ isOpen, onClose, order }) => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 "
                     >
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -30,7 +30,7 @@ const InvoiceModal = ({ isOpen, onClose, order }) => {
                             exit={{ opacity: 0, scale: 0.95, y: 10 }}
                             transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl relative"
+                            className="bg-white rounded-3xl w-full max-w-lg overflow-hidden border border-[#1a6e2e]/20 relative"
                         >
                             {/* Header */}
                             <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
@@ -38,7 +38,7 @@ const InvoiceModal = ({ isOpen, onClose, order }) => {
                                     <h2 className="text-lg font-black text-slate-800">Invoice</h2>
                                     <p className="text-xs text-slate-500 font-medium">#{order.id}</p>
                                 </div>
-                                <button onClick={onClose} className="p-2 bg-white rounded-full hover:bg-slate-200 transition-colors shadow-sm border border-slate-100">
+                                <button onClick={onClose} className="p-2 bg-white rounded-full hover:bg-slate-50 transition-colors border border-[#1a6e2e]/20">
                                     <X size={20} className="text-slate-500" />
                                 </button>
                             </div>
@@ -95,7 +95,7 @@ const InvoiceModal = ({ isOpen, onClose, order }) => {
 
                             {/* Footer Actions */}
                             <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex gap-3">
-                                <button onClick={handlePrint} className="flex-1 py-3 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-colors shadow-lg" style={{ backgroundColor: primaryColor }}>
+                                <button onClick={handlePrint} className="flex-1 py-3 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-colors border border-[#1a6e2e]/20" style={{ backgroundColor: primaryColor }}>
                                     <Printer size={18} /> Print
                                 </button>
                                 <button className="flex-1 py-3 bg-white text-slate-700 border border-slate-200 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors">

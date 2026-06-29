@@ -225,7 +225,7 @@ const LiveTrackingMap = memo(({
   const norm = status?.toLowerCase?.() || "";
   if (norm === "cancelled" || norm === "canceled") {
     return (
-      <div className="relative w-full min-h-[220px] bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden rounded-b-[2rem] flex flex-col items-center justify-center gap-3 px-6 py-10 border-b border-slate-200">
+      <div className="relative w-full min-h-[220px] bg-slate-50 overflow-hidden rounded-b-[2rem] flex flex-col items-center justify-center gap-3 px-6 py-10 border-b border-[#1a6e2e]/20">
         <div className="h-14 w-14 rounded-full bg-slate-200 flex items-center justify-center text-slate-600">
           <Clock size={28} />
         </div>
@@ -242,11 +242,11 @@ const LiveTrackingMap = memo(({
 
   if (norm === "seller_pending") {
     return (
-      <div className="relative w-full min-h-[260px] bg-gradient-to-br from-[#f0faf4] to-[#e8f5e9] overflow-hidden rounded-b-[2rem] flex flex-col items-center justify-center gap-3 px-6 py-10 border-b border-brand-100">
+      <div className="relative w-full min-h-[260px] bg-[#1a6e2e]/10 overflow-hidden rounded-b-[2rem] flex flex-col items-center justify-center gap-3 px-6 py-10 border-b border-[#1a6e2e]/20">
         <motion.div
           animate={{ scale: [1, 1.05, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="h-16 w-16 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-brand-200">
+          className="h-16 w-16 bg-[#1a6e2e] rounded-full flex items-center justify-center border border-transparent">
           <Clock size={30} className="text-white" />
         </motion.div>
         <h3 className="text-lg font-black text-gray-800 text-center">
@@ -263,12 +263,12 @@ const LiveTrackingMap = memo(({
   // ─── SEARCHING STATE ───────────────────────────────────────────────────
   if (isSearching) {
     return (
-      <div className="relative w-full h-[320px] bg-gradient-to-br from-[#f0faf4] to-[#e8f5e9] overflow-hidden rounded-b-[2rem] flex flex-col items-center justify-center gap-4">
+      <div className="relative w-full h-[320px] bg-[#1a6e2e]/10 overflow-hidden rounded-b-[2rem] flex flex-col items-center justify-center gap-4 border-b border-[#1a6e2e]/20">
         {/* Animated radar rings */}
         {[1, 2, 3].map((i) => (
           <motion.div
             key={i}
-            className="absolute rounded-full border-2 border-primary/20"
+            className="absolute rounded-full border-2 border-[#1a6e2e]/20"
             initial={{ width: 60, height: 60, opacity: 0.8 }}
             animate={{ width: 60 + i * 70, height: 60 + i * 70, opacity: 0 }}
             transition={{
@@ -284,7 +284,7 @@ const LiveTrackingMap = memo(({
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 1.5, repeat: Infinity }}
-          className="relative z-10 h-16 w-16 bg-primary rounded-full flex items-center justify-center shadow-xl shadow-brand-200">
+          className="relative z-10 h-16 w-16 bg-[#1a6e2e] rounded-full flex items-center justify-center border border-transparent">
           <Search size={28} className="text-white" />
         </motion.div>
 
@@ -302,8 +302,8 @@ const LiveTrackingMap = memo(({
         <motion.div
           animate={{ y: [0, -4, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="relative z-10 bg-white px-4 py-2 rounded-full shadow-md border border-brand-100 flex items-center gap-2">
-          <div className="h-2 w-2 bg-brand-500 rounded-full animate-pulse" />
+          className="relative z-10 bg-white px-4 py-2 rounded-full border border-[#1a6e2e]/20 flex items-center gap-2">
+          <div className="h-2 w-2 bg-[#1a6e2e] rounded-full animate-pulse" />
           <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">
             {status === "confirmed"
               ? "Order Confirmed · Assigning Rider"
@@ -338,13 +338,13 @@ const LiveTrackingMap = memo(({
   if (!isLoaded) {
     return (
       <div className="relative w-full h-[350px] bg-slate-50 rounded-b-[2rem] flex items-center justify-center">
-        <Loader2 className="animate-spin text-brand-600" size={28} />
+        <Loader2 className="animate-spin text-[#1a6e2e]" size={28} />
       </div>
     );
   }
 
   return (
-    <div className="relative w-full h-[350px] bg-[#E5E3DF] overflow-hidden rounded-b-[2rem] shadow-md border-b border-gray-200">
+    <div className="relative w-full h-[350px] bg-[#E5E3DF] overflow-hidden rounded-b-[2rem] border-b border-[#1a6e2e]/20">
       {/* Google Map */}
       <GoogleMap
         mapContainerStyle={containerStyle}
@@ -391,7 +391,7 @@ const LiveTrackingMap = memo(({
           <Polyline
             path={decodedPath}
             options={{
-              strokeColor: "var(--primary)",
+              strokeColor: "#1a6e2e",
               strokeOpacity: 0.8,
               strokeWeight: 4,
               geodesic: false,
@@ -401,7 +401,7 @@ const LiveTrackingMap = memo(({
           <Polyline
             path={[riderLocation, activeTargetLocation]}
             options={{
-              strokeColor: "var(--primary)",
+              strokeColor: "#1a6e2e",
               strokeOpacity: 0.6,
               strokeWeight: 3,
               geodesic: true,
@@ -415,8 +415,8 @@ const LiveTrackingMap = memo(({
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-white/90 backdrop-blur-md rounded-2xl p-3 shadow-lg border border-white/50 flex items-center gap-3">
-          <div className="h-10 w-10 bg-brand-50 rounded-xl flex items-center justify-center text-primary">
+          className="bg-white rounded-2xl p-3 border border-[#1a6e2e]/20 flex items-center gap-3">
+          <div className="h-10 w-10 bg-[#1a6e2e]/10 rounded-xl flex items-center justify-center text-[#1a6e2e]">
             <Clock size={20} strokeWidth={2.5} />
           </div>
           <div>
@@ -430,14 +430,14 @@ const LiveTrackingMap = memo(({
         </motion.div>
         <button
           type="button"
-          className="bg-white/90 backdrop-blur-md rounded-full px-3 py-2 shadow-lg border border-white/50 cursor-pointer hover:bg-white transition-colors flex items-center gap-1.5 text-[10px] font-bold text-slate-700"
+          className="bg-white rounded-full px-3 py-2 border border-[#1a6e2e]/20 cursor-pointer hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-[10px] font-bold text-slate-700"
           onClick={() => {
             if (typeof onOpenInMaps === "function") {
               onOpenInMaps({ riderLocation, destinationLocation });
             }
           }}
         >
-          <MapPin size={14} className="text-primary" />
+          <MapPin size={14} className="text-[#1a6e2e]" />
           Open in Maps
         </button>
       </div>
@@ -448,17 +448,17 @@ const LiveTrackingMap = memo(({
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-lg border border-white/50">
+            className="bg-white rounded-2xl p-3 border border-[#1a6e2e]/20">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="h-10 w-10 rounded-full bg-gray-100 overflow-hidden border-2 border-white shadow-sm">
+                <div className="h-10 w-10 rounded-full bg-gray-100 overflow-hidden border-2 border-[#1a6e2e]/20">
                   <img
                     src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&auto=format&fit=crop&q=60"
                     alt="Rider"
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="absolute -bottom-0.5 -right-0.5 bg-primary text-primary-foreground text-[7px] font-bold px-1 py-0.5 rounded-full flex items-center gap-0.5">
+                <div className="absolute -bottom-0.5 -right-0.5 bg-[#1a6e2e] text-white text-[7px] font-bold px-1 py-0.5 rounded-full flex items-center gap-0.5">
                   4.8 <Star size={5} fill="white" />
                 </div>
               </div>
@@ -470,10 +470,10 @@ const LiveTrackingMap = memo(({
                 </p>
               </div>
               <div className="flex items-center gap-1.5">
-                <button className="h-8 w-8 rounded-full bg-brand-50 flex items-center justify-center text-primary hover:bg-brand-100 transition-colors">
+                <button className="h-8 w-8 rounded-full bg-[#1a6e2e]/10 flex items-center justify-center text-[#1a6e2e] hover:bg-[#1a6e2e]/20 transition-colors">
                   <Phone size={14} />
                 </button>
-                <button className="h-8 w-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 hover:bg-brand-100 transition-colors">
+                <button className="h-8 w-8 rounded-full bg-[#1a6e2e]/10 flex items-center justify-center text-[#1a6e2e] hover:bg-[#1a6e2e]/20 transition-colors">
                   <MessageSquare size={14} />
                 </button>
               </div>
@@ -484,14 +484,14 @@ const LiveTrackingMap = memo(({
 
       {/* Location status indicator */}
       {!riderLocation && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-30 bg-amber-50/95 text-amber-900 text-xs px-3 py-2 rounded-lg border border-amber-200 shadow-sm">
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-30 bg-amber-50 text-amber-900 text-xs px-3 py-2 rounded-lg border border-amber-200">
           Waiting for rider location...
         </div>
       )}
 
       {/* Route cache indicator */}
       {routePolyline && (
-        <div className="absolute bottom-2 right-2 bg-white/95 backdrop-blur px-2 py-1 rounded-md text-[10px] text-slate-600 font-bold border border-slate-200 shadow-sm">
+        <div className="absolute bottom-2 right-2 bg-white px-2 py-1 rounded-md text-[10px] text-slate-600 font-bold border border-slate-200">
           Route cached • Reduced API cost
         </div>
       )}

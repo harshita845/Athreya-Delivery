@@ -26,9 +26,9 @@ const CustomerLayout = ({ children, showHeader: showHeaderProp, fullHeight = fal
         const cleanupPickup = onReturnPickupOtp(() => token, (payload) => {
             console.log('[CustomerLayout] Return Pickup OTP Received:', payload);
             toast.custom((t) => (
-                <div className="bg-white border-2 border-brand-600 rounded-3xl p-5 shadow-2xl animate-in slide-in-from-bottom-full duration-500 max-w-md w-full">
+                <div className="bg-white border-2 border-[#1a6e2e]/20 rounded-3xl p-5 border border-[#1a6e2e]/20 animate-in slide-in-from-bottom-full duration-500 max-w-md w-full">
                     <div className="flex items-start gap-4">
-                        <div className="h-12 w-12 bg-brand-100 rounded-2xl flex items-center justify-center text-brand-600 shrink-0">
+                        <div className="h-12 w-12 bg-[#1a6e2e]/10 rounded-2xl flex items-center justify-center text-[#1a6e2e] shrink-0">
                             <ShieldCheck size={28} />
                         </div>
                         <div className="flex-1">
@@ -37,7 +37,7 @@ const CustomerLayout = ({ children, showHeader: showHeaderProp, fullHeight = fal
                                 Share this code with the delivery partner to confirm your return pickup.
                             </p>
                             <div className="flex items-center gap-2">
-                                <span className="text-3xl font-black tracking-[0.2em] text-brand-600 bg-brand-50 px-4 py-2 rounded-xl border border-brand-100">
+                                <span className="text-3xl font-black tracking-[0.2em] text-[#1a6e2e] bg-[#1a6e2e]/10 px-4 py-2 rounded-xl border border-[#1a6e2e]/20">
                                     {payload.otp}
                                 </span>
                             </div>
@@ -50,7 +50,7 @@ const CustomerLayout = ({ children, showHeader: showHeaderProp, fullHeight = fal
         const cleanupDrop = onReturnDropOtp(() => token, (payload) => {
             console.log('[CustomerLayout] Return Drop OTP Received:', payload);
             toast.custom((t) => (
-                <div className="bg-white border-2 border-green-600 rounded-3xl p-5 shadow-2xl animate-in slide-in-from-bottom-full duration-500 max-w-md w-full">
+                <div className="bg-white border-2 border-green-600 rounded-3xl p-5 border border-[#1a6e2e]/20 animate-in slide-in-from-bottom-full duration-500 max-w-md w-full">
                     <div className="flex items-start gap-4">
                         <div className="h-12 w-12 bg-green-100 rounded-2xl flex items-center justify-center text-green-600 shrink-0">
                             <Package size={28} />
@@ -99,7 +99,7 @@ const CustomerLayout = ({ children, showHeader: showHeaderProp, fullHeight = fal
     const finalShowFooterMessageMobile = showFooterMessage && !isProductDetailOpen;
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+        <div className="customer-panel min-h-screen bg-white flex flex-col font-sans">
             {/* Header logic: Always show on desktop if showHeader is true. On mobile, hide if product detail is open. */}
             {showHeader && (
                 <>

@@ -29,7 +29,7 @@ const OffersPage = () => {
 
   const styleToBg = {
     blue: "bg-black ",
-    green: "bg-primary",
+    green: "bg-[#1a6e2e]",
     orange: "bg-orange-500",
   };
   const iconFor = (icon) => {
@@ -50,7 +50,7 @@ const OffersPage = () => {
         transition={{ duration: 0.5 }}
         className="mb-10 text-left"
       >
-        <h1 className="text-3xl md:text-5xl font-black tracking-tight text-primary mb-3">
+        <h1 className="text-3xl md:text-5xl font-black tracking-tight text-[#1a6e2e] mb-3">
           Best Offers for You
         </h1>
         <p className="text-gray-500 text-lg font-medium">
@@ -74,14 +74,14 @@ const OffersPage = () => {
             {sortedLegacyOffers.map((offer) => (
               <div
                 key={offer._id}
-                className="relative overflow-hidden rounded-3xl group cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+                className="relative overflow-hidden rounded-3xl group cursor-pointer border border-[#1a6e2e]/20 transition-all duration-500 hover:-translate-y-2"
               >
                 <div
                   className={`${styleToBg[offer.style] || styleToBg.blue
                     } p-8 h-full flex flex-col justify-between text-white relative z-10`}
                 >
                   <div>
-                    <div className="bg-white/20 p-3 rounded-2xl w-fit mb-6 backdrop-blur-md">
+                    <div className="bg-white/20 p-3 rounded-2xl w-fit mb-6 ">
                       {iconFor(offer.icon)}
                     </div>
                     <h2 className="text-3xl font-black mb-3 leading-tight">
@@ -102,7 +102,7 @@ const OffersPage = () => {
                         </span>
                       )}
                     </div>
-                    <button className="h-12 w-12 bg-white rounded-full flex items-center justify-center text-primary transform transition-transform group-hover:rotate-[-45deg]">
+                    <button className="h-12 w-12 bg-white rounded-full flex items-center justify-center text-[#1a6e2e] transform transition-transform group-hover:rotate-[-45deg]">
                       <ArrowRight size={24} />
                     </button>
                   </div>
