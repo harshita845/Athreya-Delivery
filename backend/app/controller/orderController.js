@@ -29,7 +29,11 @@ import {
 import {
   generateOrderPaymentBreakdown,
   hydrateOrderItems,
+  calculateCustomerDeliveryFee,
+  calculateRiderPayout,
 } from "../services/finance/pricingService.js";
+import { getOrCreateFinanceSettings } from "../services/finance/financeSettingsService.js";
+import { generateUniquePublicOrderId } from "../services/orderIdService.js";
 import { distanceMeters } from "../utils/geoUtils.js";
 import {
   fetchAvailableOrdersForDelivery,
@@ -211,6 +215,107 @@ export const placeOrder = async (req, res) => {
     return handleResponse(res, error.statusCode || 500, error.message);
   }
 };
+
+/* ===============================
+   PLACE CUSTOM PICKUP ORDER
+================================ */
+export const placeCustomPickupOrder = async (req, res) => {
+  try {
+    const customerId = req.user?.id;
+    if (!customerId) {
+      return handleResponse(res, 401, "Unauthorized");
+    }
+
+    const { sellerId, parcelDetails, parcelImage, pickupType, billAmount, address } = req.body || {};
+
+    if (!sellerId) return handleResponse(res, 400, "Seller (shop) is required");
+    if (!parcelDetails && !parcelImage) return handleResponse(res, 400, "Parcel details or image is required");
+    if (!pickupType || !["pay_and_collect", "prepaid"].includes(pickupType)) {
+      return handleResponse(res, 400, "Invalid pickup type");
+    }
+    if (!address || !address.location) return handleResponse(res, 400, "Delivery address is required");
+
+    const seller = await Seller.findById(sellerId).lean();
+    if (!seller) return handleResponse(res, 400, "Invalid Seller ID");
+
+    // Distance & delivery fee calculation
+    const distanceKm = await deriveDistanceKm({ sellerId, addressLocation: address.location });
+    const settings = await getOrCreateFinanceSettings();
+    const deliveryPricing = calculateCustomerDeliveryFee(distanceKm, settings);
+    const riderPricing = calculateRiderPayout(distanceKm, settings);
+
+    const deliveryFee = deliveryPricing.deliveryFeeCharged;
+    const billAmt = pickupType === "pay_and_collect" ? Number(billAmount || 0) : 0;
+    const grandTotal = deliveryFee + billAmt;
+
+    const orderId = await generateUniquePublicOrderId();
+    const now = new Date();
+    const sellerTimeoutMs = DEFAULT_SELLER_TIMEOUT_MS();
+
+    const orderObj = new Order({
+      orderId,
+      customer: customerId,
+      seller: sellerId,
+      orderType: "custom_pickup",
+      workflowVersion: 2,
+      parcelDetails,
+      parcelImage,
+      pickupType,
+      billAmount: billAmt,
+      address,
+      status: "pending",
+      workflowStatus: WORKFLOW_STATUS.SELLER_PENDING,
+      sellerPendingExpiresAt: new Date(now.getTime() + sellerTimeoutMs),
+      paymentMode: req.body.paymentMode || "COD",
+      paymentStatus: req.body.paymentMode === "ONLINE" ? "CREATED" : "PENDING_CASH_COLLECTION",
+      pricing: {
+        subtotal: 0,
+        deliveryFee: deliveryFee,
+        platformFee: 0,
+        gst: 0,
+        total: grandTotal,
+      },
+      paymentBreakdown: {
+        productSubtotal: 0,
+        deliveryFeeCharged: deliveryFee,
+        handlingFeeCharged: 0,
+        tipTotal: 0,
+        discountTotal: 0,
+        taxTotal: 0,
+        grandTotal: grandTotal,
+        sellerPayoutTotal: 0,
+        adminProductCommissionTotal: 0,
+        riderPayoutBase: riderPricing.riderPayoutBase,
+        riderPayoutDistance: riderPricing.riderPayoutDistance,
+        riderPayoutBonus: riderPricing.riderPayoutBonus,
+        riderTipAmount: 0,
+        riderPayoutTotal: riderPricing.riderPayoutBase + riderPricing.riderPayoutDistance + riderPricing.riderPayoutBonus,
+        platformLogisticsMargin: deliveryFee - (riderPricing.riderPayoutBase + riderPricing.riderPayoutDistance),
+        platformTotalEarning: deliveryFee - (riderPricing.riderPayoutBase + riderPricing.riderPayoutDistance),
+        codCollectedAmount: req.body.paymentMode === "COD" ? grandTotal : 0,
+        codRemittedAmount: 0,
+        codPendingAmount: req.body.paymentMode === "COD" ? grandTotal : 0,
+        walletAmount: 0,
+        distanceKmActual: distanceKm,
+        distanceKmRounded: Math.ceil(distanceKm),
+      }
+    });
+
+    await orderObj.save();
+
+    await afterPlaceOrderV2(orderObj);
+
+    return handleResponse(res, 201, "Custom pickup order placed successfully", { order: orderObj });
+  } catch (error) {
+    logger.error("Place Custom Pickup Order Error", {
+      scope: "placeCustomPickupOrder",
+      customerId: req.user?.id,
+      error,
+    });
+    return handleResponse(res, error.statusCode || 500, error.message);
+  }
+};
+
 /* ===============================
    GET CUSTOMER ORDERS
 ================================ */

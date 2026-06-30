@@ -116,7 +116,7 @@ export const getShopById = async (req, res) => {
       return handleResponse(res, 404, "Shop not found");
     }
 
-    const seller = await Seller.findOne({ _id: id, isActive: true, isVerified: true });
+    const seller = await Seller.findOne({ _id: id, isActive: true, isOpen: true, isVerified: true });
     
     if (!seller) {
       return handleResponse(res, 404, "Shop not found");
@@ -155,6 +155,11 @@ export const getShopProducts = async (req, res) => {
         });
       }
       return handleResponse(res, 404, "Shop not found");
+    }
+
+    const seller = await Seller.findOne({ _id: id, isActive: true, isOpen: true, isVerified: true }).lean();
+    if (!seller) {
+      return handleResponse(res, 404, "Shop not found or currently offline");
     }
 
     const query = { sellerId: id, status: "active" };
@@ -333,6 +338,7 @@ export const getSimilarShops = async (req, res) => {
       _id: { $ne: mongoose.Types.ObjectId.isValid(id) ? new mongoose.Types.ObjectId(id) : null },
       category: category,
       isActive: true,
+      isOpen: true,
       isVerified: true
     };
 
