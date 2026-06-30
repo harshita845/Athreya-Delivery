@@ -888,6 +888,7 @@ const CheckoutPage = () => {
             Explore our aisles and fill it with goodies.
           </p>
           <Link
+            to="/"
             className="group relative inline-flex items-center justify-center px-8 py-4 bg-[#1a6e2e] text-white font-bold rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 w-full sm:w-auto border border-transparent">
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
             <span className="relative flex items-center gap-2 text-lg">

@@ -114,6 +114,30 @@ const ActiveSellers = () => {
   const [lastSyncAt, setLastSyncAt] = useState(null);
   const [refreshTick, setRefreshTick] = useState(0);
   const [selectedSeller, setSelectedSeller] = useState(null);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+
+  const handleApproveShop = async (sellerId) => {
+    try {
+      await adminApi.approveSeller(sellerId);
+      toast.success('Seller approved successfully');
+      setRefreshTick(val => val + 1);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to approve seller");
+    }
+  };
+
+  const handleUpdateStatusRow = async (seller, newStatus) => {
+    const actionText = newStatus ? "Activate" : "Deactivate";
+    if (!window.confirm(`Are you sure you want to ${actionText.toLowerCase()} this seller?`)) return;
+
+    try {
+      await adminApi.updateSeller(seller.id || seller._id, { isActive: newStatus });
+      toast.success(`Seller ${actionText.toLowerCase()}d successfully`);
+      setRefreshTick(val => val + 1);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to update seller status");
+    }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -215,6 +239,26 @@ const ActiveSellers = () => {
     ],
     [stats],
   );
+
+  const handleToggleStatus = async () => {
+    if (!selectedSeller) return;
+    
+    const newStatus = !selectedSeller.isActive;
+    const actionText = newStatus ? "Activate" : "Deactivate";
+    if (!window.confirm(`Are you sure you want to ${actionText.toLowerCase()} this seller?`)) return;
+
+    setIsUpdatingStatus(true);
+    try {
+      await adminApi.updateSeller(selectedSeller.id || selectedSeller._id, { isActive: newStatus });
+      toast.success(`Seller ${actionText.toLowerCase()}d successfully`);
+      setSelectedSeller(null);
+      setRefreshTick(val => val + 1);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to update seller status");
+    } finally {
+      setIsUpdatingStatus(false);
+    }
+  };
 
   return (
     <div className="ds-section-spacing animate-in fade-in slide-in-from-bottom-2 duration-700 pb-16">
@@ -335,11 +379,11 @@ const ActiveSellers = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/50 border-b border-slate-100">
-                <th className="ds-table-header-cell px-6">Store Entity</th>
-                <th className="ds-table-header-cell px-6">Performance</th>
-                <th className="ds-table-header-cell px-6">Business Intel</th>
-                <th className="ds-table-header-cell px-6">Status</th>
-                <th className="ds-table-header-cell px-6 text-right">Actions</th>
+                <th className="ds-table-header-cell px-6 w-[30%]">Store Entity</th>
+                <th className="ds-table-header-cell px-6 w-[15%]">Performance</th>
+                <th className="ds-table-header-cell px-6 w-[15%]">Business Intel</th>
+                <th className="ds-table-header-cell px-6 w-[10%]">Status</th>
+                <th className="ds-table-header-cell px-6 text-left w-[30%]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -453,10 +497,10 @@ const ActiveSellers = () => {
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-2">
                         <Badge
-                          variant="success"
+                          variant={seller.isActive ? "success" : "default"}
                           className="w-fit text-[8px] font-black uppercase tracking-widest"
                         >
-                          Active
+                          {seller.isActive ? "Active" : "Inactive"}
                         </Badge>
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                           Last order: {seller.lastOrderLabel || "No orders yet"}
@@ -464,14 +508,32 @@ const ActiveSellers = () => {
                       </div>
                     </td>
 
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-6 py-4 text-left">
+                      <div className="flex items-center justify-start gap-2">
+                        <button
+                          onClick={() => handleApproveShop(seller.id || seller._id)}
+                          className="px-3 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-bold hover:bg-emerald-600 hover:text-white transition-all shadow-sm ring-1 ring-emerald-100"
+                        >
+                          APPROVE
+                        </button>
+                        <button
+                          onClick={() => handleUpdateStatusRow(seller, true)}
+                          className="px-3 py-2 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-bold hover:bg-blue-600 hover:text-white transition-all shadow-sm ring-1 ring-blue-100"
+                        >
+                          ACTIVATE
+                        </button>
+                        <button
+                          onClick={() => handleUpdateStatusRow(seller, false)}
+                          className="px-3 py-2 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-bold hover:bg-rose-600 hover:text-white transition-all shadow-sm ring-1 ring-rose-100"
+                        >
+                          DEACTIVATE
+                        </button>
                         <button
                           onClick={() => setSelectedSeller(seller)}
-                          className="px-4 py-2.5 bg-slate-900 text-white rounded-xl text-[10px] font-bold hover:bg-slate-800 transition-all shadow-lg flex items-center gap-2"
+                          className="px-3 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-bold hover:bg-slate-800 transition-all shadow-lg flex items-center gap-1.5"
                         >
                           <HiOutlineEye className="h-3.5 w-3.5" />
-                          VIEW PROFILE
+                          VIEW
                         </button>
                       </div>
                     </td>
@@ -546,10 +608,10 @@ const ActiveSellers = () => {
                     </p>
                     <div className="mt-2 flex items-center gap-2">
                       <Badge
-                        variant="success"
+                        variant={selectedSeller.isActive ? "success" : "default"}
                         className="text-[8px] font-black uppercase tracking-widest"
                       >
-                        Active
+                        {selectedSeller.isActive ? "Active" : "Inactive"}
                       </Badge>
                       <Badge
                         variant="primary"
@@ -681,6 +743,13 @@ const ActiveSellers = () => {
                   </div>
 
                   <div className="mt-6 flex items-center justify-end gap-3">
+                    <button
+                      onClick={handleToggleStatus}
+                      disabled={isUpdatingStatus}
+                      className={cn("px-4 py-2.5 border rounded-xl text-xs font-bold transition-all shadow-sm", selectedSeller.isActive ? "bg-rose-50 text-rose-600 border-rose-100 hover:bg-rose-100" : "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100")}
+                    >
+                      {isUpdatingStatus ? "Updating..." : selectedSeller.isActive ? "Deactivate Shop" : "Activate Shop"}
+                    </button>
                     <button
                       onClick={() => setSelectedSeller(null)}
                       className="px-4 py-2.5 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-200 transition-all"

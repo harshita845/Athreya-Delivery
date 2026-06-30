@@ -105,6 +105,7 @@ const OrdersList = () => {
                     customer: o.customer?.name || 'Unknown',
                     seller: o.seller?.shopName || 'Unknown',
                     items: o.items?.length || 0,
+                    orderType: o.orderType || 'regular',
                     amount: o.pricing?.total || 0,
                     status: getLegacyStatusFromOrder(o),
                     workflowStatus: o.workflowStatus,
@@ -395,9 +396,15 @@ const OrdersList = () => {
                                                     <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-all text-slate-400" />
                                                 </h4>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <Badge variant="outline" className="text-[9px] font-bold border-slate-200 text-slate-400 py-0.5">
-                                                        {order.items} {order.items > 1 ? 'Items' : 'Item'}
-                                                    </Badge>
+                                                    {order.orderType === 'custom_pickup' ? (
+                                                        <Badge className="bg-fuchsia-100 text-fuchsia-750 hover:bg-fuchsia-200 border-none text-[9px] font-bold py-0.5">
+                                                            Parcel Pickup
+                                                        </Badge>
+                                                    ) : (
+                                                        <Badge variant="outline" className="text-[9px] font-bold border-slate-200 text-slate-400 py-0.5">
+                                                            {order.items} {order.items > 1 ? 'Items' : 'Item'}
+                                                        </Badge>
+                                                    )}
                                                     <span className="text-[10px] font-bold text-slate-300">•</span>
                                                     <span className="text-[10px] font-bold text-slate-400">{order.date}</span>
                                                 </div>

@@ -33,7 +33,7 @@ const matchesOrderIdentifier = (payloadOrderId, identifiers = []) => {
     .includes(normalizedPayloadId);
 };
 
-const DeliveryOtpDisplay = ({ orderId, checkoutGroupId = null }) => {
+const DeliveryOtpDisplay = ({ orderId, checkoutGroupId = null, initialOtp = null, initialOtpExpiresAt = null }) => {
   const [otpData, setOtpData] = useState(null);
   const [isDelivered, setIsDelivered] = useState(false);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
@@ -67,6 +67,19 @@ const DeliveryOtpDisplay = ({ orderId, checkoutGroupId = null }) => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
+
+  // Initialize and sync with initialOtp from parent props (REST API fallback)
+  useEffect(() => {
+    if (initialOtp) {
+      setOtpData({
+        otp: initialOtp,
+        expiresAt: initialOtpExpiresAt || new Date(Date.now() + 600000).toISOString(),
+        deliveryPersonNearby: true,
+      });
+      setRemainingSeconds(calculateRemainingTime(initialOtpExpiresAt || new Date(Date.now() + 600000).toISOString()));
+      setIsDelivered(false);
+    }
+  }, [initialOtp, initialOtpExpiresAt]);
 
   // Set up Socket.IO listeners for OTP events
   useEffect(() => {
