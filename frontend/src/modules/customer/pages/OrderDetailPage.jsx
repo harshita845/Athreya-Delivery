@@ -928,6 +928,8 @@ const OrderDetailPage = () => {
         <DeliveryOtpDisplay
           orderId={order?.orderId || orderId}
           checkoutGroupId={order?.checkoutGroupId || orderId}
+          initialOtp={order?.deliveryOtp}
+          initialOtpExpiresAt={order?.deliveryOtpExpiresAt}
         />
 
         {/* Delivery Partner Card - Redesigned */}
@@ -1042,39 +1044,83 @@ const OrderDetailPage = () => {
           transition={{ delay: 0.25 }}
           className="bg-white rounded-3xl p-5 border border-[#1a6e2e]/20"
         >
-          <h3 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <Package size={18} className="text-slate-400" />
-            Order Items
-          </h3>
-          <div className="space-y-3">
-            {order.items.map((item, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors">
-                <div className="h-14 w-14 bg-slate-50 rounded-xl overflow-hidden flex-shrink-0 border border-slate-100">
-                  <img
-                    src={applyCloudinaryTransform(item.image)}
-                    alt={item.name}
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-slate-800 text-sm mb-0.5 truncate">
-                    {item.name}
-                  </h4>
-                  <p className="text-slate-500 text-xs font-medium">
-                    Qty: {item.quantity}
-                  </p>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <p className="font-bold text-slate-900">
-                    ₹{item.price * item.quantity}
-                  </p>
+          {order.orderType === "custom_pickup" ? (
+            <>
+              <h3 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <Package size={18} className="text-slate-400" />
+                Parcel Details
+              </h3>
+              <div className="space-y-4">
+                {order.parcelDetails && (
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Items List / Details</p>
+                    <p className="text-sm font-semibold text-slate-800 leading-relaxed whitespace-pre-wrap">
+                      {order.parcelDetails}
+                    </p>
+                  </div>
+                )}
+                {order.parcelImage && (
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Order Image / Screenshot</p>
+                    <div className="max-w-xs rounded-2xl overflow-hidden ring-1 ring-slate-100 shadow-md">
+                      <img src={order.parcelImage} alt="Order proof" className="w-full object-cover max-h-64" />
+                    </div>
+                  </div>
+                )}
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pickup Type</p>
+                    <p className="text-sm font-black text-slate-900 mt-0.5">
+                      {order.pickupType === "pay_and_collect" ? "Rider pays shop bill" : "Prepaid parcel"}
+                    </p>
+                  </div>
+                  {order.pickupType === "pay_and_collect" && (
+                    <div className="text-right">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Bill Amount</p>
+                      <p className="text-sm font-black text-slate-900 mt-0.5">₹{order.billAmount}</p>
+                    </div>
+                  )}
                 </div>
               </div>
-            ))}
-          </div>
+            </>
+          ) : (
+            <>
+              <h3 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <Package size={18} className="text-slate-400" />
+                Order Items
+              </h3>
+              <div className="space-y-3">
+                {order.items.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors"
+                  >
+                    <div className="h-14 w-14 bg-slate-50 rounded-xl overflow-hidden flex-shrink-0 border border-slate-100">
+                      <img
+                        src={applyCloudinaryTransform(item.image)}
+                        alt={item.name}
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-slate-800 text-sm mb-0.5 truncate">
+                        {item.name}
+                      </h4>
+                      <p className="text-slate-500 text-xs font-medium">
+                        Qty: {item.quantity}
+                      </p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <p className="font-bold text-slate-900">
+                        ₹{item.price * item.quantity}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </motion.div>
 
         {/* Bill Summary - Cleaner Design */}

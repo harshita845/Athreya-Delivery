@@ -1,6 +1,7 @@
 import express from "express";
 import {
   placeOrder,
+  placeCustomPickupOrder,
   getMyOrders,
   getOrderDetails,
   cancelOrder,
@@ -65,6 +66,12 @@ router.post(
   verifyToken,
   allowRoles("customer", "user", "admin"),
   createOrderWithFinancialSnapshot,
+);
+router.post(
+  "/custom-pickup",
+  verifyToken,
+  allowRoles("customer", "user", "admin"),
+  placeCustomPickupOrder,
 );
 router.post(
   "/:id/payment/verify-online",

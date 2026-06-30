@@ -32,6 +32,8 @@ const Topbar = ({ onMenuClick }) => {
     const [unreadCount, setUnreadCount] = React.useState(0);
     const [showNotifications, setShowNotifications] = React.useState(false);
     const notificationRef = React.useRef(null);
+    const [isShopOpen, setIsShopOpen] = React.useState(false);
+    const [isShopOpenLoading, setIsShopOpenLoading] = React.useState(true);
 
     const isSeller = location.pathname.startsWith('/seller');
     const isAdmin = location.pathname.startsWith('/admin');
@@ -68,6 +70,28 @@ const Topbar = ({ onMenuClick }) => {
             console.error("Notif Fetch Error:", error);
         }
     }, []);
+
+    React.useEffect(() => {
+        if (isSeller) {
+            sellerApi.getProfile().then(res => {
+                if (res.data?.success && res.data?.result) {
+                    setIsShopOpen(res.data.result.isOpen);
+                }
+            }).finally(() => setIsShopOpenLoading(false));
+        }
+    }, [isSeller]);
+
+    const handleToggleShopStatus = async () => {
+        const newState = !isShopOpen;
+        setIsShopOpen(newState);
+        try {
+            await sellerApi.updateProfile({ isOpen: newState });
+            toast.success(`Shop is now ${newState ? 'Online' : 'Offline'}`);
+        } catch (error) {
+            setIsShopOpen(!newState); // revert
+            toast.error("Failed to update shop status");
+        }
+    };
 
     // Event-driven refresh: subscribe to `notification:new` for the
     // current admin/seller and refetch on any in-app delta. The 60s
@@ -201,6 +225,18 @@ const Topbar = ({ onMenuClick }) => {
             </div>
 
             <div className="flex items-center space-x-4">
+                {isSeller && !isShopOpenLoading && (
+                    <div className="hidden sm:flex items-center space-x-2 mr-2 bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-100">
+                        <span className={cn("h-2.5 w-2.5 rounded-full", isShopOpen ? "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse" : "bg-gray-300")}></span>
+                        <span className="text-xs font-bold text-gray-700">{isShopOpen ? 'Online' : 'Offline'}</span>
+                        <button 
+                            onClick={handleToggleShopStatus}
+                            className={cn("ml-2 relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1", isShopOpen ? "bg-green-500" : "bg-gray-300")}
+                        >
+                            <span className={cn("inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform", isShopOpen ? "translate-x-4.5" : "translate-x-1")} />
+                        </button>
+                    </div>
+                )}
                 <div className="relative" ref={notificationRef}>
                     <button
                         onClick={() => setShowNotifications(!showNotifications)}

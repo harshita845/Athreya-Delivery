@@ -23,6 +23,7 @@ export const getNearbySellers = async (req, res) => {
     // we'll fetch sellers within a reasonable max distance (e.g. 100km) and then filter.
     const sellers = await Seller.find({
       isActive: true,
+      isOpen: true,
       isVerified: true,
       location: {
         $near: {
