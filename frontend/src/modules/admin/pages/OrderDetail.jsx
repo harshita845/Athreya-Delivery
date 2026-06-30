@@ -227,46 +227,83 @@ const OrderDetail = () => {
                                 <Box className="h-4 w-4 text-brand-500" />
                                 Items in Order
                             </h3>
-                            <Badge className="bg-brand-50 text-brand-700 border-none text-[9px] font-black">{order.items.length} ITEMS</Badge>
+                            {order.orderType === 'custom_pickup' ? (
+                                <Badge className="bg-fuchsia-50 text-fuchsia-700 border-none text-[9px] font-black">PARCEL PICKUP</Badge>
+                            ) : (
+                                <Badge className="bg-brand-50 text-brand-700 border-none text-[9px] font-black">{order.items?.length || 0} ITEMS</Badge>
+                            )}
                         </div>
-                        <div className="p-0 overflow-x-auto">
-                            <table className="w-full text-left border-collapse">
-                                <thead>
-                                    <tr className="bg-slate-50/50">
-                                        <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Product Node</th>
-                                        <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Unit Price</th>
-                                        <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Qty</th>
-                                        <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Aggregate</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-50">
-                                    {order.items.map((item) => (
-                                        <tr key={item._id} className="group hover:bg-slate-50/30 transition-all">
-                                            <td className="px-6 py-5">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="h-14 w-14 bg-slate-50 rounded-2xl flex items-center justify-center ds-h1 shadow-inner border border-slate-100 group-hover:scale-110 transition-transform overflow-hidden">
-                                                        {item.image ? (
-                                                            <img src={item.image} alt="" className="w-full h-full object-cover" />
-                                                        ) : (
-                                                            <Package className="h-6 w-6 text-slate-200" />
-                                                        )}
-                                                    </div>
-                                                    <div>
-                                                        <h4 className="text-sm font-black text-slate-900">{item.name}</h4>
-                                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">ID: {item.product?._id || item.product}</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-5 text-center text-sm font-bold text-slate-600">₹{item.price}</td>
-                                            <td className="px-6 py-5 text-center">
-                                                <span className="bg-slate-100 px-3 py-1 rounded-lg text-xs font-black text-slate-700">x{item.quantity}</span>
-                                            </td>
-                                            <td className="px-6 py-5 text-right text-sm font-black text-slate-900">₹{item.price * item.quantity}</td>
+                        {order.orderType === 'custom_pickup' ? (
+                            <div className="p-6 space-y-5 bg-white">
+                                <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Parcel Details / Description</p>
+                                    <p className="text-sm font-semibold text-slate-800 leading-relaxed whitespace-pre-wrap">{order.parcelDetails || "No details provided"}</p>
+                                </div>
+                                {order.parcelImage && (
+                                    <div>
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Order Screenshot / Image</p>
+                                        <div className="max-w-md rounded-2xl overflow-hidden ring-1 ring-slate-200 shadow-sm">
+                                            <img src={order.parcelImage} alt="Order snapshot" className="w-full object-cover max-h-80" />
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="p-4 bg-amber-50 ring-1 ring-amber-100/50 rounded-2xl flex items-center justify-between text-amber-800">
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">Collection details</p>
+                                        <p className="text-xs font-bold mt-0.5">
+                                            {order.pickupType === "pay_and_collect"
+                                                ? "Rider will pay bill in cash upon arrival"
+                                                : "Prepaid parcel (No rider payment required)"}
+                                        </p>
+                                    </div>
+                                    {order.pickupType === "pay_and_collect" && (
+                                        <div className="text-right">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">Bill Amount</p>
+                                            <p className="text-sm font-black">₹{order.billAmount}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="p-0 overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-slate-50/50">
+                                            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Product Node</th>
+                                            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Unit Price</th>
+                                            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Qty</th>
+                                            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Aggregate</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-50">
+                                        {order.items.map((item) => (
+                                            <tr key={item._id} className="group hover:bg-slate-50/30 transition-all">
+                                                <td className="px-6 py-5">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="h-14 w-14 bg-slate-50 rounded-2xl flex items-center justify-center ds-h1 shadow-inner border border-slate-100 group-hover:scale-110 transition-transform overflow-hidden">
+                                                            {item.image ? (
+                                                                <img src={item.image} alt="" className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <Package className="h-6 w-6 text-slate-200" />
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <h4 className="text-sm font-black text-slate-900">{item.name}</h4>
+                                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">ID: {item.product?._id || item.product}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-5 text-center text-sm font-bold text-slate-600">₹{item.price}</td>
+                                                <td className="px-6 py-5 text-center">
+                                                    <span className="bg-slate-100 px-3 py-1 rounded-lg text-xs font-black text-slate-700">x{item.quantity}</span>
+                                                </td>
+                                                <td className="px-6 py-5 text-right text-sm font-black text-slate-900">₹{item.price * item.quantity}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
                         <div className="p-4 bg-slate-50/50 flex flex-col items-end gap-3 text-right">
                             <div className="flex items-center justify-between w-full max-w-[240px]">
                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Subtotal</span>
@@ -302,24 +339,226 @@ const OrderDetail = () => {
                         </div>
                     </Card>
 
-                    {/* Logistical Nodes */}
+                    {/* Logistical State & Complete Order Timeline */}
                     <Card className="border-none shadow-xl ring-1 ring-slate-100 bg-white rounded-xl p-6">
-                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-8 flex items-center gap-3">
+                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-3">
                             <Navigation className="h-4 w-4 text-brand-500" />
-                            Logistical Real-time State
+                            Logistical Tracking & Timeline
                         </h3>
-                        <div className="space-y-6 relative ml-4">
+
+                        {/* Quick Tracking Status Blocks */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                            <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl text-left">
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Rider Assignment</p>
+                                <p className="text-xs font-bold text-slate-800">
+                                    {order.deliveryBoy ? "Assigned" : "Searching..."}
+                                </p>
+                                {order.assignedAt && (
+                                    <p className="text-[9px] text-slate-400 font-semibold mt-1">
+                                        {new Date(order.assignedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl text-left">
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Pickup Status</p>
+                                <p className="text-xs font-bold text-slate-800">
+                                    {order.pickupConfirmedAt ? "Picked Up" : order.outForDeliveryAt ? "In Transit" : "Pending Pickup"}
+                                </p>
+                                {order.pickupConfirmedAt && (
+                                    <p className="text-[9px] text-slate-400 font-semibold mt-1">
+                                        {new Date(order.pickupConfirmedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl text-left">
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Payment Status</p>
+                                <span className={cn(
+                                    "inline-block text-[10px] font-black uppercase tracking-wider rounded px-1.5 py-0.5 mt-0.5",
+                                    order.paymentStatus === "PAID" || order.payment?.status === "completed"
+                                        ? "bg-brand-50 text-brand-700"
+                                        : "bg-amber-50 text-amber-700"
+                                )}>
+                                    {order.paymentStatus || order.payment?.status || "PENDING"}
+                                </span>
+                                <p className="text-[9px] text-slate-400 font-semibold mt-1 uppercase tracking-widest">
+                                    {order.paymentMode || order.payment?.method || "COD"}
+                                </p>
+                            </div>
+
+                            <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl text-left">
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Delivery Status</p>
+                                <p className="text-xs font-bold text-slate-800">
+                                    {order.status === "delivered" ? "Completed" : "In Transit"}
+                                </p>
+                                {(order.deliveredAt || order.delivered_at) && (
+                                    <p className="text-[9px] text-slate-400 font-semibold mt-1">
+                                        {new Date(order.deliveredAt || order.delivered_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Interactive Timeline */}
+                        <div className="space-y-6 relative ml-4 text-left">
                             <div className="absolute top-0 bottom-0 left-[7.5px] w-0.5 bg-slate-100" />
+                            
+                            {/* Step 1: Order Placed */}
                             <div className="flex gap-6 relative">
                                 <div className="h-4 w-4 rounded-full ring-4 ring-white z-10 mt-1 bg-brand-500 shadow-lg shadow-brand-200" />
-                                <div className="flex-1 pb-4">
+                                <div className="flex-1 pb-4 border-b border-slate-50">
                                     <div className="flex items-center justify-between mb-1">
                                         <h4 className="text-xs font-black uppercase tracking-tight text-slate-900">
-                                            Status: {order.status.replace(/_/g, ' ')}
+                                            Order Placed
                                         </h4>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase">{new Date(order.updatedAt).toLocaleTimeString()}</span>
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase">
+                                            {new Date(order.createdAt).toLocaleString()}
+                                        </span>
                                     </div>
-                                    <p className="text-[11px] font-bold text-slate-400 leading-relaxed italic">"System verified current logistical state as {order.status}."</p>
+                                    <p className="text-[11px] font-bold text-slate-400 leading-relaxed">Customer initiated checkout and submitted order protocol.</p>
+                                </div>
+                            </div>
+
+                            {/* Step 2: Order Confirmed (Seller Acceptance) */}
+                            <div className="flex gap-6 relative">
+                                <div className={cn(
+                                    "h-4 w-4 rounded-full ring-4 ring-white z-10 mt-1 shadow-lg",
+                                    order.acceptedAt || order.sellerAcceptedAt ? "bg-brand-500 shadow-brand-200" : "bg-slate-200"
+                                )} />
+                                <div className="flex-1 pb-4 border-b border-slate-50">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <h4 className={cn(
+                                            "text-xs font-black uppercase tracking-tight",
+                                            order.acceptedAt || order.sellerAcceptedAt ? "text-slate-900" : "text-slate-400"
+                                        )}>
+                                            Merchant Confirmation
+                                        </h4>
+                                        {(order.acceptedAt || order.sellerAcceptedAt) && (
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase">
+                                                {new Date(order.acceptedAt || order.sellerAcceptedAt).toLocaleString()}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="text-[11px] font-bold text-slate-400 leading-relaxed">
+                                        {order.acceptedAt || order.sellerAcceptedAt
+                                            ? "Shop node accepted order and finalized preparation workflow."
+                                            : "Awaiting shop node acceptance confirmation."}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Step 3: Rider Assigned */}
+                            <div className="flex gap-6 relative">
+                                <div className={cn(
+                                    "h-4 w-4 rounded-full ring-4 ring-white z-10 mt-1 shadow-lg",
+                                    order.deliveryBoy && order.assignedAt ? "bg-brand-500 shadow-brand-200" : "bg-slate-200"
+                                )} />
+                                <div className="flex-1 pb-4 border-b border-slate-50">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <h4 className={cn(
+                                            "text-xs font-black uppercase tracking-tight",
+                                            order.deliveryBoy && order.assignedAt ? "text-slate-900" : "text-slate-400"
+                                        )}>
+                                            Rider Assignment
+                                        </h4>
+                                        {order.assignedAt && (
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase">
+                                                {new Date(order.assignedAt).toLocaleString()}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="text-[11px] font-bold text-slate-400 leading-relaxed">
+                                        {order.deliveryBoy && order.assignedAt
+                                            ? `Rider "${order.deliveryBoy.name}" successfully assigned to delivery fleet.`
+                                            : "Searching for available delivery agents nearby."}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Step 4: Picked Up / Out for Delivery */}
+                            <div className="flex gap-6 relative">
+                                <div className={cn(
+                                    "h-4 w-4 rounded-full ring-4 ring-white z-10 mt-1 shadow-lg",
+                                    order.pickupConfirmedAt || order.outForDeliveryAt ? "bg-brand-500 shadow-brand-200" : "bg-slate-200"
+                                )} />
+                                <div className="flex-1 pb-4 border-b border-slate-50">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <h4 className={cn(
+                                            "text-xs font-black uppercase tracking-tight",
+                                            order.pickupConfirmedAt || order.outForDeliveryAt ? "text-slate-900" : "text-slate-400"
+                                        )}>
+                                            Picked Up & Out for Delivery
+                                        </h4>
+                                        {(order.pickupConfirmedAt || order.outForDeliveryAt) && (
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase">
+                                                {new Date(order.pickupConfirmedAt || order.outForDeliveryAt).toLocaleString()}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="text-[11px] font-bold text-slate-400 leading-relaxed">
+                                        {order.pickupConfirmedAt || order.outForDeliveryAt
+                                            ? "Rider collected package from seller and is en route to customer."
+                                            : "Awaiting package pickup confirmation from shop location."}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Step 5: Delivered */}
+                            <div className="flex gap-6 relative">
+                                <div className={cn(
+                                    "h-4 w-4 rounded-full ring-4 ring-white z-10 mt-1 shadow-lg",
+                                    order.status === "delivered" ? "bg-brand-500 shadow-brand-200" : "bg-slate-200"
+                                )} />
+                                <div className="flex-1">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <h4 className={cn(
+                                            "text-xs font-black uppercase tracking-tight",
+                                            order.status === "delivered" ? "text-slate-900" : "text-slate-400"
+                                        )}>
+                                            Delivery Completed
+                                        </h4>
+                                        {(order.deliveredAt || order.delivered_at) && (
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase">
+                                                {new Date(order.deliveredAt || order.delivered_at).toLocaleString()}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="text-[11px] font-bold text-slate-400 leading-relaxed">
+                                        {order.status === "delivered"
+                                            ? "Delivery completed successfully via verified handoff handshake."
+                                            : "Awaiting final handoff confirmation from rider."}
+                                    </p>
+                                    {order.status === "delivered" && (
+                                        <div className="mt-3 p-3 bg-brand-50/50 border border-brand-100 rounded-xl space-y-1.5 animate-in fade-in duration-200">
+                                            <p className="text-[9px] font-black text-brand-800 uppercase tracking-widest">
+                                                DELIVERY DOSSIER SUMMARY
+                                            </p>
+                                            <div className="flex justify-between text-[10px] font-bold text-slate-600">
+                                                <span>Items Summary:</span>
+                                                <span className="text-slate-800">
+                                                    {order.orderType === 'custom_pickup' 
+                                                        ? "1 Custom Parcel Pickup" 
+                                                        : `${order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0} items`}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between text-[10px] font-bold text-slate-600">
+                                                <span>Total Amount:</span>
+                                                <span className="text-slate-900 font-black">₹{order.pricing?.total || 0}</span>
+                                            </div>
+                                            <div className="flex justify-between text-[10px] font-bold text-slate-600">
+                                                <span>Payment Status:</span>
+                                                <span className={cn(
+                                                    "text-[9px] font-black uppercase px-1 rounded",
+                                                    order.paymentStatus === "PAID" || order.payment?.status === "completed"
+                                                        ? "bg-brand-100 text-brand-800"
+                                                        : "bg-amber-100 text-amber-800"
+                                                )}>
+                                                    {order.paymentStatus || order.payment?.status || "PENDING"} ({order.paymentMode || order.payment?.method || "COD"})
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -446,8 +685,20 @@ const OrderDetail = () => {
                         <div className="p-4 space-y-6">
                             <div className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl">
                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Protocol Summary</span>
-                                <Badge className={cn("border-none text-[8px] font-black uppercase", order.payment?.status === 'completed' ? 'bg-brand-100 text-brand-700' : 'bg-amber-100 text-amber-700')}>
-                                    {order.payment?.status || 'PENDING'}
+                                <Badge className={cn(
+                                    "border-none text-[8px] font-black uppercase",
+                                    (() => {
+                                        const status = String(order.paymentStatus || order.payment?.status || "").toUpperCase();
+                                        if (status === "PAID" || status === "CASH_COLLECTED" || status === "COMPLETED") {
+                                            return "bg-brand-100 text-brand-700";
+                                        }
+                                        if (status === "REFUNDED") {
+                                            return "bg-rose-100 text-rose-700";
+                                        }
+                                        return "bg-amber-100 text-amber-700";
+                                    })()
+                                )}>
+                                    {(order.paymentStatus || order.payment?.status || 'PENDING').replace(/_/g, ' ')}
                                 </Badge>
                             </div>
                             <div className="flex items-center justify-between px-2">
@@ -459,7 +710,7 @@ const OrderDetail = () => {
                             </div>
                             <div className="flex items-center justify-between px-2">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Gateway Method</span>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{order.payment?.method || 'CASH'}</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{order.paymentMode || order.payment?.method || 'CASH'}</span>
                             </div>
                         </div>
                     </Card>
@@ -556,17 +807,29 @@ const OrderDetail = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {order.items.map((item, idx) => (
-                                        <tr key={idx} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                                    {order.orderType === 'custom_pickup' ? (
+                                        <tr style={{ borderBottom: "1px solid #f1f5f9" }}>
                                             <td style={{ padding: "18px 20px" }}>
-                                                <div style={{ fontSize: "13px", fontWeight: "700", color: "#0f172a" }}>{item.name}</div>
-                                                <div style={{ fontSize: "10px", color: "#94a3b8", marginTop: "4px" }}>Item Ref: {item.product?._id?.slice(-8).toUpperCase() || item._id?.slice(-8).toUpperCase()}</div>
+                                                <div style={{ fontSize: "13px", fontWeight: "700", color: "#0f172a" }}>Custom Parcel Pickup & Delivery</div>
+                                                <div style={{ fontSize: "10px", color: "#94a3b8", marginTop: "4px" }}>Details: {order.parcelDetails || "Prepaid/Pay & Collect parcel"}</div>
                                             </td>
-                                            <td align="center" style={{ padding: "18px 20px", fontSize: "13px", color: "#475569", fontWeight: "700" }}>₹{item.price}</td>
-                                            <td align="center" style={{ padding: "18px 20px", fontSize: "13px", color: "#475569", fontWeight: "800" }}>{item.quantity}</td>
-                                            <td align="right" style={{ padding: "18px 20px", fontSize: "14px", fontWeight: "900", color: "#0f172a" }}>₹{item.price * item.quantity}</td>
+                                            <td align="center" style={{ padding: "18px 20px", fontSize: "13px", color: "#475569", fontWeight: "700" }}>₹{order.billAmount || 0}</td>
+                                            <td align="center" style={{ padding: "18px 20px", fontSize: "13px", color: "#475569", fontWeight: "800" }}>1</td>
+                                            <td align="right" style={{ padding: "18px 20px", fontSize: "14px", fontWeight: "900", color: "#0f172a" }}>₹{order.billAmount || 0}</td>
                                         </tr>
-                                    ))}
+                                    ) : (
+                                        order.items.map((item, idx) => (
+                                            <tr key={idx} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                                                <td style={{ padding: "18px 20px" }}>
+                                                    <div style={{ fontSize: "13px", fontWeight: "700", color: "#0f172a" }}>{item.name}</div>
+                                                    <div style={{ fontSize: "10px", color: "#94a3b8", marginTop: "4px" }}>Item Ref: {item.product?._id?.slice(-8).toUpperCase() || item._id?.slice(-8).toUpperCase()}</div>
+                                                </td>
+                                                <td align="center" style={{ padding: "18px 20px", fontSize: "13px", color: "#475569", fontWeight: "700" }}>₹{item.price}</td>
+                                                <td align="center" style={{ padding: "18px 20px", fontSize: "13px", color: "#475569", fontWeight: "800" }}>{item.quantity}</td>
+                                                <td align="right" style={{ padding: "18px 20px", fontSize: "14px", fontWeight: "900", color: "#0f172a" }}>₹{item.price * item.quantity}</td>
+                                            </tr>
+                                        ))
+                                    )}
                                 </tbody>
                             </table>
                         </div>
