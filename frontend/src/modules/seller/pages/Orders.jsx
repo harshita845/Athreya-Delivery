@@ -106,6 +106,11 @@ const Orders = () => {
                     phone: order.customer?.phone || '',
                     avatar: (order.customer?.name || 'U').charAt(0)
                 },
+                orderType: order.orderType || 'regular',
+                parcelDetails: order.parcelDetails || '',
+                parcelImage: order.parcelImage || '',
+                pickupType: order.pickupType || '',
+                billAmount: order.billAmount || 0,
                 items: (order.items || []).map(item => ({
                     name: item.name,
                     price: item.price,
@@ -849,25 +854,63 @@ const Orders = () => {
                                             </div>
                                         </div>
 
-                                        <h4 className="text-xs font-black text-slate-600 uppercase tracking-widest mb-3 sm:mb-4">Items Ordered ({selectedOrder.items.length})</h4>
-                                        <div className="space-y-3 max-h-52 sm:max-h-64 overflow-y-auto pr-1">
-                                            {selectedOrder.items.map((item, idx) => (
-                                                <div key={idx} className="flex items-center justify-between p-3 bg-white ring-1 ring-slate-100 rounded-2xl group hover:shadow-md transition-all">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="h-12 w-12 rounded-xl overflow-hidden bg-slate-50 ring-1 ring-slate-200">
-                                                            <img src={item.image} alt={item.name} className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-xs font-bold text-slate-900">{item.name}</p>
-                                                            <p className="text-xs font-semibold text-slate-600 mt-0.5">₹{item.price.toFixed(2)} × {item.qty}</p>
+                                        {selectedOrder.orderType === "custom_pickup" ? (
+                                            <div className="space-y-4 mb-4">
+                                                <h4 className="text-xs font-black text-slate-600 uppercase tracking-widest">Custom Parcel Details</h4>
+                                                {selectedOrder.parcelDetails && (
+                                                    <div className="p-3 bg-slate-50 ring-1 ring-slate-100 rounded-2xl">
+                                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Details / List</p>
+                                                        <p className="text-xs font-semibold text-slate-800 whitespace-pre-wrap">{selectedOrder.parcelDetails}</p>
+                                                    </div>
+                                                )}
+                                                {selectedOrder.parcelImage && (
+                                                    <div>
+                                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Order Screenshot</p>
+                                                        <div className="max-w-xs rounded-xl overflow-hidden ring-1 ring-slate-200">
+                                                            <img src={selectedOrder.parcelImage} alt="Order snapshot" className="w-full object-cover max-h-48" />
                                                         </div>
                                                     </div>
-                                                    <div className="text-right">
-                                                        <p className="text-xs font-black text-slate-900">₹{(item.price * item.qty).toFixed(2)}</p>
+                                                )}
+                                                <div className="p-3 bg-amber-50 ring-1 ring-amber-100 rounded-2xl flex items-center justify-between text-amber-800">
+                                                    <div>
+                                                        <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">Collection Payment Mode</p>
+                                                        <p className="text-xs font-bold mt-0.5">
+                                                            {selectedOrder.pickupType === "pay_and_collect"
+                                                                ? "Rider will pay bill in cash upon arrival"
+                                                                : "Prepaid parcel (No rider payment required)"}
+                                                        </p>
                                                     </div>
+                                                    {selectedOrder.pickupType === "pay_and_collect" && (
+                                                        <div className="text-right">
+                                                            <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">Bill Amount</p>
+                                                            <p className="text-sm font-black">₹{selectedOrder.billAmount}</p>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            ))}
-                                        </div>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <h4 className="text-xs font-black text-slate-600 uppercase tracking-widest mb-3 sm:mb-4">Items Ordered ({selectedOrder.items.length})</h4>
+                                                <div className="space-y-3 max-h-52 sm:max-h-64 overflow-y-auto pr-1">
+                                                    {selectedOrder.items.map((item, idx) => (
+                                                        <div key={idx} className="flex items-center justify-between p-3 bg-white ring-1 ring-slate-100 rounded-2xl group hover:shadow-md transition-all">
+                                                            <div className="flex items-center gap-4">
+                                                                <div className="h-12 w-12 rounded-xl overflow-hidden bg-slate-50 ring-1 ring-slate-200">
+                                                                    <img src={item.image} alt={item.name} className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-bold text-slate-900">{item.name}</p>
+                                                                    <p className="text-xs font-semibold text-slate-600 mt-0.5">₹{item.price.toFixed(2)} × {item.qty}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div className="text-right">
+                                                                <p className="text-xs font-black text-slate-900">₹{(item.price * item.qty).toFixed(2)}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
 
                                     {/* Modal Footer */}

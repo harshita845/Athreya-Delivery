@@ -971,55 +971,111 @@ const OrderDetails = () => {
         </AnimatePresence>
 
         <Card className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-          <motion.div
-            className="p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors"
-            onClick={() => setItemsExpanded(!itemsExpanded)}
-          >
-            <div className="flex items-center font-bold text-gray-800">
-              <div className="p-2 bg-purple-100 text-purple-600 rounded-lg mr-3">
-                <Package size={20} />
+          {order.orderType === "custom_pickup" ? (
+            <div className="p-4 bg-gray-50/50 space-y-4">
+              <div className="flex items-center font-bold text-gray-800 mb-2">
+                <div className="p-2 bg-purple-100 text-purple-600 rounded-lg mr-3">
+                  <Package size={20} />
+                </div>
+                <div>
+                  <span>Custom Pickup Details</span>
+                  <span className="ml-2 text-xs font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                    {order.pickupType === "pay_and_collect" ? "Pay & Collect" : "Prepaid"}
+                  </span>
+                </div>
               </div>
-              <div>
-                <span>Order Items</span>
-                <span className="ml-2 text-xs font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                  {order.items?.length || 0} items
-                </span>
-              </div>
-            </div>
-            <motion.div animate={{ rotate: itemsExpanded ? 180 : 0 }} transition={{ duration: 0.3 }}>
-              <ChevronDown size={20} className="text-gray-400" />
-            </motion.div>
-          </motion.div>
 
-          <AnimatePresence>
-            {itemsExpanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden"
-              >
-                <div className="p-4 border-t border-gray-100 bg-gray-50/50 space-y-3">
-                  {(isReturn ? order.returnItems : order.items)?.map((item, i) => (
-                    <div key={i} className="flex justify-between items-center text-sm">
-                      <div className="flex items-center">
-                        <span className="font-bold text-gray-500 mr-3 text-xs w-6 bg-white border border-gray-200 text-center rounded py-0.5">
-                          x{item.quantity}
-                        </span>
-                        <span className="text-gray-800 font-medium">{item.name}</span>
-                      </div>
-                      <span className="font-bold text-gray-600">Rs.{item.price * item.quantity}</span>
-                    </div>
-                  ))}
-                  <div className="pt-3 mt-2 border-t border-gray-200 flex justify-between items-center">
-                    <span className="text-gray-500 text-sm">Total Bill</span>
-                    <span className="text-lg font-bold text-gray-900">Rs.{order.pricing?.total}</span>
+              {order.parcelDetails && (
+                <div className="p-3 bg-white border border-gray-100 rounded-xl">
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Parcel Description</p>
+                  <p className="text-sm font-semibold text-gray-800 leading-relaxed whitespace-pre-wrap">{order.parcelDetails}</p>
+                </div>
+              )}
+
+              {order.parcelImage && (
+                <div>
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Order Screenshot / Image</p>
+                  <div className="max-w-xs rounded-xl overflow-hidden ring-1 ring-slate-100 shadow-sm">
+                    <img src={order.parcelImage} alt="Parcel proof" className="w-full object-cover max-h-48" />
                   </div>
                 </div>
+              )}
+
+              <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl flex items-center justify-between text-amber-800">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">Collect Instruction</p>
+                  <p className="text-xs font-bold mt-0.5">
+                    {order.pickupType === "pay_and_collect"
+                      ? `Pay cash ₹${order.billAmount} at shop and collect`
+                      : "Collect prepaid parcel from shop"}
+                  </p>
+                </div>
+                {order.pickupType === "pay_and_collect" && (
+                  <div className="text-right">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">Reimbursement</p>
+                    <p className="text-sm font-black">₹{order.billAmount}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-3 border-t border-gray-200 flex justify-between items-center text-sm font-bold text-gray-900">
+                <span>Rider Payout</span>
+                <span>Rs.{order.paymentBreakdown?.riderPayoutTotal || 0}</span>
+              </div>
+            </div>
+          ) : (
+            <>
+              <motion.div
+                className="p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => setItemsExpanded(!itemsExpanded)}
+              >
+                <div className="flex items-center font-bold text-gray-800">
+                  <div className="p-2 bg-purple-100 text-purple-600 rounded-lg mr-3">
+                    <Package size={20} />
+                  </div>
+                  <div>
+                    <span>Order Items</span>
+                    <span className="ml-2 text-xs font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+                      {order.items?.length || 0} items
+                    </span>
+                  </div>
+                </div>
+                <motion.div animate={{ rotate: itemsExpanded ? 180 : 0 }} transition={{ duration: 0.3 }}>
+                  <ChevronDown size={20} className="text-gray-400" />
+                </motion.div>
               </motion.div>
-            )}
-          </AnimatePresence>
+
+              <AnimatePresence>
+                {itemsExpanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-4 border-t border-gray-100 bg-gray-50/50 space-y-3">
+                      {(isReturn ? order.returnItems : order.items)?.map((item, i) => (
+                        <div key={i} className="flex justify-between items-center text-sm">
+                          <div className="flex items-center">
+                            <span className="font-bold text-gray-500 mr-3 text-xs w-6 bg-white border border-gray-200 text-center rounded py-0.5">
+                              x{item.quantity}
+                            </span>
+                            <span className="text-gray-800 font-medium">{item.name}</span>
+                          </div>
+                          <span className="font-bold text-gray-600">Rs.{item.price * item.quantity}</span>
+                        </div>
+                      ))}
+                      <div className="pt-3 mt-2 border-t border-gray-200 flex justify-between items-center">
+                        <span className="text-gray-500 text-sm">Total Bill</span>
+                        <span className="text-lg font-bold text-gray-900">Rs.{order.pricing?.total}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </>
+          )}
         </Card>
 
         <motion.div
