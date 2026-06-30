@@ -46,6 +46,7 @@ const PaymentStatusPage = lazy(() => import('../../modules/customer/pages/Paymen
 const WalletPage = lazy(() => import('../../modules/customer/pages/WalletPage'));
 const SearchPage = lazy(() => import('../../modules/customer/pages/SearchPage'));
 const ShopDetails = lazy(() => import('../../modules/customer/pages/ShopDetails'));
+const PickupDelivery = lazy(() => import('../../modules/customer/pages/PickupDelivery'));
 
 // Lazy load heavy modules
 const SellerModule = lazy(() => import('../../modules/seller/routes/index'));
@@ -171,6 +172,7 @@ const AppRouter = () => {
                         { path: 'wallet', element: <ProtectedRoute><WalletPage /></ProtectedRoute> },
                         { path: 'search', element: <SearchPage /> },
                         { path: 'shops/:id', element: <ShopDetails /> },
+                        { path: 'pickup-delivery', element: <ProtectedRoute><PickupDelivery /></ProtectedRoute> },
                     ]
                 },
                 {

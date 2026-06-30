@@ -76,6 +76,8 @@ export const customerApi = {
     axiosInstance.post(`/orders/${orderId}/cod/reconcile`, data),
   placeOrder: (data) =>
     axiosInstance.post("/orders/place", data, { timeout: 120000 }),
+  placeCustomPickupOrder: (data) =>
+    axiosInstance.post("/orders/custom-pickup", data, { timeout: 120000 }),
   getMyOrders: () => getWithDedupe("/orders/my-orders"),
   /**
    * Order details must reflect live workflow, but we still dedupe in-flight requests to avoid

@@ -555,6 +555,25 @@ const orderSchema = new mongoose.Schema(
       lat: Number,
       lng: Number,
     },
+    orderType: {
+      type: String,
+      enum: ["regular", "custom_pickup"],
+      default: "regular",
+    },
+    parcelDetails: {
+      type: String,
+    },
+    parcelImage: {
+      type: String,
+    },
+    pickupType: {
+      type: String,
+      enum: ["pay_and_collect", "prepaid"],
+    },
+    billAmount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true },
 );

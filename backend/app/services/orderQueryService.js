@@ -2,6 +2,7 @@ import Order from "../models/order.js";
 import Delivery from "../models/delivery.js";
 import Seller from "../models/seller.js";
 import CheckoutGroup from "../models/checkoutGroup.js";
+import OrderOtp from "../models/orderOtp.js";
 import { WORKFLOW_STATUS } from "../constants/orderWorkflow.js";
 import { distanceMeters } from "../utils/geoUtils.js";
 import {
@@ -572,6 +573,24 @@ export async function getOrderWithAccess(orderId, userId, role) {
       "Access denied. You are not authorized to view this order.",
       403,
     );
+  }
+
+  const isV2Out = order.workflowStatus === WORKFLOW_STATUS.OUT_FOR_DELIVERY;
+  const isV1Out =
+    (order.workflowVersion || 1) < 2 &&
+    String(order.status || "").toLowerCase() === "out_for_delivery";
+
+  if (isV2Out || isV1Out) {
+    const activeOtp = await OrderOtp.findOne({
+      orderId: order.orderId,
+      type: "delivery",
+      consumedAt: null,
+      expiresAt: { $gt: new Date() },
+    });
+    if (activeOtp) {
+      order.deliveryOtp = activeOtp.code;
+      order.deliveryOtpExpiresAt = activeOtp.expiresAt;
+    }
   }
 
   return {
